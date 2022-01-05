@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-05T06:09:04.194Z</updated>
+  <updated>2022-01-05T08:05:34.618Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>单例模式</title>
+    <link href="http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</id>
+    <published>2022-01-05T08:04:00.000Z</published>
+    <updated>2022-01-05T08:05:34.618Z</updated>
+    
+    <content type="html"><![CDATA[<p>单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况下，方便资源之间的互相通信。如线程池等。一般可以用于网站的计数器、web应用的日志、配置对象的读取、打印机、任务管理器、数据库连接池。其具体代码实现可以分为饿汉式和懒汉式。</p><p>/**</p><ul><li><p>饿汉式</p></li><li><p>/<br>public class Singleton01 {<br>  public static final Singleton01 instance = new Singleton01();<br>  private Singleton01(){</p><p>  }<br>}<br>/**</p></li><li><p>饿汉式</p></li><li><p>/<br>public class Singleton02 {<br>  public static final Singleton02 instance;</p><p>  static {</p><pre><code>  instance = new Singleton02();</code></pre><p>  }</p><p>  private Singleton02(){</p><p>  }</p></li></ul><p>}<br>/**</p><ul><li><p>饿汉式</p></li><li><p>/<br>public enum  Singleton03 {<br>  INSTANCE<br>}<br>/**</p></li><li><p>懒汉式: 存在线程安全问题</p></li><li><p>/<br>public class Singleton04 {<br>  private static Singleton04 instance;<br>  private Singleton04(){</p><p>  }</p><p>  public static Singleton04 getInstance(){</p><pre><code>  if (instance == null)&#123;      instance =  new Singleton04();  &#125;  return instance;</code></pre><p>  }<br>}<br>/**</p></li><li><p>懒汉式: 解决线程安全问题</p></li><li><p>/<br>public class Singleton05 {<br>  private volatile static Singleton05 instance;<br>  private Singleton05(){</p><p>  }</p><p>  public static Singleton05 getInstance(){</p><pre><code>  if (instance == null)&#123;      synchronized (Singleton05.class)&#123;          instance =  new Singleton05();      &#125;  &#125;  return instance;</code></pre><p>  }<br>}<br>/**</p></li><li><p>懒汉式: 内部类</p></li><li><p>/<br>public class Singleton06 {</p><p>  private Singleton06(){</p><p>  }<br>  private static class Inner{</p><pre><code>  private static final Singleton06 instance = new Singleton06();</code></pre><p>  }</p><p>  public static Singleton06 getInstance(){</p><pre><code>  return Inner.instance;</code></pre><p>  }<br>}</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况</summary>
+      
+    
+    
+    
+    <category term="java" scheme="http://example.com/categories/java/"/>
+    
+    <category term="设计模式" scheme="http://example.com/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="java" scheme="http://example.com/tags/java/"/>
+    
+    <category term="设计模式" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>Hello World</title>
