@@ -17,22 +17,21 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>单例模式 | ATAO</title>
-  <meta name="description" content="单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况下，方便资源之间的互相通信。如线程池等。一般可以用于网站的计数器、web应用的日志、配置对象的读取、打印机、任务管理器、数据库">
+  <title>快速排序 | ATAO</title>
+  <meta name="description" content="原理： 设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，也就是说，多个相同的值的相对位置也许会在算法结束时产生变动。   一趟快速排序的算法是： 1）设置两个变量i、j，排序开始的时候：i&#x3D;0，j&#x3D;N-1； 2）">
 <meta property="og:type" content="article">
-<meta property="og:title" content="单例模式">
-<meta property="og:url" content="http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/index.html">
+<meta property="og:title" content="快速排序">
+<meta property="og:url" content="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况下，方便资源之间的互相通信。如线程池等。一般可以用于网站的计数器、web应用的日志、配置对象的读取、打印机、任务管理器、数据库">
+<meta property="og:description" content="原理： 设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，也就是说，多个相同的值的相对位置也许会在算法结束时产生变动。   一趟快速排序的算法是： 1）设置两个变量i、j，排序开始的时候：i&#x3D;0，j&#x3D;N-1； 2）">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-05T08:04:00.000Z">
-<meta property="article:modified_time" content="2022-01-05T08:05:34.618Z">
+<meta property="article:published_time" content="2022-01-08T05:41:00.000Z">
+<meta property="article:modified_time" content="2022-01-08T05:48:02.025Z">
 <meta property="article:author" content="John Doe">
-<meta property="article:tag" content="java">
-<meta property="article:tag" content="设计模式">
+<meta property="article:tag" content="快速排序">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/index.html">
+  <link rel="canonical" href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -349,14 +348,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-单例模式" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-快速排序" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      单例模式
+      快速排序
     </h1>
   
 
@@ -364,96 +363,96 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="article-date">
-	  <time datetime="2022-01-05T08:04:00.000Z" itemprop="datePublished">2022-01-05</time>
+	<a href="/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" class="article-date">
+	  <time datetime="2022-01-08T05:41:00.000Z" itemprop="datePublished">2022-01-08</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/java/">java</a>►<a class="article-category-link" href="/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
+    <a class="article-category-link" href="/categories/%E7%AE%97%E6%B3%95/">算法</a>
   </span>
 
         
   <span class="article-tag">
     <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/java/" rel="tag">java</a>, <a class="article-tag-link-link" href="/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" rel="tag">设计模式</a>
+	<a class="article-tag-link-link" href="/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" rel="tag">快速排序</a>
   </span>
 
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况下，方便资源之间的互相通信。如线程池等。一般可以用于网站的计数器、web应用的日志、配置对象的读取、打印机、任务管理器、数据库连接池。其具体代码实现可以分为饿汉式和懒汉式。</p>
-<p>/**</p>
-<ul>
-<li><p>饿汉式</p>
-</li>
-<li><p>/<br>public class Singleton01 {<br>  public static final Singleton01 instance = new Singleton01();<br>  private Singleton01(){</p>
-<p>  }<br>}<br>/**</p>
-</li>
-<li><p>饿汉式</p>
-</li>
-<li><p>/<br>public class Singleton02 {<br>  public static final Singleton02 instance;</p>
-<p>  static {</p>
-<pre><code>  instance = new Singleton02();
+        <p>原理：</p>
+<pre><code>设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，也就是说，多个相同的值的相对位置也许会在算法结束时产生变动。 
 </code></pre>
-<p>  }</p>
-<p>  private Singleton02(){</p>
-<p>  }</p>
-</li>
-</ul>
-<p>}<br>/**</p>
-<ul>
-<li><p>饿汉式</p>
-</li>
-<li><p>/<br>public enum  Singleton03 {<br>  INSTANCE<br>}<br>/**</p>
-</li>
-<li><p>懒汉式: 存在线程安全问题</p>
-</li>
-<li><p>/<br>public class Singleton04 {<br>  private static Singleton04 instance;<br>  private Singleton04(){</p>
-<p>  }</p>
-<p>  public static Singleton04 getInstance(){</p>
-<pre><code>  if (instance == null)&#123;
-      instance =  new Singleton04();
-  &#125;
-  return instance;
+<p>一趟快速排序的算法是：</p>
+<pre><code>1）设置两个变量i、j，排序开始的时候：i=0，j=N-1；
+2）以第一个数组元素作为关键数据，赋值给key，即key=A[0]； 
+3）从j开始向前搜索，即由后开始向前搜索(j--)，找到第一个小于key的值A[j]，将A[j]和A[i]的值交换； 
+4）从i开始向后搜索，即由前开始向后搜索(i++)，找到第一个大于key的A[i]，将A[i]和A[j]的值交换；
+5）重复第3、4步，直到i==j； (3,4步中，没找到符合条件的值，即3中A[j]不小于key,4中A[i]不大于key的时候改变j、i的值，使得j=j-1，i=i+1，直至找到为止。找到符合条件的值，进行交换的时候i， j指针位置不变。另外，i==j这一过程一定正好是i+或j-完成的时候，此时令循环结束）。
 </code></pre>
-<p>  }<br>}<br>/**</p>
-</li>
-<li><p>懒汉式: 解决线程安全问题</p>
-</li>
-<li><p>/<br>public class Singleton05 {<br>  private volatile static Singleton05 instance;<br>  private Singleton05(){</p>
-<p>  }</p>
-<p>  public static Singleton05 getInstance(){</p>
-<pre><code>  if (instance == null)&#123;
-      synchronized (Singleton05.class)&#123;
-          instance =  new Singleton05();
-      &#125;
-  &#125;
-  return instance;
+<p>代码：</p>
+<pre><code>public class QuickSort &#123;
+
+
+public static void main(String[] args) &#123;
+    int k = 3;
+    int[] arr = &#123;5,3,7,6,4,1,0,2,9,10,8&#125;;
+    quickSort(arr,0,arr.length-1);
+    p(arr);
+&#125;
+
+private static int[] quickSort(int[] arr,int l, int r) &#123;
+    if (l&gt;r) return null;
+    int mid = l ,i = l, j = r;
+    while (i &lt; j)&#123;
+        while (i&lt;j &amp;&amp; arr[j] &gt;= arr[mid])&#123;
+            --j;
+        &#125;
+        if(i&lt;j &amp;&amp; arr[j] &lt; arr[mid])&#123;
+            swap(arr,j,mid);
+            mid = j;
+        &#125;
+        p(arr);
+        while (i&lt;j &amp;&amp; arr[i] &lt;= arr[mid])&#123;
+            ++i;
+        &#125;
+        if(i&lt;j &amp;&amp; arr[i] &gt; arr[mid])&#123;
+            swap(arr,i,mid);
+            mid = i;
+        &#125;
+        p(arr);
+    &#125;
+    System.out.println(&quot;=========&quot;+i);
+    swap(arr,i,mid);
+    mid = i;
+    quickSort(arr,mid+1,r);
+    quickSort(arr,l,mid-1);
+    return arr;
+&#125;
+
+
+private static void swap(int[] arr, int i, int j) &#123;
+    int tmp = arr[i];
+    arr[i] = arr[j];
+    arr[j] = tmp;
+&#125;
+
+public static void p(int[] arr)&#123;
+    for (int n:arr)&#123;
+        System.out.print(n+&quot; &quot;);
+    &#125;
+    System.out.println();
+&#125;
 </code></pre>
-<p>  }<br>}<br>/**</p>
-</li>
-<li><p>懒汉式: 内部类</p>
-</li>
-<li><p>/<br>public class Singleton06 {</p>
-<p>  private Singleton06(){</p>
-<p>  }<br>  private static class Inner{</p>
-<pre><code>  private static final Singleton06 instance = new Singleton06();
-</code></pre>
-<p>  }</p>
-<p>  public static Singleton06 getInstance(){</p>
-<pre><code>  return Inner.instance;
-</code></pre>
-<p>  }<br>}</p>
-</li>
-</ul>
+<p>}</p>
 
       
     </div>
@@ -463,7 +462,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" title="单例模式" target="_blank" rel="external">http://example.com/2022/01/05/单例模式/</a>
+      <a href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" title="快速排序" target="_blank" rel="external">http://example.com/2022/01/08/快速排序/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -510,12 +509,12 @@
   <ul class="pager pull-left">
     
     <li class="prev">
-      <a href="/2022/01/07/%E6%9C%89%E4%BA%86for%E5%BE%AA%E7%8E%AF%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81forEach%EF%BC%9F/" title="进程通信的方式"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
+      <a href="/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/" title="快速选择"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
     </li>
     
     
     <li class="next">
-      <a href="/2022/01/05/hello-world/" title="Hello World"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2022/01/07/%E6%9C%89%E4%BA%86for%E5%BE%AA%E7%8E%AF%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81forEach%EF%BC%9F/" title="进程通信的方式"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     

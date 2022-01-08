@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-07T12:59:11.982Z</updated>
+  <updated>2022-01-08T06:08:50.171Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,60 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>快速选择</title>
+    <link href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/"/>
+    <id>http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/</id>
+    <published>2022-01-08T06:04:00.000Z</published>
+    <updated>2022-01-08T06:08:50.171Z</updated>
+    
+    <content type="html"><![CDATA[<p>快速选择，适用于寻找无序数组中第k大（小）或者前k大（小）这种情况，即TopK问题，是快速排序的一种变化。</p><pre><code>class Solution &#123;  public static int[] getLeastNumbers(int[] arr, int k) &#123;      return quickSelect(arr,k,0,arr.length-1);  &#125;  private static int[] quickSelect(int[] arr,int k,int l, int r)&#123;      if (arr.length &lt;= k)&#123;          return arr;      &#125;      int index = quickSort(arr,l,r);      if (index == k)&#123;          return Arrays.copyOf(arr,index);      &#125;else if (index &lt; k)&#123;          return quickSelect(arr,k,index+1,r);      &#125;else &#123;          return quickSelect(arr,k,l,index-1);      &#125;  &#125;  private static int quickSort(int[] arr, int l, int r) &#123;      int mid = l ,i = l, j = r;      while (i &lt; j)&#123;          while (i&lt;j &amp;&amp; arr[j] &gt;= arr[mid])&#123;              --j;          &#125;          if(i&lt;j &amp;&amp; arr[j] &lt; arr[mid])&#123;              swap(arr,j,mid);              mid = j;          &#125;        //  p(arr);          while (i&lt;j &amp;&amp; arr[i] &lt;= arr[mid])&#123;              ++i;          &#125;          if(i&lt;j &amp;&amp; arr[i] &gt; arr[mid])&#123;              swap(arr,i,mid);              mid = i;          &#125;        //  p(arr);      &#125;      swap(arr,i,mid);      return mid;  &#125;  private static void swap(int[] arr, int i, int j) &#123;      int tmp = arr[i];      arr[i] = arr[j];      arr[j] = tmp;  &#125;  public static void p(int[] arr)&#123;      for (int n:arr)&#123;          System.out.print(n+&quot; &quot;);      &#125;      System.out.println();  &#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;快速选择，适用于寻找无序数组中第k大（小）或者前k大（小）这种情况，即TopK问题，是快速排序的一种变化。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;class Solution &amp;#123;
+
+  public static int[] getLeastNumbers(int[] a</summary>
+      
+    
+    
+    
+    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="快速选择" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/"/>
+    
+    <category term="Top" scheme="http://example.com/tags/Top/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>快速排序</title>
+    <link href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
+    <id>http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</id>
+    <published>2022-01-08T05:41:00.000Z</published>
+    <updated>2022-01-08T05:48:02.025Z</updated>
+    
+    <content type="html"><![CDATA[<p>原理：</p><pre><code>设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，也就是说，多个相同的值的相对位置也许会在算法结束时产生变动。 </code></pre><p>一趟快速排序的算法是：</p><pre><code>1）设置两个变量i、j，排序开始的时候：i=0，j=N-1；2）以第一个数组元素作为关键数据，赋值给key，即key=A[0]； 3）从j开始向前搜索，即由后开始向前搜索(j--)，找到第一个小于key的值A[j]，将A[j]和A[i]的值交换； 4）从i开始向后搜索，即由前开始向后搜索(i++)，找到第一个大于key的A[i]，将A[i]和A[j]的值交换；5）重复第3、4步，直到i==j； (3,4步中，没找到符合条件的值，即3中A[j]不小于key,4中A[i]不大于key的时候改变j、i的值，使得j=j-1，i=i+1，直至找到为止。找到符合条件的值，进行交换的时候i， j指针位置不变。另外，i==j这一过程一定正好是i+或j-完成的时候，此时令循环结束）。</code></pre><p>代码：</p><pre><code>public class QuickSort &#123;public static void main(String[] args) &#123;    int k = 3;    int[] arr = &#123;5,3,7,6,4,1,0,2,9,10,8&#125;;    quickSort(arr,0,arr.length-1);    p(arr);&#125;private static int[] quickSort(int[] arr,int l, int r) &#123;    if (l&gt;r) return null;    int mid = l ,i = l, j = r;    while (i &lt; j)&#123;        while (i&lt;j &amp;&amp; arr[j] &gt;= arr[mid])&#123;            --j;        &#125;        if(i&lt;j &amp;&amp; arr[j] &lt; arr[mid])&#123;            swap(arr,j,mid);            mid = j;        &#125;        p(arr);        while (i&lt;j &amp;&amp; arr[i] &lt;= arr[mid])&#123;            ++i;        &#125;        if(i&lt;j &amp;&amp; arr[i] &gt; arr[mid])&#123;            swap(arr,i,mid);            mid = i;        &#125;        p(arr);    &#125;    System.out.println(&quot;=========&quot;+i);    swap(arr,i,mid);    mid = i;    quickSort(arr,mid+1,r);    quickSort(arr,l,mid-1);    return arr;&#125;private static void swap(int[] arr, int i, int j) &#123;    int tmp = arr[i];    arr[i] = arr[j];    arr[j] = tmp;&#125;public static void p(int[] arr)&#123;    for (int n:arr)&#123;        System.out.print(n+&quot; &quot;);    &#125;    System.out.println();&#125;</code></pre><p>}</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;原理：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，</summary>
+      
+    
+    
+    
+    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    
+    <category term="快速排序" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>进程通信的方式</title>
