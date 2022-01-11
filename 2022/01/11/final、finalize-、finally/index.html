@@ -17,16 +17,24 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>归档: 2022/1 | ATAO</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/archives/2022/01/index.html">
+  <title>final、finalize()、finally | ATAO</title>
+  <meta name="description" content="1、final：在java中，final主要用于修饰类、方法和变量。 1.1 修饰类：用final修饰类时，表明这个类不能被其他类所继承。 注意：当用final对类进行修饰的时候，类中所有成员方法默认是final方法。  1.2 修饰方法：用fianl修饰方法时，表明这个方法不能被其子类重写。 1.3 修饰变量：用final修饰变量的话表明这个变量是一个常量，只能被赋值一次，赋值后其值不能够修改。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="final、finalize()、finally">
+<meta property="og:url" content="http://example.com/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="1、final：在java中，final主要用于修饰类、方法和变量。 1.1 修饰类：用final修饰类时，表明这个类不能被其他类所继承。 注意：当用final对类进行修饰的时候，类中所有成员方法默认是final方法。  1.2 修饰方法：用fianl修饰方法时，表明这个方法不能被其子类重写。 1.3 修饰变量：用final修饰变量的话表明这个变量是一个常量，只能被赋值一次，赋值后其值不能够修改。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://example.com/images/pasted-3.png">
+<meta property="article:published_time" content="2022-01-11T01:48:00.000Z">
+<meta property="article:modified_time" content="2022-01-11T02:27:34.968Z">
 <meta property="article:author" content="John Doe">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="final、finally、fi&#39;nalize">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/pasted-3.png">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/archives/2022/01/index.html">
+  <link rel="canonical" href="http://example.com/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -342,108 +350,196 @@
   
   
 <main class="main" role="main">
-  	<article class="content article article-archives article-type-list" itemscope="">
-	    <header class="article-header">
-	      <h1 itemprop="title">归档: 2022/1</h1>
-	      <p class="text-muted">共 7 篇文章</p>
-	    </header>
-	    <div class="article-body">
-	      
+  <div class="content">
+  <article id="post-final、finalize-、finally" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+    
+    <div class="article-header">
+      
+        
   
+    <h1 class="article-title" itemprop="name">
+      final、finalize()、finally
+    </h1>
+  
+
+      
+      <div class="article-meta">
+        <span class="article-date">
+    <i class="icon icon-calendar-check"></i>
+	<a href="/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/" class="article-date">
+	  <time datetime="2022-01-11T01:48:00.000Z" itemprop="datePublished">2022-01-11</time>
+	</a>
+</span>
+        
+  <span class="article-category">
+    <i class="icon icon-folder"></i>
+    <a class="article-category-link" href="/categories/java/">java</a>
+  </span>
+
+        
+  <span class="article-tag">
+    <i class="icon icon-tags"></i>
+	<a class="article-tag-link-link" href="/tags/final%E3%80%81finally%E3%80%81fi-nalize/" rel="tag">final、finally、fi'nalize</a>, <a class="article-tag-link-link" href="/tags/java/" rel="tag">java</a>
+  </span>
+
+
+        
+
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p>1、final：在java中，final主要用于修饰类、方法和变量。</p>
+<p>1.1 修饰类：用final修饰类时，表明这个类不能被其他类所继承。</p>
+<pre><code>注意：当用final对类进行修饰的时候，类中所有成员方法默认是final方法。
+</code></pre>
+<p>1.2 修饰方法：用fianl修饰方法时，表明这个方法不能被其子类重写。</p>
+<p>1.3 修饰变量：用final修饰变量的话表明这个变量是一个常量，只能被赋值一次，赋值后其值不能够修改。</p>
+<pre><code>   当final修饰一个基本数据类型时，表示该基本数据类型的值一旦在初始化后便不能发生变化（）；如果final修饰一个引用类型时，则在对其初始化之后便不能再让其指向其他对象了，但该引用所指向的对象的内容是可以发生变化的。本质上是一回事，因为引用的值是一个地址，final要求值，即地址的值不发生变化。　
+　　final修饰一个成员变量（属性），必须要显示初始化。这里有两种初始化方式，一种是在变量声明的时候初始化；第二种方法是在声明变量的时候不赋初值，但是要在这个变量所在的类的所有的构造函数中对这个变量赋初值。
+</code></pre>
+<p>扩展：在java中，String被设计成final类，那为什么平时使用时，String的值可以被改变呢？</p>
+<pre><code>字符串常量池是java堆内存中一个特殊的存储区域，当我们建立一个String对象时，假设常量池不存在该字符串，则创建一个，若存在则直接引用已经存在的字符串。当我们对String对象值改变的时候，例如 String a=&quot;A&quot;; a=&quot;B&quot; 。a是String对象的一个引用（我们这里所说的String对象其实是指字符串常量），当a=“B”执行时，并不是原本String对象(&quot;A&quot;)发生改变，而是创建一个新的对象(&quot;B&quot;)，令a引用它。
+</code></pre>
+<p>2、finally：finally作为异常处理的一部分，它用在try/catch语句中，经常被用在需要释放资源的情况下。</p>
+<pre><code>注意：
+1、只有与finally对应的try语句块得到执行的情况下，finally语句块才会执行。
+2、在 try 语句块中执行了 System.exit (0) 语句，终止了 Java 虚拟机的运行或者在执行 try 语句块或者 catch 语句块时被打断（interrupted）或者被终止（killed）等情况finally也可能不会执行。
+
+易错点：
+</code></pre>
+<p><img src="/images/pasted-3.png" alt="upload successful"></p>
+<pre><code>答案：4 4 4
+原因：finally语句在return之前执行。 
+</code></pre>
+<p>3、finalize：finalize()是在java.lang.Object里定义的，每一个对象都有这么个方法。这个方法在gc启动，该对象被回收的时候被调用。</p>
+<pre><code>注意：一个对象的finalize()方法只会被调用一次，而且finalize()被调用不意味着gc会立即回收该对象，所以有可能调用finalize()后，该对象又不需要被回收了，然后到了真正要被回收的时候，因为前面调用过一次，所以不会调用finalize()，产生问题。 所以，推荐不要使用finalize()方法，它跟析构函数不一样。
+</code></pre>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/" title="final、finalize()、finally" target="_blank" rel="external">http://example.com/2022/01/11/final、finalize-、finally/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/weitao777" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/weitao777" target="_blank"><span class="text-dark">ATAO</span><small class="ml-1x">后端工程师</small></a></h3>
+        <div>简简单单就好。</div>
+      </div>
+    </figure>
+  </div>
+</div>
+
+
+    </div>
+  </article>
   
     
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
     
-      
-      
-      <section class="panel panel-default b-no">
-        <div class="panel-heading" role="tab">
-          <h3 class="panel-title">
-            <a data-toggle="collapse" href="#collapse2022" aria-expanded="true">
-              <i class="icon icon-calendar-plus text-active"></i><i class="icon icon-calendar-minus text"></i>
-              2022
-            </a>
-            <!-- <a href="/archives/2022" class="archive-year">2022</a> -->
-          </h3>
+  </section>
+
+
+  
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
+  
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/01/08/%E4%B8%BA%E4%BB%80%E4%B9%88Integer-100-100-%E4%B8%BAtrue%EF%BC%8C%E8%80%8CInteger-1000-1000%E4%B8%BAfalse%EF%BC%9F/" title="为什么Integer 100==100 为true，而Integer 1000==1000为false？"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
+  
+  
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
+  
+  
+  <div class="bar-right">
+    
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
+    
+  </div>
+  </div>
+</nav>
+  
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div id="collapse2022" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading2022">
-        <div class="panel-body">
-          <div class="collection">
-    
-    
-<a href="/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-11T01:48:00.000Z" itemprop="datePublished">2022-01-11</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> final、finalize()、finally
-</a>
+      </div>
+    </div>
+  </div>
+</div>
 
 
-  
-    
-    
-    
-<a href="/2022/01/08/%E4%B8%BA%E4%BB%80%E4%B9%88Integer-100-100-%E4%B8%BAtrue%EF%BC%8C%E8%80%8CInteger-1000-1000%E4%B8%BAfalse%EF%BC%9F/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-08T13:39:00.000Z" itemprop="datePublished">2022-01-08</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 为什么Integer 100==100 为true，而Integer 1000==1000为false？
-</a>
 
-
-  
-    
-    
-    
-<a href="/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-08T06:04:00.000Z" itemprop="datePublished">2022-01-08</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 快速选择
-</a>
-
-
-  
-    
-    
-    
-<a href="/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-08T05:41:00.000Z" itemprop="datePublished">2022-01-08</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 快速排序
-</a>
-
-
-  
-    
-    
-    
-<a href="/2022/01/07/%E6%9C%89%E4%BA%86for%E5%BE%AA%E7%8E%AF%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81forEach%EF%BC%9F/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-07T12:48:00.000Z" itemprop="datePublished">2022-01-07</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 进程通信的方式
-</a>
-
-
-  
-    
-    
-    
-<a href="/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-05T08:04:00.000Z" itemprop="datePublished">2022-01-05</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> 单例模式
-</a>
-
-
-  
-    
-    
-    
-<a href="/2022/01/05/hello-world/" class="collection-item"   itemprop="url">
-  <time datetime="2022-01-05T06:09:04.194Z" itemprop="datePublished">2022-01-05</time>
-  <span>&nbsp;&nbsp;&nbsp;</span> Hello World
-</a>
-
-
-  
-  
-    </div></div></div></section>
-  
-
-	    </div>
-  	</article>
-  	 	
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -504,6 +600,37 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
 
 
 
+
+   
+
+
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
 
 
 
