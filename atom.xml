@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-15T10:35:39.104Z</updated>
+  <updated>2022-01-16T10:34:43.521Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,57 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>在 Java 中定义⼀个不做事且没有参数的构造⽅法的作⽤</title>
+    <link href="http://example.com/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/"/>
+    <id>http://example.com/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/</id>
+    <published>2022-01-16T10:34:00.000Z</published>
+    <updated>2022-01-16T10:34:43.521Z</updated>
+    
+    <content type="html"><![CDATA[<p>Java 程序在执⾏⼦类的构造⽅法之前，如果没有⽤ super() 来调⽤⽗类特定的构造⽅法，则会调<br>⽤⽗类中“没有参数的构造⽅法”。因此，如果⽗类中只定义了有参数的构造⽅法，⽽在⼦类的构<br>造⽅法中⼜没有⽤ super() 来调⽤⽗类中特定的构造⽅法，则编译时将发⽣错误，因为 Java 程<br>序在⽗类中找不到没有参数的构造⽅法可供执⾏。解决办法是在⽗类⾥加上⼀个不做事且没有参<br>数的构造⽅法。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Java 程序在执⾏⼦类的构造⽅法之前，如果没有⽤ super() 来调⽤⽗类特定的构造⽅法，则会调&lt;br&gt;⽤⽗类中“没有参数的构造⽅法”。因此，如果⽗类中只定义了有参数的构造⽅法，⽽在⼦类的构&lt;br&gt;造⽅法中⼜没有⽤ super() 来调⽤⽗类中特定的构造⽅法，则编译时将</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>重载和重写的区别</title>
+    <link href="http://example.com/2022/01/16/%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>http://example.com/2022/01/16/%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
+    <published>2022-01-16T10:05:00.000Z</published>
+    <updated>2022-01-16T10:25:19.715Z</updated>
+    
+    <content type="html"><![CDATA[<pre><code>    重载：在一个java类中，有多个方法同名，签名不同（即不同的参数数量、顺序以及类型）的函数，就发生了重载。    重写：子类继承了父类然后重写了父类中的方法（保持和父类方法的返回值类型、函数名、签名等都不变，只是在函数体中的代码实现逻辑改变了）    注意：重写时，子类抛出的异常范围应小于等于父类，访问修饰变量范围应大于等于父类。如果父类方法被final、static、private修饰则子类不能重写父类方法，但被static修饰的方法可以再次声明。</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;pre&gt;&lt;code&gt;    重载：在一个java类中，有多个方法同名，签名不同（即不同的参数数量、顺序以及类型）的函数，就发生了重载。
+
+    重写：子类继承了父类然后重写了父类中的方法（保持和父类方法的返回值类型、函数名、签名等都不变，只是在函数体中的代码实现逻辑改变了）
+</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    
+    <category term="重写" scheme="http://example.com/tags/%E9%87%8D%E5%86%99/"/>
+    
+    <category term="重载" scheme="http://example.com/tags/%E9%87%8D%E8%BD%BD/"/>
+    
+  </entry>
   
   <entry>
     <title>Java中的基本数据类型</title>
