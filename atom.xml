@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-18T11:53:34.793Z</updated>
+  <updated>2022-01-21T07:17:15.741Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于集合类中的modCount++</title>
+    <link href="http://example.com/2022/01/21/%E5%85%B3%E4%BA%8E%E9%9B%86%E5%90%88%E7%B1%BB%E4%B8%AD%E7%9A%84modCount/"/>
+    <id>http://example.com/2022/01/21/%E5%85%B3%E4%BA%8E%E9%9B%86%E5%90%88%E7%B1%BB%E4%B8%AD%E7%9A%84modCount/</id>
+    <published>2022-01-21T06:45:00.000Z</published>
+    <updated>2022-01-21T07:17:15.741Z</updated>
+    
+    <content type="html"><![CDATA[<p>话不多说，直接看源码注释讲解<br> <img src="/images/pasted-10.png" alt="upload successful"><br> 由上图可知，该字段目的在于记录集合结构被修改的次数（增、删、改），该字段被迭代器所使用，当对集合进行迭代遍历时，防止数据发生改变引起错误。因此，当我们使用迭代器时，如果该值被改了，就会触发fast-fail机制，抛出异常ConcurrentModificationExceptions。</p><p> <img src="/images/pasted-11.png" alt="upload successful"></p><p> <img src="/images/pasted-12.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;话不多说，直接看源码注释讲解&lt;br&gt; &lt;img src=&quot;/images/pasted-10.png&quot; alt=&quot;upload successful&quot;&gt;&lt;br&gt; 由上图可知，该字段目的在于记录集合结构被修改的次数（增、删、改），该字段被迭代器所使用，当对集合进行迭代遍历时，</summary>
+      
+    
+    
+    
+    <category term="集合" scheme="http://example.com/categories/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="java" scheme="http://example.com/categories/%E9%9B%86%E5%90%88/java/"/>
+    
+    
+    <category term="ArrayList" scheme="http://example.com/tags/ArrayList/"/>
+    
+  </entry>
   
   <entry>
     <title>HashMap1.7</title>
