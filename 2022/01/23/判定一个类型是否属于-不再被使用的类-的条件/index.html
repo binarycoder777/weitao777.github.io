@@ -17,20 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>在 Java 中定义⼀个不做事且没有参数的构造⽅法的作⽤ | ATAO</title>
-  <meta name="description" content="Java 程序在执⾏⼦类的构造⽅法之前，如果没有⽤ super() 来调⽤⽗类特定的构造⽅法，则会调⽤⽗类中“没有参数的构造⽅法”。因此，如果⽗类中只定义了有参数的构造⽅法，⽽在⼦类的构造⽅法中⼜没有⽤ super() 来调⽤⽗类中特定的构造⽅法，则编译时将发⽣错误，因为 Java 程序在⽗类中找不到没有参数的构造⽅法可供执⾏。解决办法是在⽗类⾥加上⼀个不做事且没有参数的构造⽅法。">
+  <title>判定一个类型是否属于&#34;不再被使用的类&#34;的条件 | ATAO</title>
+  <meta name="description" content="1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象 2、加载该类的类加载器被回收 3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法">
 <meta property="og:type" content="article">
-<meta property="og:title" content="在 Java 中定义⼀个不做事且没有参数的构造⽅法的作⽤">
-<meta property="og:url" content="http://example.com/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/index.html">
+<meta property="og:title" content="判定一个类型是否属于&quot;不再被使用的类&quot;的条件">
+<meta property="og:url" content="http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/index.html">
 <meta property="og:site_name" content="Hexo">
-<meta property="og:description" content="Java 程序在执⾏⼦类的构造⽅法之前，如果没有⽤ super() 来调⽤⽗类特定的构造⽅法，则会调⽤⽗类中“没有参数的构造⽅法”。因此，如果⽗类中只定义了有参数的构造⽅法，⽽在⼦类的构造⽅法中⼜没有⽤ super() 来调⽤⽗类中特定的构造⽅法，则编译时将发⽣错误，因为 Java 程序在⽗类中找不到没有参数的构造⽅法可供执⾏。解决办法是在⽗类⾥加上⼀个不做事且没有参数的构造⽅法。">
+<meta property="og:description" content="1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象 2、加载该类的类加载器被回收 3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-01-16T10:34:00.000Z">
-<meta property="article:modified_time" content="2022-01-16T10:34:43.521Z">
+<meta property="article:published_time" content="2022-01-23T09:49:00.000Z">
+<meta property="article:modified_time" content="2022-01-23T09:50:58.551Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/index.html">
+  <link rel="canonical" href="http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -347,14 +347,14 @@
   
 <main class="main" role="main">
   <div class="content">
-  <article id="post-在-Java-中定义⼀个不做事且没有参数的构造⽅法的作⽤" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
+  <article id="post-判定一个类型是否属于-不再被使用的类-的条件" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
     <div class="article-header">
       
         
   
     <h1 class="article-title" itemprop="name">
-      在 Java 中定义⼀个不做事且没有参数的构造⽅法的作⽤
+      判定一个类型是否属于&#34;不再被使用的类&#34;的条件
     </h1>
   
 
@@ -362,27 +362,29 @@
       <div class="article-meta">
         <span class="article-date">
     <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/" class="article-date">
-	  <time datetime="2022-01-16T10:34:00.000Z" itemprop="datePublished">2022-01-16</time>
+	<a href="/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/" class="article-date">
+	  <time datetime="2022-01-23T09:49:00.000Z" itemprop="datePublished">2022-01-23</time>
 	</a>
 </span>
         
   <span class="article-category">
     <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/Java/">Java</a>
+    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>►<a class="article-category-link" href="/categories/jv-m/jvm/">jvm</a>
   </span>
 
         
 
         
 
-        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/#comments" class="article-comment-link">评论</a></span>
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/#comments" class="article-comment-link">评论</a></span>
         
       </div>
     </div>
     <div class="article-entry marked-body" itemprop="articleBody">
       
-        <p>Java 程序在执⾏⼦类的构造⽅法之前，如果没有⽤ super() 来调⽤⽗类特定的构造⽅法，则会调<br>⽤⽗类中“没有参数的构造⽅法”。因此，如果⽗类中只定义了有参数的构造⽅法，⽽在⼦类的构<br>造⽅法中⼜没有⽤ super() 来调⽤⽗类中特定的构造⽅法，则编译时将发⽣错误，因为 Java 程<br>序在⽗类中找不到没有参数的构造⽅法可供执⾏。解决办法是在⽗类⾥加上⼀个不做事且没有参<br>数的构造⽅法。</p>
+        <p>1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象</p>
+<p>2、加载该类的类加载器被回收</p>
+<p>3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法</p>
 
       
     </div>
@@ -392,7 +394,7 @@
     
     <li class="post-copyright-link hidden-xs">
       <strong>本文链接：</strong>
-      <a href="http://example.com/2022/01/16/%E5%9C%A8-Java-%E4%B8%AD%E5%AE%9A%E4%B9%89%E2%BC%80%E4%B8%AA%E4%B8%8D%E5%81%9A%E4%BA%8B%E4%B8%94%E6%B2%A1%E6%9C%89%E5%8F%82%E6%95%B0%E7%9A%84%E6%9E%84%E9%80%A0%E2%BD%85%E6%B3%95%E7%9A%84%E4%BD%9C%E2%BD%A4/" title="在 Java 中定义⼀个不做事且没有参数的构造⽅法的作⽤" target="_blank" rel="external">http://example.com/2022/01/16/在-Java-中定义⼀个不做事且没有参数的构造⽅法的作⽤/</a>
+      <a href="http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/" title="判定一个类型是否属于&#34;不再被使用的类&#34;的条件" target="_blank" rel="external">http://example.com/2022/01/23/判定一个类型是否属于-不再被使用的类-的条件/</a>
     </li>
     
     <li class="post-copyright-license">
@@ -438,13 +440,9 @@
   
   <ul class="pager pull-left">
     
-    <li class="prev">
-      <a href="/2022/01/16/%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB/" title="接口和抽象类的区别"><i class="icon icon-angle-left" aria-hidden="true"></i><span>&nbsp;&nbsp;上一篇</span></a>
-    </li>
-    
     
     <li class="next">
-      <a href="/2022/01/16/%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99%E7%9A%84%E5%8C%BA%E5%88%AB/" title="重载和重写的区别"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+      <a href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/" title="类的初始化情况：主动使用vs被动使用"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
     </li>
     
     

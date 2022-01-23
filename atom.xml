@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-21T07:17:15.741Z</updated>
+  <updated>2022-01-23T09:50:58.551Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,83 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>判定一个类型是否属于&quot;不再被使用的类&quot;的条件</title>
+    <link href="http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/"/>
+    <id>http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/</id>
+    <published>2022-01-23T09:49:00.000Z</published>
+    <updated>2022-01-23T09:50:58.551Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象</p><p>2、加载该类的类加载器被回收</p><p>3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象&lt;/p&gt;
+&lt;p&gt;2、加载该类的类加载器被回收&lt;/p&gt;
+&lt;p&gt;3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
+    
+    <category term="jvm" scheme="http://example.com/categories/jv-m/jvm/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>类的初始化情况：主动使用vs被动使用</title>
+    <link href="http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/"/>
+    <id>http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/</id>
+    <published>2022-01-23T09:31:00.000Z</published>
+    <updated>2022-01-23T09:43:56.451Z</updated>
+    
+    <content type="html"><![CDATA[<p>主动使用：类只有在首次主动使用时才会被加载，而在首次使用被加载时，必须进行初始化。</p><p>以下使用被认为是主动使用：<br>1、当创建一个类的实例时，比如使用 new 关键字，或者通过反射、克隆、反序列化</p><p>2、当调用类的静态方法时，即当使用了字节码 invokestatic 指令</p><p>3、当使用类、接口的静态字段时(final 修饰特殊考虑)，比如，使用 getstatic 或者 putsttic 指令。(对应访问变量、赋值变量操作)</p><p>4、当使用 java.lang.reflect 包中的方法反射类的方法时。比如：Class.forname(“com.atguigu.java.Test”)</p><p>5、当初始化子类时，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化</p><p>6、如果一个接口定义了 default 方法，那么直接实现或者间接实现该接口的类的初始化，该接口要在其之前被初始化</p><p>7、当虚拟机启动时，用户需要指定一个要执行的主类(包含 main() 方法的那个类)，虚拟机会先初始化这个主类</p><p>8、当初次调用 MethodHandle 实例时，初始化该 MethodHandle 指向的方法所在的类。(涉及解析 REF_getStatic、REF_putStatic、REF_invokeStatic 方法句柄对应的类)</p><p>注意：<br>1、当Java 虚拟机初始化一个类时，要求它的所有父类都已经被初始化，但是这条规则并不适用于接口在初始化一个类时，并不会先初始化它所实现的接口<br>在初始化一个接口时，并不会先初始化它的父接口。因此，一个父接口并不会因为它的子接口或者实现类的初始化而初始化，只有当程序首次使用特定接口的静态字段时，才会导致该接口的初始化<br>2、JVM 启动的时候通过引导类加载器加载一个初始类。这个类在调用 public static void main(String[]) 方法之前被链接和初始化。这个方法的执行将依次导致所需的类的加载、链接和初始化</p><p>被动使用：除了以上的情况属于主动使用，其他的情况均属于被动使用。被动使用不会引起类的初始化。也就是说：并不是在代码中出现的类，就一定会被加载或者初始化。如果不符合主动使用的条件，类就不会初始化。</p><p>1、当访问一个静态字段时，只有真正声明这个字段的类才会被初始化</p><p>2、当通过子类引用父类的静态变量，不会导致子类初始化</p><p>3、通过数组定义类引用，不会触发此类的初始化</p><p>4、引用变量不会触发此类或接口的初始化。因为常量在链接阶段就已经被显式赋值了</p><p>5、调用 ClassLoader 类的 loadClass() 方法加载一个类，并不是对类的主动使用，不会导致类的初始化</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;主动使用：类只有在首次主动使用时才会被加载，而在首次使用被加载时，必须进行初始化。&lt;/p&gt;
+&lt;p&gt;以下使用被认为是主动使用：&lt;br&gt;1、当创建一个类的实例时，比如使用 new 关键字，或者通过反射、克隆、反序列化&lt;/p&gt;
+&lt;p&gt;2、当调用类的静态方法时，即当使用了字节码 i</summary>
+      
+    
+    
+    
+    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
+    
+    
+    <category term="类初始化：主动使用与被动使用" scheme="http://example.com/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8%E4%B8%8E%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>类的加载过程</title>
+    <link href="http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/"/>
+    <id>http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/</id>
+    <published>2022-01-23T07:55:00.000Z</published>
+    <updated>2022-01-23T08:54:30.085Z</updated>
+    
+    <content type="html"><![CDATA[<p>类的加载，我的理解就是将类的二进制字节码文件加载到内存中，并通过解析字节码中的常量池、类字段、类方法等信息，在jvm方法区中构建出该类的模板，并在堆区创建一个对象实例作为方法区这个类的各种数据访问入口，在jvm运行期间能够通过这个类的模板信息来调用类的静态变量、方法等。<br>其加载过程的话，主要分为加载、链接（验证、准备、解析）、初始化三个步骤。</p><p>1、首先加载，就是查找类的全限定类名，将类的二进制字节码文件加载到jvm的内存中，将这个字节流所代表的静态存储结构转化为方法区的运行时数据结构，并为之在堆区创建一个实例对象，作为方法区这个类的数据访问入口。当然，在加载前还需要进行验证操作，即检查字节码文件格式，看是否遵循jvm的规范。比如是否以魔数开头等。验证通过后，该类的二进制信息便会被加载到内存。</p><p>2、加载到方法区后需要验证，即检查类的语义、字节码验证、符号引用验证，看是否符合规范。</p><p>3、当验证完毕之后，就开始准备阶段，这一步主要是对类的静态变量分配内存并附上默认值。（注意：final修饰的静态变量在编译阶段就会分配，准备阶段是显示赋值，并且此阶段也不会为实例变量分配初始化）</p><p>4、然后便是解析阶段，即将符号引用转变为直接引用，得到类、字段、方法等在内存中的指针或者偏移量。</p><p>5、最后便是初始化，这个阶段主要是为类的静态变量进行显示赋值。即执行类构造器cinit方法。即执行类变量的赋值动作和静态语句块(static{}块)，虚期机会保证在子类的<clinit>()方法执行之前, 父类的<clinit>()方法已经执行完毕。如果一个类中没有静态语句块,也没有对变量的赋值操作, 那么编译器可以不为这个类生成<clinit>()方法。</p><p>需要注意的是：接口与类不同的是, 执行接口的<clinit>()方法不需要先执行父接口的<clinit>()方法。只有当父接口中定义的变量被使用时, 父接口才会被初始化。 另外, 接口的实现类在初始化时也一样不会执行接口的<clinit>()方法。另外，虚拟机会保证一个类的<clinit>()方法在多线程环境中被正确地加锁和同步，如果多个线程同时去初始化一个类，那么只会有一个线程去执行这个类的<clinit>()法,其他线程部需要阻塞等待，直到活动线程执行<clinit>()方法完毕。如果在一个类的<clinit>()方法中有耗时很长的操作, 那就可能造成多个进程阻塞, 在实际应用中这种阻塞往往是隐蔽的。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;类的加载，我的理解就是将类的二进制字节码文件加载到内存中，并通过解析字节码中的常量池、类字段、类方法等信息，在jvm方法区中构建出该类的模板，并在堆区创建一个对象实例作为方法区这个类的各种数据访问入口，在jvm运行期间能够通过这个类的模板信息来调用类的静态变量、方法等。&lt;b</summary>
+      
+    
+    
+    
+    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
+    
+    
+    <category term="类的加载过程" scheme="http://example.com/tags/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>关于集合类中的modCount++</title>
