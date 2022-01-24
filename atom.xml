@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-23T09:50:58.551Z</updated>
+  <updated>2022-01-24T11:20:45.418Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,102 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>终止模式之两阶段终止模式（Interrupt）</title>
+    <link href="http://example.com/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://example.com/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/</id>
+    <published>2022-01-24T11:10:00.000Z</published>
+    <updated>2022-01-24T11:20:45.418Z</updated>
+    
+    <content type="html"><![CDATA[<p>Thread类中的stop（）方法可以用于终止一个线程，但这个方法要求立即终止，被终止的线程没有机会料理后事。因此，这里采用终止模式中的两阶段终止模式来优雅的结束一个线程，给被终止的线程一个料理后事的机会。<br>（如果被打断线程正在 sleep，wait，join 会导致被打断的线程抛InterruptedException，并清除 打断标记如果打断的正在运行的线程，则会设置打断标记 ；park的线程被打断，也会设置 打断标记）</p><p> <img src="/images/pasted-16.png" alt="upload successful"></p><pre><code> public class TPTInterrupt &#123;public static void main(String[] args) throws InterruptedException &#123;    TPTInterrupt tptInterrupt = new TPTInterrupt();    tptInterrupt.start();    Thread.sleep(2000);    tptInterrupt.stop();&#125;private Thread thread;public void start()&#123;    thread = new Thread(()-&gt;&#123;        while (true)&#123;            Thread thread = Thread.currentThread();            if (thread.isInterrupted())&#123;                System.out.println(&quot;料理后事...&quot;);                break;            &#125;            try &#123;                Thread.sleep(1000);                System.out.println(&quot;运行中...&quot;);            &#125; catch (InterruptedException e) &#123;                // 标记打断                e.printStackTrace();                thread.interrupt();            &#125;        &#125;    &#125;);    thread.start();&#125;public void stop()&#123;    thread.interrupt();&#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Thread类中的stop（）方法可以用于终止一个线程，但这个方法要求立即终止，被终止的线程没有机会料理后事。因此，这里采用终止模式中的两阶段终止模式来优雅的结束一个线程，给被终止的线程一个料理后事的机会。&lt;br&gt;（如果被打断线程正在 sleep，wait，join 会导致</summary>
+      
+    
+    
+    
+    <category term="juc" scheme="http://example.com/categories/juc/"/>
+    
+    <category term="设计模式" scheme="http://example.com/categories/juc/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="终止模式" scheme="http://example.com/tags/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>创建线程的方式</title>
+    <link href="http://example.com/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/"/>
+    <id>http://example.com/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/</id>
+    <published>2022-01-24T11:02:00.000Z</published>
+    <updated>2022-01-24T11:06:46.136Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、创建Thread对象</p><p> <img src="/images/pasted-13.png" alt="upload successful"></p><p> 2、使用Runnable配合Thread使用</p><p> <img src="/images/pasted-14.png" alt="upload successful"></p><p> 3、FutureTask配合Callable和Thread使用</p><p> <img src="/images/pasted-15.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、创建Thread对象&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-13.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 2、使用Runnable配合Thread使用&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/p</summary>
+      
+    
+    
+    
+    
+    <category term="创建线程" scheme="http://example.com/tags/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为什么要自定义类型加载器？</title>
+    <link href="http://example.com/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/"/>
+    <id>http://example.com/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/</id>
+    <published>2022-01-23T11:19:00.000Z</published>
+    <updated>2022-01-23T11:20:52.309Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、隔离加载类：在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。比如：阿里内某容器框架通过自定义类加载器确保应用中依赖的 jar 包不会影响到中间件运行时使用的 jar 包。再比如：Tomcat 这类 Web 应用服务器，内部自定义了好几种类加载器，用于隔离同一个 Web 应用服务器上的不同应用程序。(类的仲裁 –&gt; 类冲突)</p><p>2、修改类加载的方式：类的加载模型并非强制，除 Bootstrap 外，其他的加载并非一定要引入，或者根据实际情况在某个时间点按需进行动态加载</p><p>3、扩展加载源：比如从数据库、网络、甚至是电视机机顶盒进行加载</p><p>4、防止源码泄露：Java 代码容易被编译和篡改，可以进行编译加密。那么类加载也需要自定义，还原加密的字节码</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、隔离加载类：在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。比如：阿里内某容器框架通过自定义类加载器确保应用中依赖的 jar 包不会影响到中间件运行时使用的 jar 包。再比如：Tomcat 这类 Web 应用服务器，内部自定义了好几种类加载器，用于隔离同</summary>
+      
+    
+    
+    
+    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>沙箱安全机制</title>
+    <link href="http://example.com/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/"/>
+    <id>http://example.com/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/</id>
+    <published>2022-01-23T11:16:00.000Z</published>
+    <updated>2022-01-23T11:19:08.964Z</updated>
+    
+    <content type="html"><![CDATA[<p>沙箱安全机制就是将java代码限定在jvm特定的运行范围，并且严格限制代码对本地资源的访问，本地系统造成破坏。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;沙箱安全机制就是将java代码限定在jvm特定的运行范围，并且严格限制代码对本地资源的访问，本地系统造成破坏。&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
+    
+    
+  </entry>
   
   <entry>
     <title>判定一个类型是否属于&quot;不再被使用的类&quot;的条件</title>
@@ -435,54 +531,6 @@
     <category term="计算机基础" scheme="http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
     
     <category term="计算机网络" scheme="http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>单例模式</title>
-    <link href="http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://example.com/2022/01/05/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/</id>
-    <published>2022-01-05T08:04:00.000Z</published>
-    <updated>2022-01-05T08:05:34.618Z</updated>
-    
-    <content type="html"><![CDATA[<p>单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况下，方便资源之间的互相通信。如线程池等。一般可以用于网站的计数器、web应用的日志、配置对象的读取、打印机、任务管理器、数据库连接池。其具体代码实现可以分为饿汉式和懒汉式。</p><p>/**</p><ul><li><p>饿汉式</p></li><li><p>/<br>public class Singleton01 {<br>  public static final Singleton01 instance = new Singleton01();<br>  private Singleton01(){</p><p>  }<br>}<br>/**</p></li><li><p>饿汉式</p></li><li><p>/<br>public class Singleton02 {<br>  public static final Singleton02 instance;</p><p>  static {</p><pre><code>  instance = new Singleton02();</code></pre><p>  }</p><p>  private Singleton02(){</p><p>  }</p></li></ul><p>}<br>/**</p><ul><li><p>饿汉式</p></li><li><p>/<br>public enum  Singleton03 {<br>  INSTANCE<br>}<br>/**</p></li><li><p>懒汉式: 存在线程安全问题</p></li><li><p>/<br>public class Singleton04 {<br>  private static Singleton04 instance;<br>  private Singleton04(){</p><p>  }</p><p>  public static Singleton04 getInstance(){</p><pre><code>  if (instance == null)&#123;      instance =  new Singleton04();  &#125;  return instance;</code></pre><p>  }<br>}<br>/**</p></li><li><p>懒汉式: 解决线程安全问题</p></li><li><p>/<br>public class Singleton05 {<br>  private volatile static Singleton05 instance;<br>  private Singleton05(){</p><p>  }</p><p>  public static Singleton05 getInstance(){</p><pre><code>  if (instance == null)&#123;      synchronized (Singleton05.class)&#123;          instance =  new Singleton05();      &#125;  &#125;  return instance;</code></pre><p>  }<br>}<br>/**</p></li><li><p>懒汉式: 内部类</p></li><li><p>/<br>public class Singleton06 {</p><p>  private Singleton06(){</p><p>  }<br>  private static class Inner{</p><pre><code>  private static final Singleton06 instance = new Singleton06();</code></pre><p>  }</p><p>  public static Singleton06 getInstance(){</p><pre><code>  return Inner.instance;</code></pre><p>  }<br>}</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;单例模式，即java类不对外提供构造方法，在类加载的时候创建一个实例化的对象，或者提供一个方法，在方法中作出限制，保证例化对象的创建全局只有唯一一个。其好处在于可以节约系统资源，在资源共享的情况下，避免由于资源操作时导致的性能或损耗等。如日志文件，应用配置。在控制资源的情况</summary>
-      
-    
-    
-    
-    <category term="java" scheme="http://example.com/categories/java/"/>
-    
-    <category term="设计模式" scheme="http://example.com/categories/java/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-    <category term="设计模式" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hello World</title>
-    <link href="http://example.com/2022/01/05/hello-world/"/>
-    <id>http://example.com/2022/01/05/hello-world/</id>
-    <published>2022-01-05T06:09:04.194Z</published>
-    <updated>2022-01-05T06:09:04.194Z</updated>
-    
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.io/docs/&quot;&gt;documentation&lt;/a&gt; for</summary>
-      
-    
-    
-    
     
   </entry>
   
