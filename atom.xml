@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-24T11:20:45.418Z</updated>
+  <updated>2022-01-25T02:22:28.673Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>synchronized锁静态变量Integer</title>
+    <link href="http://example.com/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/"/>
+    <id>http://example.com/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/</id>
+    <published>2022-01-25T02:18:00.000Z</published>
+    <updated>2022-01-25T02:22:28.673Z</updated>
+    
+    <content type="html"><![CDATA[<p>当我尝试用synchronized去锁一个Integer的静态变量时，在多线程下发生了线程不安全问题，原因是synchronized锁住的Integer静态变量在不断发生变化，即i++会不断创建新的Integer，然后致使多线程下锁的不是一个对象，锁无效（以下代码在-128~127之间是有效的，因为存在Integer缓存问题）。</p><pre><code>public class Main &#123;    private static Integer i = 0;    public static void main(String[] args) throws InterruptedException &#123;        List&lt;Thread&gt; list = new ArrayList&lt;&gt;();        for (int j = 0; j &lt; 2; j++) &#123;            Thread thread = new Thread(() -&gt; &#123;                for (int k = 0; k &lt; 127; k++) &#123;                    synchronized (i) &#123;                        i++;                    &#125;                &#125;            &#125;, &quot;&quot; + j);            list.add(thread);        &#125;        list.stream().forEach(t -&gt; t.start());        list.stream().forEach(t -&gt; &#123;            try &#123;                t.join();            &#125; catch (InterruptedException e) &#123;                e.printStackTrace();            &#125;        &#125;);        System.out.println(i);    &#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;当我尝试用synchronized去锁一个Integer的静态变量时，在多线程下发生了线程不安全问题，原因是synchronized锁住的Integer静态变量在不断发生变化，即i++会不断创建新的Integer，然后致使多线程下锁的不是一个对象，锁无效（以下代码在-128</summary>
+      
+    
+    
+    
+    <category term="juc" scheme="http://example.com/categories/juc/"/>
+    
+    
+    <category term="synchronized" scheme="http://example.com/tags/synchronized/"/>
+    
+  </entry>
   
   <entry>
     <title>终止模式之两阶段终止模式（Interrupt）</title>
@@ -501,36 +525,6 @@
     
     
     <category term="快速排序" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>进程通信的方式</title>
-    <link href="http://example.com/2022/01/07/%E6%9C%89%E4%BA%86for%E5%BE%AA%E7%8E%AF%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81forEach%EF%BC%9F/"/>
-    <id>http://example.com/2022/01/07/%E6%9C%89%E4%BA%86for%E5%BE%AA%E7%8E%AF%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E8%BF%98%E9%9C%80%E8%A6%81forEach%EF%BC%9F/</id>
-    <published>2022-01-07T12:48:00.000Z</published>
-    <updated>2022-01-07T12:59:11.982Z</updated>
-    
-    <content type="html"><![CDATA[<pre><code>    在操作系统中，进程是资源分配的基本单位，进程间如果要实现通信，有共享存储、消息传递、管道以及socket这几种方式。    共享存储：    1、基于数据结构的共享：比如共享空间里只能放 一个长度为10的数组。这种共享方式速度慢、 限制多，是一种低级通信方式。    2、基于存储区的共享：在内存中画出一块共享存 储区，数据的形式、存放位置都由进程控制， 而不是操作系统。相比之下，这种共享方式速 度更快，是一种高级通信方式。    管道通信：    1. 管道只能采用半双工通信，某一时间段内只能实现单向的传输。如果要实现双向同时通信，则需要设置 两个管道。    2. 各进程要互斥地访问管道。    3. 数据以字符流的形式写入管道，当管道写满时，写进程的write()系统调用将被阻塞，等待读进程将数据 取走。当读进程将数据全部取走后，管道变空，此时读进程的read()系统调用将被阻塞。    4. 如果没写满，就不允许读。如果没读空，就不允许写。    5. 数据一旦被读出，就从管道中被抛弃，这就意味着读进程最多只能有一个，否则可能会有读错数据的情 况。    消息传递：    1、直接传递：发送到接收方的接受缓冲队列上    2、间接传递：设置一个接受中转信箱，发送方发送的消息发送到信箱，接收方接受消息从信箱中取    socket：借助于网络通信，从一个主机的进程发送消息到另一个主机上的进程。</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;pre&gt;&lt;code&gt;    在操作系统中，进程是资源分配的基本单位，进程间如果要实现通信，有共享存储、消息传递、管道以及socket这几种方式。
-    共享存储：
-    1、基于数据结构的共享：比如共享空间里只能放 一个长度为10的数组。这种共享方式速度慢、 限制多，是一种</summary>
-      
-    
-    
-    
-    <category term="计算机基础" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
-    
-    <category term="计算机网络" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-    <category term="计算机基础" scheme="http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9F%BA%E7%A1%80/"/>
-    
-    <category term="计算机网络" scheme="http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
     
   </entry>
   
