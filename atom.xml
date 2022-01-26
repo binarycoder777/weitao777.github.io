@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-25T02:22:28.673Z</updated>
+  <updated>2022-01-26T13:00:45.447Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>交替打印输出</title>
+    <link href="http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/"/>
+    <id>http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/</id>
+    <published>2022-01-26T12:59:00.000Z</published>
+    <updated>2022-01-26T13:00:45.447Z</updated>
+    
+    <content type="html"><![CDATA[<p> 三个线程交替打印输出</p><pre><code>public class AlternateOutput &#123;    public static void main(String[] args) &#123;//        Test1 test1 = new Test1();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(1);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(2);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(3);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        Test2 test2 = new Test2();//        Thread t1 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;a&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        Thread t2 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;b&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        Thread t3 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;c&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        test2.setThreads(t1,t2,t3);//        test2.start();        Test3 test3 = new Test3();        Condition condition1 = test3.newCondition();        Condition condition2 = test3.newCondition();        Condition condition3 = test3.newCondition();        new Thread(()-&gt;&#123;            test3.print(&quot;a&quot;,condition1,condition2);        &#125;).start();        new Thread(()-&gt;&#123;            test3.print(&quot;b&quot;,condition2,condition3);        &#125;).start();        new Thread(()-&gt;&#123;            test3.print(&quot;c&quot;,condition3,condition1);        &#125;).start();        test3.start(condition1);    &#125;&#125;class Test1&#123;    private Integer flag = 1;    private Integer num = 10;    public void print(int curFlag) throws InterruptedException &#123;        for (int i=0; i&lt;num; ++i)&#123;            synchronized (this)&#123;                while (this.flag != curFlag)&#123;                    this.wait();                &#125;                System.out.println(curFlag);                this.flag = curFlag % 3 + 1;                this.notifyAll();            &#125;        &#125;    &#125;&#125;class Test2&#123;    private Thread[] threads;    private Integer num = 10;    public Test2(Thread... threads) &#123;        this.threads = threads;    &#125;    public void setThreads(Thread... threads) &#123;        this.threads = threads;    &#125;    public void print(String s) throws InterruptedException &#123;       for (int i=0;i&lt;num;++i)&#123;           LockSupport.park();           System.out.println(s);           LockSupport.unpark(getNextThread());       &#125;    &#125;    public Thread getNextThread()&#123;        int size = threads.length;        Thread cur = Thread.currentThread();        for (int i=0;i&lt;size;++i)&#123;            if (cur == threads[i])&#123;                return threads[(i + 1) % size];            &#125;        &#125;        return null;    &#125;    public void start() &#123;        for (Thread thread: threads)&#123;            thread.start();        &#125;        LockSupport.unpark(threads[0]);    &#125;&#125;class Test3 extends ReentrantLock&#123;    private int num = 10;    public void start(Condition condition)&#123;        this.lock();        try &#123;            condition.signal();        &#125;finally &#123;            this.unlock();        &#125;    &#125;    public void print(String s, Condition cur,Condition next)&#123;        for (int i=0;i&lt;num;++i)&#123;            this.lock();            try&#123;                cur.await();                System.out.println(s);                next.signal();            &#125; catch (InterruptedException e) &#123;                e.printStackTrace();            &#125; finally &#123;                this.unlock();            &#125;        &#125;    &#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; 三个线程交替打印输出&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;public class AlternateOutput &amp;#123;
+
+    public static void main(String[] args) &amp;#123;
+//        Test1 test1 =</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>synchronized锁静态变量Integer</title>
@@ -500,31 +524,6 @@
     <category term="快速选择" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/"/>
     
     <category term="Top" scheme="http://example.com/tags/Top/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>快速排序</title>
-    <link href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
-    <id>http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/</id>
-    <published>2022-01-08T05:41:00.000Z</published>
-    <updated>2022-01-08T05:48:02.025Z</updated>
-    
-    <content type="html"><![CDATA[<p>原理：</p><pre><code>设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，也就是说，多个相同的值的相对位置也许会在算法结束时产生变动。 </code></pre><p>一趟快速排序的算法是：</p><pre><code>1）设置两个变量i、j，排序开始的时候：i=0，j=N-1；2）以第一个数组元素作为关键数据，赋值给key，即key=A[0]； 3）从j开始向前搜索，即由后开始向前搜索(j--)，找到第一个小于key的值A[j]，将A[j]和A[i]的值交换； 4）从i开始向后搜索，即由前开始向后搜索(i++)，找到第一个大于key的A[i]，将A[i]和A[j]的值交换；5）重复第3、4步，直到i==j； (3,4步中，没找到符合条件的值，即3中A[j]不小于key,4中A[i]不大于key的时候改变j、i的值，使得j=j-1，i=i+1，直至找到为止。找到符合条件的值，进行交换的时候i， j指针位置不变。另外，i==j这一过程一定正好是i+或j-完成的时候，此时令循环结束）。</code></pre><p>代码：</p><pre><code>public class QuickSort &#123;public static void main(String[] args) &#123;    int k = 3;    int[] arr = &#123;5,3,7,6,4,1,0,2,9,10,8&#125;;    quickSort(arr,0,arr.length-1);    p(arr);&#125;private static int[] quickSort(int[] arr,int l, int r) &#123;    if (l&gt;r) return null;    int mid = l ,i = l, j = r;    while (i &lt; j)&#123;        while (i&lt;j &amp;&amp; arr[j] &gt;= arr[mid])&#123;            --j;        &#125;        if(i&lt;j &amp;&amp; arr[j] &lt; arr[mid])&#123;            swap(arr,j,mid);            mid = j;        &#125;        p(arr);        while (i&lt;j &amp;&amp; arr[i] &lt;= arr[mid])&#123;            ++i;        &#125;        if(i&lt;j &amp;&amp; arr[i] &gt; arr[mid])&#123;            swap(arr,i,mid);            mid = i;        &#125;        p(arr);    &#125;    System.out.println(&quot;=========&quot;+i);    swap(arr,i,mid);    mid = i;    quickSort(arr,mid+1,r);    quickSort(arr,l,mid-1);    return arr;&#125;private static void swap(int[] arr, int i, int j) &#123;    int tmp = arr[i];    arr[i] = arr[j];    arr[j] = tmp;&#125;public static void p(int[] arr)&#123;    for (int n:arr)&#123;        System.out.print(n+&quot; &quot;);    &#125;    System.out.println();&#125;</code></pre><p>}</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;原理：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;设要排序的数组是A[0]……A[N-1]，首先任意选取一个数据（通常选用数组的第一个数）作为关键数据，然后将所有比它小的数都放到它左边，所有比它大的数都放到它右边，这个过程称为一趟快速排序。值得注意的是，快速排序不是一种稳定的排序算法，</summary>
-      
-    
-    
-    
-    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-    <category term="快速排序" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
     
   </entry>
   

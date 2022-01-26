@@ -17,16 +17,20 @@
   <meta http-equiv="window-target" content="_top" />
   
   
-  <title>ATAO</title>
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/index.html">
+  <title>交替打印输出 | ATAO</title>
+  <meta name="description" content="三个线程交替打印输出 public class AlternateOutput &amp;#123;      public static void main(String[] args) &amp;#123; &#x2F;&#x2F;        Test1 test1 &#x3D; new Test1(); &#x2F;&#x2F;        new Thread(()-&gt;&amp;#123; &#x2F;&#x2F;            try &amp;#123; &#x2F;&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="交替打印输出">
+<meta property="og:url" content="http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="三个线程交替打印输出 public class AlternateOutput &amp;#123;      public static void main(String[] args) &amp;#123; &#x2F;&#x2F;        Test1 test1 &#x3D; new Test1(); &#x2F;&#x2F;        new Thread(()-&gt;&amp;#123; &#x2F;&#x2F;            try &amp;#123; &#x2F;&#x2F;">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-01-26T12:59:00.000Z">
+<meta property="article:modified_time" content="2022-01-26T13:00:45.447Z">
 <meta property="article:author" content="John Doe">
 <meta name="twitter:card" content="summary">
   <!-- Canonical links -->
-  <link rel="canonical" href="http://example.com/index.html">
+  <link rel="canonical" href="http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/index.html">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -340,379 +344,326 @@
 </aside>
 
   
-  <main class="main" role="main">
   
-  <div class="content article-list">
+<main class="main" role="main">
+  <div class="content">
+  <article id="post-交替打印输出" class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
     
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
+    <div class="article-header">
+      
+        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/">交替打印输出</a>
+    <h1 class="article-title" itemprop="name">
+      交替打印输出
     </h1>
   
 
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
+      
+      <div class="article-meta">
+        <span class="article-date">
     <i class="icon icon-calendar-check"></i>
 	<a href="/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/" class="article-date">
-	  <time datetime="2022-01-26T12:59:00.000Z" itemprop="datePublished">1月 26</time>
+	  <time datetime="2022-01-26T12:59:00.000Z" itemprop="datePublished">2022-01-26</time>
 	</a>
 </span>
-    
-    
+        
+        
 
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
+        
 
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/">synchronized锁静态变量Integer</a>
-    </h1>
-  
+        <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/#comments" class="article-comment-link">评论</a></span>
+        
+      </div>
+    </div>
+    <div class="article-entry marked-body" itemprop="articleBody">
+      
+        <p> 三个线程交替打印输出</p>
+<pre><code>public class AlternateOutput &#123;
 
+    public static void main(String[] args) &#123;
+//        Test1 test1 = new Test1();
+//        new Thread(()-&gt;&#123;
+//            try &#123;
+//                test1.print(1);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;).start();
+//        new Thread(()-&gt;&#123;
+//            try &#123;
+//                test1.print(2);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;).start();
+//        new Thread(()-&gt;&#123;
+//            try &#123;
+//                test1.print(3);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;).start();
+
+//        Test2 test2 = new Test2();
+//        Thread t1 = new Thread(()-&gt;&#123;
+//            try &#123;
+//                test2.print(&quot;a&quot;);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;);
+//        Thread t2 = new Thread(()-&gt;&#123;
+//            try &#123;
+//                test2.print(&quot;b&quot;);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;);
+//        Thread t3 = new Thread(()-&gt;&#123;
+//            try &#123;
+//                test2.print(&quot;c&quot;);
+//            &#125; catch (InterruptedException e) &#123;
+//                e.printStackTrace();
+//            &#125;
+//        &#125;);
+//        test2.setThreads(t1,t2,t3);
+//        test2.start();
+
+        Test3 test3 = new Test3();
+        Condition condition1 = test3.newCondition();
+        Condition condition2 = test3.newCondition();
+        Condition condition3 = test3.newCondition();
+        new Thread(()-&gt;&#123;
+            test3.print(&quot;a&quot;,condition1,condition2);
+        &#125;).start();
+        new Thread(()-&gt;&#123;
+            test3.print(&quot;b&quot;,condition2,condition3);
+        &#125;).start();
+        new Thread(()-&gt;&#123;
+            test3.print(&quot;c&quot;,condition3,condition1);
+        &#125;).start();
+        test3.start(condition1);
+    &#125;
+
+&#125;
+
+class Test1&#123;
+
+    private Integer flag = 1;
+
+    private Integer num = 10;
+
+    public void print(int curFlag) throws InterruptedException &#123;
+        for (int i=0; i&lt;num; ++i)&#123;
+            synchronized (this)&#123;
+                while (this.flag != curFlag)&#123;
+                    this.wait();
+                &#125;
+                System.out.println(curFlag);
+                this.flag = curFlag % 3 + 1;
+                this.notifyAll();
+            &#125;
+        &#125;
+    &#125;
+
+&#125;
+
+
+class Test2&#123;
+
+    private Thread[] threads;
+
+    private Integer num = 10;
+
+    public Test2(Thread... threads) &#123;
+        this.threads = threads;
+    &#125;
+
+    public void setThreads(Thread... threads) &#123;
+        this.threads = threads;
+    &#125;
+
+    public void print(String s) throws InterruptedException &#123;
+       for (int i=0;i&lt;num;++i)&#123;
+           LockSupport.park();
+           System.out.println(s);
+           LockSupport.unpark(getNextThread());
+       &#125;
+    &#125;
+
+
+    public Thread getNextThread()&#123;
+        int size = threads.length;
+        Thread cur = Thread.currentThread();
+        for (int i=0;i&lt;size;++i)&#123;
+            if (cur == threads[i])&#123;
+                return threads[(i + 1) % size];
+            &#125;
+        &#125;
+        return null;
+    &#125;
+
+    public void start() &#123;
+        for (Thread thread: threads)&#123;
+            thread.start();
+        &#125;
+        LockSupport.unpark(threads[0]);
+    &#125;
+&#125;
+
+class Test3 extends ReentrantLock&#123;
+
+    private int num = 10;
+
+    public void start(Condition condition)&#123;
+        this.lock();
+        try &#123;
+            condition.signal();
+        &#125;finally &#123;
+            this.unlock();
+        &#125;
+    &#125;
+
+    public void print(String s, Condition cur,Condition next)&#123;
+        for (int i=0;i&lt;num;++i)&#123;
+            this.lock();
+            try&#123;
+                cur.await();
+                System.out.println(s);
+                next.signal();
+            &#125; catch (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125; finally &#123;
+                this.unlock();
+            &#125;
+        &#125;
+    &#125;
+
+&#125;
+</code></pre>
+
+      
+    </div>
+    <div class="article-footer">
+      <blockquote class="mt-2x">
+  <ul class="post-copyright list-unstyled">
+    
+    <li class="post-copyright-link hidden-xs">
+      <strong>本文链接：</strong>
+      <a href="http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/" title="交替打印输出" target="_blank" rel="external">http://example.com/2022/01/26/交替打印输出/</a>
+    </li>
+    
+    <li class="post-copyright-license">
+      <strong>版权声明： </strong> 本博客所有文章除特别声明外，均采用 <a href="http://creativecommons.org/licenses/by/4.0/deed.zh" target="_blank" rel="external">CC BY 4.0 CN协议</a> 许可协议。转载请注明出处！
+    </li>
+  </ul>
+</blockquote>
+
+
+<div class="panel panel-default panel-badger">
+  <div class="panel-body">
+    <figure class="media">
+      <div class="media-left">
+        <a href="https://github.com/weitao777" target="_blank" class="img-burn thumb-sm visible-lg">
+          <img src="/images/avatar.jpg" class="img-rounded w-full" alt="">
+        </a>
+      </div>
+      <div class="media-body">
+        <h3 class="media-heading"><a href="https://github.com/weitao777" target="_blank"><span class="text-dark">ATAO</span><small class="ml-1x">后端工程师</small></a></h3>
+        <div>简简单单就好。</div>
+      </div>
+    </figure>
   </div>
+</div>
+
+
+    </div>
+  </article>
   
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/" class="article-date">
-	  <time datetime="2022-01-25T02:18:00.000Z" itemprop="datePublished">1月 25</time>
-	</a>
-</span>
     
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/juc/">juc</a>
-  </span>
-
+  <section id="comments">
+  	
+      <div id="vcomments"></div>
     
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/synchronized/" rel="tag">synchronized</a>
-  </span>
+  </section>
 
 
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/">终止模式之两阶段终止模式（Interrupt）</a>
-    </h1>
+</div>
+
+  <nav class="bar bar-footer clearfix" data-stick-bottom>
+  <div class="bar-inner">
   
-
-  </div>
+  <ul class="pager pull-left">
+    
+    
+    <li class="next">
+      <a href="/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/" title="synchronized锁静态变量Integer"><span>下一篇&nbsp;&nbsp;</span><i class="icon icon-angle-right" aria-hidden="true"></i></a>
+    </li>
+    
+    
+  </ul>
   
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/" class="article-date">
-	  <time datetime="2022-01-24T11:10:00.000Z" itemprop="datePublished">1月 24</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/juc/">juc</a>►<a class="article-category-link" href="/categories/juc/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/">设计模式</a>
-  </span>
-
-    
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/" rel="tag">终止模式</a>
-  </span>
-
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/">创建线程的方式</a>
-    </h1>
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-fancy btn-donate pop-onhover bg-gradient-warning" data-toggle="modal" data-target="#donateModal"><span>赏</span></button>
+  <!-- <div class="wave-icon wave-icon-danger btn-donate" data-toggle="modal" data-target="#donateModal">
+    <div class="wave-circle"><span class="icon"><i class="icon icon-bill"></i></span></div>
+  </div> -->
   
-
-  </div>
   
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/" class="article-date">
-	  <time datetime="2022-01-24T11:02:00.000Z" itemprop="datePublished">1月 24</time>
-	</a>
-</span>
+  <div class="bar-right">
     
-    
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/" rel="tag">创建线程</a>
-  </span>
-
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/">为什么要自定义类型加载器？</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/" class="article-date">
-	  <time datetime="2022-01-23T11:19:00.000Z" itemprop="datePublished">1月 23</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>
-  </span>
-
-    
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/">沙箱安全机制</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/" class="article-date">
-	  <time datetime="2022-01-23T11:16:00.000Z" itemprop="datePublished">1月 23</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>
-  </span>
-
-    
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/">判定一个类型是否属于&#34;不再被使用的类&#34;的条件</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/" class="article-date">
-	  <time datetime="2022-01-23T09:49:00.000Z" itemprop="datePublished">1月 23</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>►<a class="article-category-link" href="/categories/jv-m/jvm/">jvm</a>
-  </span>
-
-    
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/">类的初始化情况：主动使用vs被动使用</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/" class="article-date">
-	  <time datetime="2022-01-23T09:31:00.000Z" itemprop="datePublished">1月 23</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>
-  </span>
-
-    
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8%E4%B8%8E%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/" rel="tag">类初始化：主动使用与被动使用</a>
-  </span>
-
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/">类的加载过程</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/" class="article-date">
-	  <time datetime="2022-01-23T07:55:00.000Z" itemprop="datePublished">1月 23</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/jv-m/">jv'm</a>
-  </span>
-
-    
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/" rel="tag">类的加载过程</a>
-  </span>
-
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/23/%E7%B1%BB%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
-    
-      <article class="article article-type-post" itemscope itemtype="http://schema.org/BlogPosting">
-  <div class="article-header">
-    
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2022/01/21/%E5%85%B3%E4%BA%8E%E9%9B%86%E5%90%88%E7%B1%BB%E4%B8%AD%E7%9A%84modCount/">关于集合类中的modCount++</a>
-    </h1>
-  
-
-  </div>
-  
-  <p class="article-meta">
-    <span class="article-date">
-    <i class="icon icon-calendar-check"></i>
-	<a href="/2022/01/21/%E5%85%B3%E4%BA%8E%E9%9B%86%E5%90%88%E7%B1%BB%E4%B8%AD%E7%9A%84modCount/" class="article-date">
-	  <time datetime="2022-01-21T06:45:00.000Z" itemprop="datePublished">1月 21</time>
-	</a>
-</span>
-    
-  <span class="article-category">
-    <i class="icon icon-folder"></i>
-    <a class="article-category-link" href="/categories/%E9%9B%86%E5%90%88/">集合</a>►<a class="article-category-link" href="/categories/%E9%9B%86%E5%90%88/java/">java</a>
-  </span>
-
-    
-  <span class="article-tag">
-    <i class="icon icon-tags"></i>
-	<a class="article-tag-link-link" href="/tags/ArrayList/" rel="tag">ArrayList</a>
-  </span>
-
-
-    <span class="post-comment"><i class="icon icon-comment"></i> <a href="/2022/01/21/%E5%85%B3%E4%BA%8E%E9%9B%86%E5%90%88%E7%B1%BB%E4%B8%AD%E7%9A%84modCount/#comments" class="article-comment-link">评论</a></span>
-    
-  </p>
-</article>
-
+    <div class="share-component" data-sites="weibo,qq,wechat,facebook,twitter" data-mobile-sites="weibo,qq,qzone"></div>
     
   </div>
-
+  </div>
+</nav>
   
-    
-    <nav class="bar bar-footer clearfix" data-stick-bottom>
-        <div class="bar-inner">
-        <ul class="pager pull-left">
-            
-            <li class="prev disabled">
-                <a href="javascript:;">
-                    <i class="icon icon-angle-left"></i>
-                    上一页
-                </a>
-            </li>
-            
-            
-            <li class="next">
-                <a href="/page/2/">
-                    下一页
-                    <i class="icon icon-angle-right"></i>
-                </a>
-            </li>
-            
-        </ul>
-            <div class="total-article bar-right">Page 1 of 3</div>
+<!-- Modal -->
+<div class="modal modal-center modal-small modal-xs-full fade" id="donateModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content donate">
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      <div class="modal-body">
+        <div class="donate-box">
+          <div class="donate-head">
+            <p>感谢您的支持，我会继续努力的!</p>
+          </div>
+          <div class="tab-content">
+            <div role="tabpanel" class="tab-pane fade active in" id="alipay">
+              <div class="donate-payimg">
+                <img src="/images/donate/alipayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开支付宝扫一扫，即可进行扫码打赏哦</p>
+            </div>
+            <div role="tabpanel" class="tab-pane fade" id="wechatpay">
+              <div class="donate-payimg">
+                <img src="/images/donate/wechatpayimg.png" alt="扫码支持" title="扫一扫" />
+              </div>
+              <p class="text-muted mv">扫码打赏，你说多少就多少</p>
+              <p class="text-grey">打开微信扫一扫，即可进行扫码打赏哦</p>
+            </div>
+          </div>
+          <div class="donate-footer">
+            <ul class="nav nav-tabs nav-justified" role="tablist">
+              <li role="presentation" class="active">
+                <a href="#alipay" id="alipay-tab" role="tab" data-toggle="tab" aria-controls="alipay" aria-expanded="true"><i class="icon icon-alipay"></i> 支付宝</a>
+              </li>
+              <li role="presentation" class="">
+                <a href="#wechatpay" role="tab" id="wechatpay-tab" data-toggle="tab" aria-controls="wechatpay" aria-expanded="false"><i class="icon icon-wepay"></i> 微信支付</a>
+              </li>
+            </ul>
+          </div>
         </div>
-    </nav>
-    
- 
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 </main>
 
   <footer class="footer" itemscope itemtype="http://schema.org/WPFooter">
@@ -777,6 +728,33 @@ window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')
    
 
 
+
+
+   
+    
+  <script src="//cdn1.lncld.net/static/js/3.0.4/av-min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/valine"></script>
+  <script type="text/javascript">
+  var GUEST = ['nick', 'mail', 'link'];
+  var meta = 'nick,mail,link';
+  meta = meta.split(',').filter(function(item) {
+    return GUEST.indexOf(item) > -1;
+  });
+  new Valine({
+    el: '#vcomments',
+    verify: false,
+    notify: false,
+    appId: '',
+    appKey: '',
+    placeholder: 'Just go go',
+    avatar: 'mm',
+    meta: meta,
+    pageSize: '10' || 10,
+    visitor: false
+  });
+  </script>
+
+     
 
 
 
