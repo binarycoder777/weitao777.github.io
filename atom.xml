@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-01-26T13:00:45.447Z</updated>
+  <updated>2022-01-27T11:16:11.794Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,101 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>枚举单例模式如何防止反射和反序列化</title>
+    <link href="http://example.com/2022/01/27/%E6%9E%9A%E4%B8%BE%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
+    <id>http://example.com/2022/01/27/%E6%9E%9A%E4%B8%BE%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</id>
+    <published>2022-01-27T11:08:00.000Z</published>
+    <updated>2022-01-27T11:16:11.794Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、</p><p>2、枚举单例在创建时不存在并发问题：</p><pre><code>枚举类里的各个枚举项是是通过static代码块来定义和初始化的，它们会在类被加载时完成初始化，而java类的加载由JVM保证线程安全，所以，创建一个Enum类型的枚举是线程安全的</code></pre><p>2、反序列化：</p><pre><code>Java对枚举的序列化作了规定，在序列化时，仅将枚举对象的name属性输出到结果中，在反序列化时，就是通过java.lang.Enum的valueOf来根据名字查找对象，而不是新建一个新的对象。枚举在序列化和反序列化时，并不会调用构造方法，这就防止了反序列化导致的单例破坏的问题。</code></pre><p>3、反射：</p><pre><code>反射在通过newInstance创建对象时，会检查这个类是否是枚举类，如果是，会抛出异常java.lang.IllegalArgumentException: Cannot reflectively create enum objects，表示反射创建对象失败。</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、&lt;/p&gt;
+&lt;p&gt;2、枚举单例在创建时不存在并发问题：&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;枚举类里的各个枚举项是是通过static代码块来定义和初始化的，它们会在类被加载时完成初始化，而java类的加载由JVM保证线程安全，所以，创建一个Enum类型的枚举是线程安全的
+&lt;/c</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="单例模式" scheme="http://example.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>单利模式防止反射创建新的实例</title>
+    <link href="http://example.com/2022/01/27/%E5%8D%95%E5%88%A9%E6%A8%A1%E5%BC%8F%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E5%AE%9E%E4%BE%8B/"/>
+    <id>http://example.com/2022/01/27/%E5%8D%95%E5%88%A9%E6%A8%A1%E5%BC%8F%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E5%AE%9E%E4%BE%8B/</id>
+    <published>2022-01-27T09:47:00.000Z</published>
+    <updated>2022-01-27T09:49:12.324Z</updated>
+    
+    <content type="html"><![CDATA[<p>方法一（饿汉式）：在私有的构造器里面增加判断，如果不为空，抛出异常之类</p><p>方法二（懒汉式）：可以增加一个静态变量，然后在类初始化的时候将静态变量修改值，然后在构造器内判断静态变量的值来做相应的操作</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;方法一（饿汉式）：在私有的构造器里面增加判断，如果不为空，抛出异常之类&lt;/p&gt;
+&lt;p&gt;方法二（懒汉式）：可以增加一个静态变量，然后在类初始化的时候将静态变量修改值，然后在构造器内判断静态变量的值来做相应的操作&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="单例模式" scheme="http://example.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如果实现了序列化接口, 还要做什么来防止反序列化破坏单例</title>
+    <link href="http://example.com/2022/01/27/%EF%BC%9A%E5%A6%82%E6%9E%9C%E5%AE%9E%E7%8E%B0%E4%BA%86%E5%BA%8F%E5%88%97%E5%8C%96%E6%8E%A5%E5%8F%A3-%E8%BF%98%E8%A6%81%E5%81%9A%E4%BB%80%E4%B9%88%E6%9D%A5%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%A0%B4%E5%9D%8F%E5%8D%95%E4%BE%8B/"/>
+    <id>http://example.com/2022/01/27/%EF%BC%9A%E5%A6%82%E6%9E%9C%E5%AE%9E%E7%8E%B0%E4%BA%86%E5%BA%8F%E5%88%97%E5%8C%96%E6%8E%A5%E5%8F%A3-%E8%BF%98%E8%A6%81%E5%81%9A%E4%BB%80%E4%B9%88%E6%9D%A5%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E7%A0%B4%E5%9D%8F%E5%8D%95%E4%BE%8B/</id>
+    <published>2022-01-27T09:40:00.000Z</published>
+    <updated>2022-01-27T09:47:09.071Z</updated>
+    
+    <content type="html"><![CDATA[<p>在类中添加如下方法<br> <img src="/images/pasted-23.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在类中添加如下方法&lt;br&gt; &lt;img src=&quot;/images/pasted-23.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Redis开发运维实践指南笔记</title>
+    <link href="http://example.com/2022/01/26/Redis%E5%BC%80%E5%8F%91%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97%E7%AC%94%E8%AE%B0/"/>
+    <id>http://example.com/2022/01/26/Redis%E5%BC%80%E5%8F%91%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97%E7%AC%94%E8%AE%B0/</id>
+    <published>2022-01-26T14:10:01.000Z</published>
+    <updated>2022-01-26T14:25:32.547Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、Redis为一个运行在内存中的数据结构服务器（data structures server）。Redis使用的是单进程（除持久化时），所以在配置时，一个实例只会用到一个CPU。</p><p>2、<img src="/images/pasted-17.png" alt="upload successful"></p><p> 3、列出key：</p><p> <img src="/images/pasted-18.png" alt="upload successful"></p><p> 渐进的遍历整个数据库：keys命令会一次性遍历整个数据库获取与之匹配的键，当数据库包含得键值越来越多，这个命令会愈来愈慢，因此，可以用scan命令渐进的，分多次遍历整个数据库</p><p> <img src="/images/pasted-19.png" alt="upload successful"></p><p><img src="/images/pasted-20.png" alt="upload successful"></p><p>4、<br> <img src="/images/pasted-21.png" alt="upload successful"></p><p>5、</p><p> <img src="/images/pasted-22.png" alt="upload successful"> </p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、Redis为一个运行在内存中的数据结构服务器（data structures server）。Redis使用的是单进程（除持久化时），所以在配置时，一个实例只会用到一个CPU。&lt;/p&gt;
+&lt;p&gt;2、&lt;img src=&quot;/images/pasted-17.png&quot; alt=</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>交替打印输出</title>
@@ -415,115 +510,6 @@
     <category term="重写" scheme="http://example.com/tags/%E9%87%8D%E5%86%99/"/>
     
     <category term="重载" scheme="http://example.com/tags/%E9%87%8D%E8%BD%BD/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java中的基本数据类型</title>
-    <link href="http://example.com/2022/01/15/Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"/>
-    <id>http://example.com/2022/01/15/Java%E4%B8%AD%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/</id>
-    <published>2022-01-15T10:31:00.000Z</published>
-    <updated>2022-01-15T10:35:39.104Z</updated>
-    
-    <content type="html"><![CDATA[<p>java中的基本数据类型有byte（1字节）、short（2字节）、int（四字节）、long（8字节）、float（4字节）、double（8字节）、boolean（1位）、char（2字节）</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;java中的基本数据类型有byte（1字节）、short（2字节）、int（四字节）、long（8字节）、float（4字节）、double（8字节）、boolean（1位）、char（2字节）&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>final、finalize()、finally</title>
-    <link href="http://example.com/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/"/>
-    <id>http://example.com/2022/01/11/final%E3%80%81finalize-%E3%80%81finally/</id>
-    <published>2022-01-11T01:48:00.000Z</published>
-    <updated>2022-01-11T02:27:34.968Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、final：在java中，final主要用于修饰类、方法和变量。</p><p>1.1 修饰类：用final修饰类时，表明这个类不能被其他类所继承。</p><pre><code>注意：当用final对类进行修饰的时候，类中所有成员方法默认是final方法。</code></pre><p>1.2 修饰方法：用fianl修饰方法时，表明这个方法不能被其子类重写。</p><p>1.3 修饰变量：用final修饰变量的话表明这个变量是一个常量，只能被赋值一次，赋值后其值不能够修改。</p><pre><code>   当final修饰一个基本数据类型时，表示该基本数据类型的值一旦在初始化后便不能发生变化（）；如果final修饰一个引用类型时，则在对其初始化之后便不能再让其指向其他对象了，但该引用所指向的对象的内容是可以发生变化的。本质上是一回事，因为引用的值是一个地址，final要求值，即地址的值不发生变化。　　　final修饰一个成员变量（属性），必须要显示初始化。这里有两种初始化方式，一种是在变量声明的时候初始化；第二种方法是在声明变量的时候不赋初值，但是要在这个变量所在的类的所有的构造函数中对这个变量赋初值。</code></pre><p>扩展：在java中，String被设计成final类，那为什么平时使用时，String的值可以被改变呢？</p><pre><code>字符串常量池是java堆内存中一个特殊的存储区域，当我们建立一个String对象时，假设常量池不存在该字符串，则创建一个，若存在则直接引用已经存在的字符串。当我们对String对象值改变的时候，例如 String a=&quot;A&quot;; a=&quot;B&quot; 。a是String对象的一个引用（我们这里所说的String对象其实是指字符串常量），当a=“B”执行时，并不是原本String对象(&quot;A&quot;)发生改变，而是创建一个新的对象(&quot;B&quot;)，令a引用它。</code></pre><p>2、finally：finally作为异常处理的一部分，它用在try/catch语句中，经常被用在需要释放资源的情况下。</p><pre><code>注意：1、只有与finally对应的try语句块得到执行的情况下，finally语句块才会执行。2、在 try 语句块中执行了 System.exit (0) 语句，终止了 Java 虚拟机的运行或者在执行 try 语句块或者 catch 语句块时被打断（interrupted）或者被终止（killed）等情况finally也可能不会执行。易错点：</code></pre><p><img src="/images/pasted-3.png" alt="upload successful"></p><pre><code>答案：4 4 4原因：finally语句在return之前执行。 </code></pre><p>3、finalize：finalize()是在java.lang.Object里定义的，每一个对象都有这么个方法。这个方法在gc启动，该对象被回收的时候被调用。</p><pre><code>注意：一个对象的finalize()方法只会被调用一次，而且finalize()被调用不意味着gc会立即回收该对象，所以有可能调用finalize()后，该对象又不需要被回收了，然后到了真正要被回收的时候，因为前面调用过一次，所以不会调用finalize()，产生问题。 所以，推荐不要使用finalize()方法，它跟析构函数不一样。</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、final：在java中，final主要用于修饰类、方法和变量。&lt;/p&gt;
-&lt;p&gt;1.1 修饰类：用final修饰类时，表明这个类不能被其他类所继承。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;注意：当用final对类进行修饰的时候，类中所有成员方法默认是final方法。
-&lt;/cod</summary>
-      
-    
-    
-    
-    <category term="java" scheme="http://example.com/categories/java/"/>
-    
-    
-    <category term="java" scheme="http://example.com/tags/java/"/>
-    
-    <category term="final、finally、fi&#39;nalize" scheme="http://example.com/tags/final%E3%80%81finally%E3%80%81fi-nalize/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为什么Integer 100==100 为true，而Integer 1000==1000为false？</title>
-    <link href="http://example.com/2022/01/08/%E4%B8%BA%E4%BB%80%E4%B9%88Integer-100-100-%E4%B8%BAtrue%EF%BC%8C%E8%80%8CInteger-1000-1000%E4%B8%BAfalse%EF%BC%9F/"/>
-    <id>http://example.com/2022/01/08/%E4%B8%BA%E4%BB%80%E4%B9%88Integer-100-100-%E4%B8%BAtrue%EF%BC%8C%E8%80%8CInteger-1000-1000%E4%B8%BAfalse%EF%BC%9F/</id>
-    <published>2022-01-08T13:39:00.000Z</published>
-    <updated>2022-01-08T14:19:54.922Z</updated>
-    
-    <content type="html"><![CDATA[<pre><code>在java的Integer包装类中为什么Integer a = 100, b = 100,c = 1000,d =1000，令a==b为true，而c==d为false呢？</code></pre><p><img src="/images/pasted-0.png" alt="upload successful"></p><pre><code>首先在上面的代码中，Integer a = 100会调用Integer的Integer.valueOf(int i)这个方法，而这个方法的源代码如下：</code></pre><p><img src="/images/pasted-1.png" alt="upload successful"></p><pre><code>    我们会发现在将int类型装箱时做了一个判断语句    if (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)    这句话是什么意思呢？通过注释可以知道，在将一个int类型装箱为Integer类型时，总会优先调用此方法。其存在一个-128到127范围的缓存，如果int类型时该范围内，则直接返回缓存中的值，不需要额外创建Integer类型，这样可以产生显著更好的空间和时间性能。而且其范围也是可以设置。    所有我们可以知道，在执行Integer a = 100，b = 100时，走了缓存，因此b的地址同a应该一样，而c = 1000, d = 1000并为走缓存，而是走的new Interger(i)，因此创建了两个对象。    而我们知道，==比较走的是比较对象的地址。因此才会有为什么Integer 100==100 为true，而Integer 1000==1000为false。    debug如下：       </code></pre><p><img src="/images/pasted-2.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;pre&gt;&lt;code&gt;在java的Integer包装类中为什么Integer a = 100, b = 100,c = 1000,d =1000，令a==b为true，而c==d为false呢？
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&quot;/images/pasted-</summary>
-      
-    
-    
-    
-    <category term="java基础" scheme="http://example.com/categories/java%E5%9F%BA%E7%A1%80/"/>
-    
-    
-    <category term="Integer" scheme="http://example.com/tags/Integer/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>快速选择</title>
-    <link href="http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/"/>
-    <id>http://example.com/2022/01/08/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/</id>
-    <published>2022-01-08T06:04:00.000Z</published>
-    <updated>2022-01-08T06:08:50.171Z</updated>
-    
-    <content type="html"><![CDATA[<p>快速选择，适用于寻找无序数组中第k大（小）或者前k大（小）这种情况，即TopK问题，是快速排序的一种变化。</p><pre><code>class Solution &#123;  public static int[] getLeastNumbers(int[] arr, int k) &#123;      return quickSelect(arr,k,0,arr.length-1);  &#125;  private static int[] quickSelect(int[] arr,int k,int l, int r)&#123;      if (arr.length &lt;= k)&#123;          return arr;      &#125;      int index = quickSort(arr,l,r);      if (index == k)&#123;          return Arrays.copyOf(arr,index);      &#125;else if (index &lt; k)&#123;          return quickSelect(arr,k,index+1,r);      &#125;else &#123;          return quickSelect(arr,k,l,index-1);      &#125;  &#125;  private static int quickSort(int[] arr, int l, int r) &#123;      int mid = l ,i = l, j = r;      while (i &lt; j)&#123;          while (i&lt;j &amp;&amp; arr[j] &gt;= arr[mid])&#123;              --j;          &#125;          if(i&lt;j &amp;&amp; arr[j] &lt; arr[mid])&#123;              swap(arr,j,mid);              mid = j;          &#125;        //  p(arr);          while (i&lt;j &amp;&amp; arr[i] &lt;= arr[mid])&#123;              ++i;          &#125;          if(i&lt;j &amp;&amp; arr[i] &gt; arr[mid])&#123;              swap(arr,i,mid);              mid = i;          &#125;        //  p(arr);      &#125;      swap(arr,i,mid);      return mid;  &#125;  private static void swap(int[] arr, int i, int j) &#123;      int tmp = arr[i];      arr[i] = arr[j];      arr[j] = tmp;  &#125;  public static void p(int[] arr)&#123;      for (int n:arr)&#123;          System.out.print(n+&quot; &quot;);      &#125;      System.out.println();  &#125;&#125;</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;快速选择，适用于寻找无序数组中第k大（小）或者前k大（小）这种情况，即TopK问题，是快速排序的一种变化。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;class Solution &amp;#123;
-
-  public static int[] getLeastNumbers(int[] a</summary>
-      
-    
-    
-    
-    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    
-    <category term="快速选择" scheme="http://example.com/tags/%E5%BF%AB%E9%80%9F%E9%80%89%E6%8B%A9/"/>
-    
-    <category term="Top" scheme="http://example.com/tags/Top/"/>
     
   </entry>
   
