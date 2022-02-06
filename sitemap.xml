@@ -455,14 +455,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/ArrayList/</loc>
+    <loc>http://example.com/tags/Integer/</loc>
     <lastmod>2022-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/tags/Integer/</loc>
+    <loc>http://example.com/tags/ArrayList/</loc>
     <lastmod>2022-02-06</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
