@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-02-07T01:55:23.165Z</updated>
+  <updated>2022-02-08T12:46:11.557Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,233 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>jedis和redission</title>
+    <link href="http://example.com/2022/02/08/jedis%E5%92%8Credission/"/>
+    <id>http://example.com/2022/02/08/jedis%E5%92%8Credission/</id>
+    <published>2022-02-08T12:45:00.000Z</published>
+    <updated>2022-02-08T12:46:11.557Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-57.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-57.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="框架实现" scheme="http://example.com/tags/%E6%A1%86%E6%9E%B6%E5%AE%9E%E7%8E%B0/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一致性hash算法</title>
+    <link href="http://example.com/2022/02/08/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95/"/>
+    <id>http://example.com/2022/02/08/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95/</id>
+    <published>2022-02-08T12:33:00.000Z</published>
+    <updated>2022-02-08T12:34:21.071Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-55.png" alt="upload successful"></p><p> <img src="/images/pasted-56.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-55.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-56.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
+    
+    <category term="Redis" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/Redis/"/>
+    
+    
+    <category term="一致性哈希算法" scheme="http://example.com/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis集群的主从复制模型</title>
+    <link href="http://example.com/2022/02/08/Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/"/>
+    <id>http://example.com/2022/02/08/Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/</id>
+    <published>2022-02-08T12:27:00.000Z</published>
+    <updated>2022-02-08T12:27:38.911Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-54.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-54.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="主从复制模型" scheme="http://example.com/tags/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis内存优化</title>
+    <link href="http://example.com/2022/02/08/Redis%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/"/>
+    <id>http://example.com/2022/02/08/Redis%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/</id>
+    <published>2022-02-08T12:09:00.000Z</published>
+    <updated>2022-02-08T12:10:03.147Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-52.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-52.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="内存优化" scheme="http://example.com/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis的回收进程如何工作</title>
+    <link href="http://example.com/2022/02/08/Redis%E7%9A%84%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C/"/>
+    <id>http://example.com/2022/02/08/Redis%E7%9A%84%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C/</id>
+    <published>2022-02-08T09:37:00.000Z</published>
+    <updated>2022-02-08T11:59:38.055Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-51.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-51.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="回收进程" scheme="http://example.com/tags/%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一个Redis实例能存放多少key？</title>
+    <link href="http://example.com/2022/02/08/%E4%B8%80%E4%B8%AARedis%E5%AE%9E%E4%BE%8B%E8%83%BD%E5%AD%98%E6%94%BE%E5%A4%9A%E5%B0%91key%EF%BC%9F/"/>
+    <id>http://example.com/2022/02/08/%E4%B8%80%E4%B8%AARedis%E5%AE%9E%E4%BE%8B%E8%83%BD%E5%AD%98%E6%94%BE%E5%A4%9A%E5%B0%91key%EF%BC%9F/</id>
+    <published>2022-02-08T09:27:00.000Z</published>
+    <updated>2022-02-08T09:28:21.147Z</updated>
+    
+    <content type="html"><![CDATA[<p>理论上 Redis 可以处理多达 2^32 的 keys，并且在实际中进行了测试，每个实例至少存放了 2 亿 5 千万的 keys。我们正在测试一些较大的<br>值。任何 list、set、和 sorted set 都可以放 2^32 个元素。换句话说，Redis 的存储极限是系统中的可用内存值。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;理论上 Redis 可以处理多达 2^32 的 keys，并且在实际中进行了测试，每个实例至少存放了 2 亿 5 千万的 keys。我们正在测试一些较大的&lt;br&gt;值。任何 list、set、和 sorted set 都可以放 2^32 个元素。换句话说，Redis 的存储极</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Redis异步队列</title>
+    <link href="http://example.com/2022/02/08/Redis%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/"/>
+    <id>http://example.com/2022/02/08/Redis%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/</id>
+    <published>2022-02-08T08:50:00.000Z</published>
+    <updated>2022-02-08T09:02:41.782Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-49.png" alt="upload successful"></p><p> <img src="/images/pasted-50.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-49.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-50.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="异步队列" scheme="http://example.com/tags/%E5%BC%82%E6%AD%A5%E9%98%9F%E5%88%97/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Redis分布式锁</title>
+    <link href="http://example.com/2022/02/08/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
+    <id>http://example.com/2022/02/08/Redis%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/</id>
+    <published>2022-02-08T08:29:00.000Z</published>
+    <updated>2022-02-08T08:30:14.720Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-48.png" alt="upload successful"></p><p> 转载自：<a href="https://www.cnblogs.com/wangyingshuo/p/14510524.html">https://www.cnblogs.com/wangyingshuo/p/14510524.html</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-48.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 转载自：&lt;a href=&quot;https://www.cnblogs.com/wangyingshuo/p/14510524.html&quot;&gt;htt</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="分布式锁" scheme="http://example.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何保证Redis数据都是热点数据？</title>
+    <link href="http://example.com/2022/02/07/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81Redis%E6%95%B0%E6%8D%AE%E9%83%BD%E6%98%AF%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%EF%BC%9F/"/>
+    <id>http://example.com/2022/02/07/%E5%A6%82%E4%BD%95%E4%BF%9D%E8%AF%81Redis%E6%95%B0%E6%8D%AE%E9%83%BD%E6%98%AF%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE%EF%BC%9F/</id>
+    <published>2022-02-07T10:06:00.000Z</published>
+    <updated>2022-02-07T10:11:22.310Z</updated>
+    
+    <content type="html"><![CDATA[<p>1.限定 Redis 占用的内存，Redis 会根据自身数据淘汰策略，加载热数据到内存。<br>所以，计算一下 20W 数据大约占用的内存，然后设置一下 Redis 内存限制即可。</p><p>2.问题是什么数据？</p><p>比如用户数据。数据库有2000w条。<br>活跃用户：<br>redis sortSet里 放两天内(为方便取一天内活跃用户)登录过的用户，登录一次ZADD一次，如set已存在则覆盖其分数（登录时间）。键：login:users，值：分数 时间戳、value userid。设置一个周期任务，比如每天03:00:00点删除sort set中前一天3点前的数据（保证set不无序增长、留近一天内活跃用户）。</p><p>取时，拿到当前时间戳（int 10位），再减1天就可按分数范围取过去24h活跃用户。</p><p>3.看你的提问,应该只是把Redis当缓存来用.<br>提供一种简单实现缓存失效的思路: LRU(最近少用的淘汰)<br>即redis的缓存每命中一次,就给命中的缓存增加一定ttl(过期时间)(根据具体情况来设定, 比如10分钟).<br>一段时间后, 热数据的ttl都会较大, 不会自动失效, 而冷数据基本上过了设定的ttl就马上失效了.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1.限定 Redis 占用的内存，Redis 会根据自身数据淘汰策略，加载热数据到内存。&lt;br&gt;所以，计算一下 20W 数据大约占用的内存，然后设置一下 Redis 内存限制即可。&lt;/p&gt;
+&lt;p&gt;2.问题是什么数据？&lt;/p&gt;
+&lt;p&gt;比如用户数据。数据库有2000w条。&lt;br</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="热点数据" scheme="http://example.com/tags/%E7%83%AD%E7%82%B9%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis共享整数字符串</title>
@@ -286,224 +513,6 @@
     
     <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
     
-    
-  </entry>
-  
-  <entry>
-    <title>Redis开发运维实践指南笔记</title>
-    <link href="http://example.com/2022/01/26/Redis%E5%BC%80%E5%8F%91%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97%E7%AC%94%E8%AE%B0/"/>
-    <id>http://example.com/2022/01/26/Redis%E5%BC%80%E5%8F%91%E8%BF%90%E7%BB%B4%E5%AE%9E%E8%B7%B5%E6%8C%87%E5%8D%97%E7%AC%94%E8%AE%B0/</id>
-    <published>2022-01-26T14:10:01.000Z</published>
-    <updated>2022-01-26T14:25:32.547Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、Redis为一个运行在内存中的数据结构服务器（data structures server）。Redis使用的是单进程（除持久化时），所以在配置时，一个实例只会用到一个CPU。</p><p>2、<img src="/images/pasted-17.png" alt="upload successful"></p><p> 3、列出key：</p><p> <img src="/images/pasted-18.png" alt="upload successful"></p><p> 渐进的遍历整个数据库：keys命令会一次性遍历整个数据库获取与之匹配的键，当数据库包含得键值越来越多，这个命令会愈来愈慢，因此，可以用scan命令渐进的，分多次遍历整个数据库</p><p> <img src="/images/pasted-19.png" alt="upload successful"></p><p><img src="/images/pasted-20.png" alt="upload successful"></p><p>4、<br> <img src="/images/pasted-21.png" alt="upload successful"></p><p>5、</p><p> <img src="/images/pasted-22.png" alt="upload successful"> </p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、Redis为一个运行在内存中的数据结构服务器（data structures server）。Redis使用的是单进程（除持久化时），所以在配置时，一个实例只会用到一个CPU。&lt;/p&gt;
-&lt;p&gt;2、&lt;img src=&quot;/images/pasted-17.png&quot; alt=</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>交替打印输出</title>
-    <link href="http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/"/>
-    <id>http://example.com/2022/01/26/%E4%BA%A4%E6%9B%BF%E6%89%93%E5%8D%B0%E8%BE%93%E5%87%BA/</id>
-    <published>2022-01-26T12:59:00.000Z</published>
-    <updated>2022-01-26T13:00:45.447Z</updated>
-    
-    <content type="html"><![CDATA[<p> 三个线程交替打印输出</p><pre><code>public class AlternateOutput &#123;    public static void main(String[] args) &#123;//        Test1 test1 = new Test1();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(1);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(2);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        new Thread(()-&gt;&#123;//            try &#123;//                test1.print(3);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;).start();//        Test2 test2 = new Test2();//        Thread t1 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;a&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        Thread t2 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;b&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        Thread t3 = new Thread(()-&gt;&#123;//            try &#123;//                test2.print(&quot;c&quot;);//            &#125; catch (InterruptedException e) &#123;//                e.printStackTrace();//            &#125;//        &#125;);//        test2.setThreads(t1,t2,t3);//        test2.start();        Test3 test3 = new Test3();        Condition condition1 = test3.newCondition();        Condition condition2 = test3.newCondition();        Condition condition3 = test3.newCondition();        new Thread(()-&gt;&#123;            test3.print(&quot;a&quot;,condition1,condition2);        &#125;).start();        new Thread(()-&gt;&#123;            test3.print(&quot;b&quot;,condition2,condition3);        &#125;).start();        new Thread(()-&gt;&#123;            test3.print(&quot;c&quot;,condition3,condition1);        &#125;).start();        test3.start(condition1);    &#125;&#125;class Test1&#123;    private Integer flag = 1;    private Integer num = 10;    public void print(int curFlag) throws InterruptedException &#123;        for (int i=0; i&lt;num; ++i)&#123;            synchronized (this)&#123;                while (this.flag != curFlag)&#123;                    this.wait();                &#125;                System.out.println(curFlag);                this.flag = curFlag % 3 + 1;                this.notifyAll();            &#125;        &#125;    &#125;&#125;class Test2&#123;    private Thread[] threads;    private Integer num = 10;    public Test2(Thread... threads) &#123;        this.threads = threads;    &#125;    public void setThreads(Thread... threads) &#123;        this.threads = threads;    &#125;    public void print(String s) throws InterruptedException &#123;       for (int i=0;i&lt;num;++i)&#123;           LockSupport.park();           System.out.println(s);           LockSupport.unpark(getNextThread());       &#125;    &#125;    public Thread getNextThread()&#123;        int size = threads.length;        Thread cur = Thread.currentThread();        for (int i=0;i&lt;size;++i)&#123;            if (cur == threads[i])&#123;                return threads[(i + 1) % size];            &#125;        &#125;        return null;    &#125;    public void start() &#123;        for (Thread thread: threads)&#123;            thread.start();        &#125;        LockSupport.unpark(threads[0]);    &#125;&#125;class Test3 extends ReentrantLock&#123;    private int num = 10;    public void start(Condition condition)&#123;        this.lock();        try &#123;            condition.signal();        &#125;finally &#123;            this.unlock();        &#125;    &#125;    public void print(String s, Condition cur,Condition next)&#123;        for (int i=0;i&lt;num;++i)&#123;            this.lock();            try&#123;                cur.await();                System.out.println(s);                next.signal();            &#125; catch (InterruptedException e) &#123;                e.printStackTrace();            &#125; finally &#123;                this.unlock();            &#125;        &#125;    &#125;&#125;</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; 三个线程交替打印输出&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;public class AlternateOutput &amp;#123;
-
-    public static void main(String[] args) &amp;#123;
-//        Test1 test1 =</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>synchronized锁静态变量Integer</title>
-    <link href="http://example.com/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/"/>
-    <id>http://example.com/2022/01/25/synchronized%E9%94%81%E9%9D%99%E6%80%81%E5%8F%98%E9%87%8FInteger/</id>
-    <published>2022-01-25T02:18:00.000Z</published>
-    <updated>2022-01-25T02:22:28.673Z</updated>
-    
-    <content type="html"><![CDATA[<p>当我尝试用synchronized去锁一个Integer的静态变量时，在多线程下发生了线程不安全问题，原因是synchronized锁住的Integer静态变量在不断发生变化，即i++会不断创建新的Integer，然后致使多线程下锁的不是一个对象，锁无效（以下代码在-128~127之间是有效的，因为存在Integer缓存问题）。</p><pre><code>public class Main &#123;    private static Integer i = 0;    public static void main(String[] args) throws InterruptedException &#123;        List&lt;Thread&gt; list = new ArrayList&lt;&gt;();        for (int j = 0; j &lt; 2; j++) &#123;            Thread thread = new Thread(() -&gt; &#123;                for (int k = 0; k &lt; 127; k++) &#123;                    synchronized (i) &#123;                        i++;                    &#125;                &#125;            &#125;, &quot;&quot; + j);            list.add(thread);        &#125;        list.stream().forEach(t -&gt; t.start());        list.stream().forEach(t -&gt; &#123;            try &#123;                t.join();            &#125; catch (InterruptedException e) &#123;                e.printStackTrace();            &#125;        &#125;);        System.out.println(i);    &#125;&#125;</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;当我尝试用synchronized去锁一个Integer的静态变量时，在多线程下发生了线程不安全问题，原因是synchronized锁住的Integer静态变量在不断发生变化，即i++会不断创建新的Integer，然后致使多线程下锁的不是一个对象，锁无效（以下代码在-128</summary>
-      
-    
-    
-    
-    <category term="juc" scheme="http://example.com/categories/juc/"/>
-    
-    
-    <category term="synchronized" scheme="http://example.com/tags/synchronized/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>终止模式之两阶段终止模式（Interrupt）</title>
-    <link href="http://example.com/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://example.com/2022/01/24/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F%E4%B9%8B%E4%B8%A4%E9%98%B6%E6%AE%B5%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/</id>
-    <published>2022-01-24T11:10:00.000Z</published>
-    <updated>2022-01-24T11:20:45.418Z</updated>
-    
-    <content type="html"><![CDATA[<p>Thread类中的stop（）方法可以用于终止一个线程，但这个方法要求立即终止，被终止的线程没有机会料理后事。因此，这里采用终止模式中的两阶段终止模式来优雅的结束一个线程，给被终止的线程一个料理后事的机会。<br>（如果被打断线程正在 sleep，wait，join 会导致被打断的线程抛InterruptedException，并清除 打断标记如果打断的正在运行的线程，则会设置打断标记 ；park的线程被打断，也会设置 打断标记）</p><p> <img src="/images/pasted-16.png" alt="upload successful"></p><pre><code> public class TPTInterrupt &#123;public static void main(String[] args) throws InterruptedException &#123;    TPTInterrupt tptInterrupt = new TPTInterrupt();    tptInterrupt.start();    Thread.sleep(2000);    tptInterrupt.stop();&#125;private Thread thread;public void start()&#123;    thread = new Thread(()-&gt;&#123;        while (true)&#123;            Thread thread = Thread.currentThread();            if (thread.isInterrupted())&#123;                System.out.println(&quot;料理后事...&quot;);                break;            &#125;            try &#123;                Thread.sleep(1000);                System.out.println(&quot;运行中...&quot;);            &#125; catch (InterruptedException e) &#123;                // 标记打断                e.printStackTrace();                thread.interrupt();            &#125;        &#125;    &#125;);    thread.start();&#125;public void stop()&#123;    thread.interrupt();&#125;&#125;</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Thread类中的stop（）方法可以用于终止一个线程，但这个方法要求立即终止，被终止的线程没有机会料理后事。因此，这里采用终止模式中的两阶段终止模式来优雅的结束一个线程，给被终止的线程一个料理后事的机会。&lt;br&gt;（如果被打断线程正在 sleep，wait，join 会导致</summary>
-      
-    
-    
-    
-    <category term="juc" scheme="http://example.com/categories/juc/"/>
-    
-    <category term="设计模式" scheme="http://example.com/categories/juc/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-    <category term="终止模式" scheme="http://example.com/tags/%E7%BB%88%E6%AD%A2%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>创建线程的方式</title>
-    <link href="http://example.com/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/"/>
-    <id>http://example.com/2022/01/24/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B%E7%9A%84%E6%96%B9%E5%BC%8F/</id>
-    <published>2022-01-24T11:02:00.000Z</published>
-    <updated>2022-01-24T11:06:46.136Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、创建Thread对象</p><p> <img src="/images/pasted-13.png" alt="upload successful"></p><p> 2、使用Runnable配合Thread使用</p><p> <img src="/images/pasted-14.png" alt="upload successful"></p><p> 3、FutureTask配合Callable和Thread使用</p><p> <img src="/images/pasted-15.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、创建Thread对象&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-13.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 2、使用Runnable配合Thread使用&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/p</summary>
-      
-    
-    
-    
-    
-    <category term="创建线程" scheme="http://example.com/tags/%E5%88%9B%E5%BB%BA%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为什么要自定义类型加载器？</title>
-    <link href="http://example.com/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/"/>
-    <id>http://example.com/2022/01/23/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E5%8A%A0%E8%BD%BD%E5%99%A8%EF%BC%9F/</id>
-    <published>2022-01-23T11:19:00.000Z</published>
-    <updated>2022-01-23T11:20:52.309Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、隔离加载类：在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。比如：阿里内某容器框架通过自定义类加载器确保应用中依赖的 jar 包不会影响到中间件运行时使用的 jar 包。再比如：Tomcat 这类 Web 应用服务器，内部自定义了好几种类加载器，用于隔离同一个 Web 应用服务器上的不同应用程序。(类的仲裁 –&gt; 类冲突)</p><p>2、修改类加载的方式：类的加载模型并非强制，除 Bootstrap 外，其他的加载并非一定要引入，或者根据实际情况在某个时间点按需进行动态加载</p><p>3、扩展加载源：比如从数据库、网络、甚至是电视机机顶盒进行加载</p><p>4、防止源码泄露：Java 代码容易被编译和篡改，可以进行编译加密。那么类加载也需要自定义，还原加密的字节码</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、隔离加载类：在某些框架内进行中间件与应用的模块隔离，把类加载到不同的环境。比如：阿里内某容器框架通过自定义类加载器确保应用中依赖的 jar 包不会影响到中间件运行时使用的 jar 包。再比如：Tomcat 这类 Web 应用服务器，内部自定义了好几种类加载器，用于隔离同</summary>
-      
-    
-    
-    
-    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>沙箱安全机制</title>
-    <link href="http://example.com/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/"/>
-    <id>http://example.com/2022/01/23/%E6%B2%99%E7%AE%B1%E5%AE%89%E5%85%A8%E6%9C%BA%E5%88%B6/</id>
-    <published>2022-01-23T11:16:00.000Z</published>
-    <updated>2022-01-23T11:19:08.964Z</updated>
-    
-    <content type="html"><![CDATA[<p>沙箱安全机制就是将java代码限定在jvm特定的运行范围，并且严格限制代码对本地资源的访问，本地系统造成破坏。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;沙箱安全机制就是将java代码限定在jvm特定的运行范围，并且严格限制代码对本地资源的访问，本地系统造成破坏。&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>判定一个类型是否属于&quot;不再被使用的类&quot;的条件</title>
-    <link href="http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/"/>
-    <id>http://example.com/2022/01/23/%E5%88%A4%E5%AE%9A%E4%B8%80%E4%B8%AA%E7%B1%BB%E5%9E%8B%E6%98%AF%E5%90%A6%E5%B1%9E%E4%BA%8E-%E4%B8%8D%E5%86%8D%E8%A2%AB%E4%BD%BF%E7%94%A8%E7%9A%84%E7%B1%BB-%E7%9A%84%E6%9D%A1%E4%BB%B6/</id>
-    <published>2022-01-23T09:49:00.000Z</published>
-    <updated>2022-01-23T09:50:58.551Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象</p><p>2、加载该类的类加载器被回收</p><p>3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、该类所有的实例都被回收，即java堆中不存在该类的实例或其子类实例对象&lt;/p&gt;
-&lt;p&gt;2、加载该类的类加载器被回收&lt;/p&gt;
-&lt;p&gt;3、该类对应的java.lang.Class 对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
-    
-    <category term="jvm" scheme="http://example.com/categories/jv-m/jvm/"/>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>类的初始化情况：主动使用vs被动使用</title>
-    <link href="http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/"/>
-    <id>http://example.com/2022/01/23/%E7%B1%BB%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E6%83%85%E5%86%B5%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8vs%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/</id>
-    <published>2022-01-23T09:31:00.000Z</published>
-    <updated>2022-01-23T09:43:56.451Z</updated>
-    
-    <content type="html"><![CDATA[<p>主动使用：类只有在首次主动使用时才会被加载，而在首次使用被加载时，必须进行初始化。</p><p>以下使用被认为是主动使用：<br>1、当创建一个类的实例时，比如使用 new 关键字，或者通过反射、克隆、反序列化</p><p>2、当调用类的静态方法时，即当使用了字节码 invokestatic 指令</p><p>3、当使用类、接口的静态字段时(final 修饰特殊考虑)，比如，使用 getstatic 或者 putsttic 指令。(对应访问变量、赋值变量操作)</p><p>4、当使用 java.lang.reflect 包中的方法反射类的方法时。比如：Class.forname(“com.atguigu.java.Test”)</p><p>5、当初始化子类时，如果发现其父类还没有进行过初始化，则需要先触发其父类的初始化</p><p>6、如果一个接口定义了 default 方法，那么直接实现或者间接实现该接口的类的初始化，该接口要在其之前被初始化</p><p>7、当虚拟机启动时，用户需要指定一个要执行的主类(包含 main() 方法的那个类)，虚拟机会先初始化这个主类</p><p>8、当初次调用 MethodHandle 实例时，初始化该 MethodHandle 指向的方法所在的类。(涉及解析 REF_getStatic、REF_putStatic、REF_invokeStatic 方法句柄对应的类)</p><p>注意：<br>1、当Java 虚拟机初始化一个类时，要求它的所有父类都已经被初始化，但是这条规则并不适用于接口在初始化一个类时，并不会先初始化它所实现的接口<br>在初始化一个接口时，并不会先初始化它的父接口。因此，一个父接口并不会因为它的子接口或者实现类的初始化而初始化，只有当程序首次使用特定接口的静态字段时，才会导致该接口的初始化<br>2、JVM 启动的时候通过引导类加载器加载一个初始类。这个类在调用 public static void main(String[]) 方法之前被链接和初始化。这个方法的执行将依次导致所需的类的加载、链接和初始化</p><p>被动使用：除了以上的情况属于主动使用，其他的情况均属于被动使用。被动使用不会引起类的初始化。也就是说：并不是在代码中出现的类，就一定会被加载或者初始化。如果不符合主动使用的条件，类就不会初始化。</p><p>1、当访问一个静态字段时，只有真正声明这个字段的类才会被初始化</p><p>2、当通过子类引用父类的静态变量，不会导致子类初始化</p><p>3、通过数组定义类引用，不会触发此类的初始化</p><p>4、引用变量不会触发此类或接口的初始化。因为常量在链接阶段就已经被显式赋值了</p><p>5、调用 ClassLoader 类的 loadClass() 方法加载一个类，并不是对类的主动使用，不会导致类的初始化</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;主动使用：类只有在首次主动使用时才会被加载，而在首次使用被加载时，必须进行初始化。&lt;/p&gt;
-&lt;p&gt;以下使用被认为是主动使用：&lt;br&gt;1、当创建一个类的实例时，比如使用 new 关键字，或者通过反射、克隆、反序列化&lt;/p&gt;
-&lt;p&gt;2、当调用类的静态方法时，即当使用了字节码 i</summary>
-      
-    
-    
-    
-    <category term="jv&#39;m" scheme="http://example.com/categories/jv-m/"/>
-    
-    
-    <category term="类初始化：主动使用与被动使用" scheme="http://example.com/tags/%E7%B1%BB%E5%88%9D%E5%A7%8B%E5%8C%96%EF%BC%9A%E4%B8%BB%E5%8A%A8%E4%BD%BF%E7%94%A8%E4%B8%8E%E8%A2%AB%E5%8A%A8%E4%BD%BF%E7%94%A8/"/>
     
   </entry>
   
