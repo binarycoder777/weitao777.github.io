@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-02-09T08:39:14.232Z</updated>
+  <updated>2022-02-11T13:38:00.109Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,121 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>代理模式</title>
+    <link href="http://example.com/2022/02/11/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://example.com/2022/02/11/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</id>
+    <published>2022-02-11T13:22:00.000Z</published>
+    <updated>2022-02-11T13:38:00.109Z</updated>
+    
+    <content type="html"><![CDATA[<p>代理模式是指，为其他对象提供一种代理以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户类和目标对象之间起到中介的作用。说直白一点就是在不修改目标对象的基础上，使用代理对象来增强目标对象的业务逻辑方法。</p><p>代理模式分为：静态代理和动态代理（jdk动态代理和cglib动态代理）</p><p>静态代理就是：代理类在程序运行前就确定好了和目标类的关系，在编译期就实现了。其中静态代理的缺点在于：</p><p>1、代码复杂，不便于管理：试想对于代理类，需要和目标类实现相同接口即每个代理类都要实现目标类的的方法，会出现代码重复，且考虑到如果接口增加一个方法，其所有实现类都要重写，维护也麻烦。</p><p>2、代理类依赖于目标类：当代理类考虑代理多个服务的时候，不便于实现</p><p>动态代理是在程序运行期间根据jvm反射机制动态生成的。</p><p>jdk动态代理：基于java反射机制实现的。具体通过使用java.lang.reflect 包提供三个类支持代理模式 Proxy, Method和 InovcationHandler。（要求：求目标对象必须实现接口）</p><pre><code>public interface UsbSell &#123;    Object sell(float amount);&#125;public class UsbFactory implements UsbSell &#123;public Object sell(float amount) &#123;    float price = 0;    if (amount &gt; 100)&#123;        price = (float) (amount * (1 + 0.2));    &#125;else &#123;        price = (float) (amount * (1 + 0.5));    &#125;    return price;    &#125;&#125;public class ProxySeller &#123;private Object target;public ProxySeller() &#123;&#125;public ProxySeller(Object target) &#123;    this.target = target;&#125;public Object getProxy()&#123;    return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), new InvocationHandler() &#123;        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;            float res = (Float) method.invoke(target,args);            System.out.println(&quot;==&quot;+res);            return proxy;        &#125;    &#125;);&#125;&#125;public class Main &#123;public static void main(String[] args) &#123;    UsbFactory factory = new UsbFactory();    ProxySeller seller = new ProxySeller(factory);    UsbSell proxy = (UsbSell)seller.getProxy();    UsbSell s = (UsbSell)proxy.sell(50);    s.sell(50);&#125;&#125;</code></pre><p> cglib动态代理：一个开源项目。对于无接口的类，要为其创建动态代理，就要使用 CGLIB 来实现。CGLIB 代理的生成原理是生成目标类的子类，而子类是增强过的，这个子类对象就是代理对象。所以，使用CGLIB 生成动态代理，要求目标类必须能够被继承，即不能是 final 的类。</p><pre><code>     public class Saller &#123;public float sell(int amount)&#123;    float price = 100;    if (amount &gt; 100)&#123;        price = (float) (price * (1 + 0.2));    &#125;else &#123;        price = (float) (price * (1 + 0.5));    &#125;    return price;&#125;&#125;public class ProxySaller implements MethodInterceptor &#123;private Object target;public ProxySaller() &#123;&#125;public ProxySaller(Object target) &#123;    this.target = target;&#125;public Object getProxySaller()&#123;    Enhancer enhancer = new Enhancer();    enhancer.setSuperclass(target.getClass());    enhancer.setCallback(this);    Saller saller = (Saller) enhancer.create();    return saller;&#125;public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable &#123;    Float price = (Float) methodProxy.invoke(target,objects);    System.out.println(&quot;===&quot;+price);    return price;&#125;&#125;public class Main &#123;public static void main(String[] args) &#123;    Saller saller = new Saller();    ProxySaller proxySaller = new ProxySaller(saller);    Saller proxy = (Saller) proxySaller.getProxySaller();    proxy.sell(100);&#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;代理模式是指，为其他对象提供一种代理以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户类和目标对象之间起到中介的作用。说直白一点就是在不修改目标对象的基础上，使用代理对象来增强目标对象的业务逻辑方法。&lt;/p&gt;
+&lt;p&gt;代理模式</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="代理模式" scheme="http://example.com/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>innoDB中的锁</title>
+    <link href="http://example.com/2022/02/10/innoDB%E4%B8%AD%E7%9A%84%E9%94%81/"/>
+    <id>http://example.com/2022/02/10/innoDB%E4%B8%AD%E7%9A%84%E9%94%81/</id>
+    <published>2022-02-10T05:38:00.000Z</published>
+    <updated>2022-02-10T11:19:02.156Z</updated>
+    
+    <content type="html"><![CDATA[<p>innoDB实现了共享锁（读锁）和排他锁（写锁）两种行级锁。意向共享锁和意向排他锁两种表级别的锁。</p><p> <img src="/images/pasted-97.png" alt="upload successful"></p><p> <img src="/images/pasted-98.png" alt="upload successful"></p><p> <img src="/images/pasted-99.png" alt="upload successful"></p><p> <img src="/images/pasted-100.png" alt="upload successful"></p><p> <img src="/images/pasted-101.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;innoDB实现了共享锁（读锁）和排他锁（写锁）两种行级锁。意向共享锁和意向排他锁两种表级别的锁。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-97.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/im</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="锁" scheme="http://example.com/tags/%E9%94%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>lock与latch</title>
+    <link href="http://example.com/2022/02/10/lock%E4%B8%8Elatch/"/>
+    <id>http://example.com/2022/02/10/lock%E4%B8%8Elatch/</id>
+    <published>2022-02-10T05:36:00.000Z</published>
+    <updated>2022-02-10T05:38:14.315Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-96.png" alt="upload successful"> </p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-96.png&quot; alt=&quot;upload successful&quot;&gt;
+ &lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="锁" scheme="http://example.com/tags/%E9%94%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL分区</title>
+    <link href="http://example.com/2022/02/09/MySQL%E5%88%86%E5%8C%BA/"/>
+    <id>http://example.com/2022/02/09/MySQL%E5%88%86%E5%8C%BA/</id>
+    <published>2022-02-09T12:14:49.000Z</published>
+    <updated>2022-02-09T12:14:49.287Z</updated>
+    
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL表</title>
+    <link href="http://example.com/2022/02/09/MySQL%E8%A1%A8/"/>
+    <id>http://example.com/2022/02/09/MySQL%E8%A1%A8/</id>
+    <published>2022-02-09T10:47:00.000Z</published>
+    <updated>2022-02-09T12:07:08.587Z</updated>
+    
+    <content type="html"><![CDATA[<p>innoDB中，表根据主键顺序存放。每张表都有一个主键，在建表时没有显示定义主键，则innoDB会先判断表中是否有非空的唯一索引，如果有，则该索引即为主键（对于多个非空唯一索引，根据定义的顺序选择，而不是建表列的顺序选择），如果没有，则会自动创建一个6字节的指针。</p><p>innoDB中，数据被逻辑的放在一个表空间。表空间由段组成，段又由区组成，区又有页组成，页时最基本的单位。如下：<br> <img src="/images/pasted-83.png" alt="upload successful"></p><p>innoDB默认情况下有一个共享表空间，如果用户开启参数innodb_file_per_table则每张表的数据单独放到一个表空间。（需要注意的是：单独的表空间只是存放数据、索引和插入缓冲bitmap页，对于其他数据，如回滚信息、插入缓冲索引页等仍是存放在共享表空间）</p><p>对于段由innoDB管理，数据段即为B+tree的叶子节点，索引段即为B+tree的非叶子节点，回滚段较为特殊。</p><p>区则是连续页（默认16kb/页）组成的空间（大小1mb）。一个区默认有64个连续的页。为了保证区中页的连续性，innoDB会一次从磁盘申请4-5个区。值得注意的是：</p><p> <img src="/images/pasted-84.png" alt="upload successful"></p><p> innoDB常见页：</p><p> <img src="/images/pasted-85.png" alt="upload successful"></p><p> 页又由行组成最多允许7992（16kb/2-200）行记录。innoDB提供了Compact和Redundant格式的行数据格式。需要注意：除了下图的信息外，还存在事务ID列（6字节）和回滚指针列（7字节），如果innoDB没有定义主键还会有一个6字节的rowid列</p><p> Compact行记录：</p><p> <img src="/images/pasted-86.png" alt="upload successful"></p><p> <img src="/images/pasted-87.png" alt="upload successful"></p><p> Redundant行记录格式：</p><p> <img src="/images/pasted-88.png" alt="upload successful"></p><p> <img src="/images/pasted-89.png" alt="upload successful"></p><p>当然一般情况下innoDB的数据都是放在页类型为B+tree-node中，但是当发生行溢出，数据存放在Uncompress BLOB页中。<br> <img src="/images/pasted-90.png" alt="upload successful"></p><p> innoDB数据页结构：</p><p> <img src="/images/pasted-92.png" alt="upload successful"><br> <img src="/images/pasted-91.png" alt="upload successful"></p><p> <img src="/images/pasted-93.png" alt="upload successful"></p><p> <img src="/images/pasted-94.png" alt="upload successful"></p><p> <img src="/images/pasted-95.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;innoDB中，表根据主键顺序存放。每张表都有一个主键，在建表时没有显示定义主键，则innoDB会先判断表中是否有非空的唯一索引，如果有，则该索引即为主键（对于多个非空唯一索引，根据定义的顺序选择，而不是建表列的顺序选择），如果没有，则会自动创建一个6字节的指针。&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="表" scheme="http://example.com/tags/%E8%A1%A8/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL文件</title>
@@ -392,133 +507,6 @@
     
     
     <category term="整数集合" scheme="http://example.com/tags/%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis底层数据结构之跳表</title>
-    <link href="http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%9E%E7%8E%B0%E4%B9%8B%E8%B7%B3%E8%A1%A8/"/>
-    <id>http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AE%9E%E7%8E%B0%E4%B9%8B%E8%B7%B3%E8%A1%A8/</id>
-    <published>2022-02-06T13:13:00.000Z</published>
-    <updated>2022-02-06T13:24:50.758Z</updated>
-    
-    <content type="html"><![CDATA[<p>跳表支持平均o（logN）、最坏O（n）复杂度的节点查找，还可以通过顺序性操作来批量处理节点。</p><p> <img src="/images/pasted-33.png" alt="upload successful"></p><p> <img src="/images/pasted-34.png" alt="upload successful"></p><p> <img src="/images/pasted-35.png" alt="upload successful"></p><p> <img src="/images/pasted-36.png" alt="upload successful"> </p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;跳表支持平均o（logN）、最坏O（n）复杂度的节点查找，还可以通过顺序性操作来批量处理节点。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-33.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/imag</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="跳表" scheme="http://example.com/tags/%E8%B7%B3%E8%A1%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis底层数据结构之字典</title>
-    <link href="http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E4%B9%8B%E5%AD%97%E5%85%B8/"/>
-    <id>http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0%E4%B9%8B%E5%AD%97%E5%85%B8/</id>
-    <published>2022-02-06T12:37:00.000Z</published>
-    <updated>2022-02-06T13:24:45.912Z</updated>
-    
-    <content type="html"><![CDATA[<p>字典即符号表，Redis的数据库就是通过字典作为底层实现的。而字典的底层实现主要是使用hash表。</p><p>1、hash表底层实现是通过数组加链表实现的，对于一个key值，通过计算其hashcode，然后与上hash表的掩码（数组-1），得到在数组中的下标，然后同该下标上的链表进行比较（没有链表则直接加上去），看是否是同一个值，如果是，则覆盖，不是则加到链表尾。</p><p>2、字典则是一个包含两个hash表的结构体，一般情况只使用下标为0的hash表，当对0下标的hash表进行扩容时，会使用到1下标处的hash表。即当0下标处的hash表</p><p>a）满足服务器没有执bgsave或者bgrewriteaof命令，并且hash表负载因子大于等于1</p><p>b）或者满足服务器执bgsave或者bgrewriteaof命令，并且hash表负载因子大于等于5</p><p>（因为在执bgsave或者bgrewriteaof命令时，服务器在执行备份操作，为了尽可能提高其效率，避免在此期间进行hash表扩容操作）</p><p>c）负载因子小于0.1会收缩</p><p>就会发生扩容，此时会渐进的将0下标的hash表的数据转移到扩容后的1下标处。（这里之所以采取渐进式的转移，主要是考虑到当hash表里面存的数据量很大时，一次性转移会很消耗时间）</p><p> <img src="/images/pasted-30.png" alt="upload successful"></p><p> <img src="/images/pasted-31.png" alt="upload successful"></p><p> <img src="/images/pasted-29.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;字典即符号表，Redis的数据库就是通过字典作为底层实现的。而字典的底层实现主要是使用hash表。&lt;/p&gt;
-&lt;p&gt;1、hash表底层实现是通过数组加链表实现的，对于一个key值，通过计算其hashcode，然后与上hash表的掩码（数组-1），得到在数组中的下标，然后同该下</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="哈希表" scheme="http://example.com/tags/%E5%93%88%E5%B8%8C%E8%A1%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis底层数据结构之链表</title>
-    <link href="http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E9%93%BE%E8%A1%A8/"/>
-    <id>http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E9%93%BE%E8%A1%A8/</id>
-    <published>2022-02-06T12:28:00.000Z</published>
-    <updated>2022-02-06T12:35:31.761Z</updated>
-    
-    <content type="html"><![CDATA[<p>链表作为一种常用数据结构，Redis也对其进行了实现。链表键、发布与订阅、慢查询、监视器等方面都用到了链表。其底层由node节点和list结构构成，node节点包含前驱和后继指针以及value值，而list结构则包含了指向投节点、尾结点的指针以及链表节点数、节点复制函数、释放函数等。即最终是一个双端无环链表。</p><p> <img src="/images/pasted-25.png" alt="upload successful"></p><p> <img src="/images/pasted-26.png" alt="upload successful"></p><p> <img src="/images/pasted-24.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;链表作为一种常用数据结构，Redis也对其进行了实现。链表键、发布与订阅、慢查询、监视器等方面都用到了链表。其底层由node节点和list结构构成，node节点包含前驱和后继指针以及value值，而list结构则包含了指向投节点、尾结点的指针以及链表节点数、节点复制函数、释</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="链表" scheme="http://example.com/tags/%E9%93%BE%E8%A1%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis底层数据结构之SDS</title>
-    <link href="http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8BSDS/"/>
-    <id>http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8BSDS/</id>
-    <published>2022-02-06T12:13:00.000Z</published>
-    <updated>2022-02-06T12:36:06.134Z</updated>
-    
-    <content type="html"><![CDATA[<p>Redis是用C语言写的，底层实现了众多数据结构，其中字符串是最常用的一种，其底层实现并不是用的C语言的char[]数组，而是进行了简单的封装sds结构体，定义了一个int的len、free和char[]来实现字符串。其相较于原生的C语言字符串有如下优点：</p><p>1、可以通过len-free以常数阶获取字符串长度</p><p>2、可以通过free字段避免缓冲区出现溢出的情况</p><p>3、同时也减少字符串修改时，内存重新分配的次数，其具体实现是通过预先分配内存（即当追加字符串之后，字符串小于1MB，会多分配一倍的空间）和懒惰回收（即当字符串变短之后，不会立即回收那一部分空间，而是作为临时空间供后续字符串扩增做优化）</p><p>4、可以保存二进制安全的数据</p><p> <img src="/images/pasted-27.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Redis是用C语言写的，底层实现了众多数据结构，其中字符串是最常用的一种，其底层实现并不是用的C语言的char[]数组，而是进行了简单的封装sds结构体，定义了一个int的len、free和char[]来实现字符串。其相较于原生的C语言字符串有如下优点：&lt;/p&gt;
-&lt;p&gt;1</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="字符串" scheme="http://example.com/tags/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>枚举单例模式如何防止反射和反序列化</title>
-    <link href="http://example.com/2022/01/27/%E6%9E%9A%E4%B8%BE%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/"/>
-    <id>http://example.com/2022/01/27/%E6%9E%9A%E4%B8%BE%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%A6%82%E4%BD%95%E9%98%B2%E6%AD%A2%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96/</id>
-    <published>2022-01-27T11:08:00.000Z</published>
-    <updated>2022-01-27T11:16:11.794Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、</p><p>2、枚举单例在创建时不存在并发问题：</p><pre><code>枚举类里的各个枚举项是是通过static代码块来定义和初始化的，它们会在类被加载时完成初始化，而java类的加载由JVM保证线程安全，所以，创建一个Enum类型的枚举是线程安全的</code></pre><p>2、反序列化：</p><pre><code>Java对枚举的序列化作了规定，在序列化时，仅将枚举对象的name属性输出到结果中，在反序列化时，就是通过java.lang.Enum的valueOf来根据名字查找对象，而不是新建一个新的对象。枚举在序列化和反序列化时，并不会调用构造方法，这就防止了反序列化导致的单例破坏的问题。</code></pre><p>3、反射：</p><pre><code>反射在通过newInstance创建对象时，会检查这个类是否是枚举类，如果是，会抛出异常java.lang.IllegalArgumentException: Cannot reflectively create enum objects，表示反射创建对象失败。</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、&lt;/p&gt;
-&lt;p&gt;2、枚举单例在创建时不存在并发问题：&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;枚举类里的各个枚举项是是通过static代码块来定义和初始化的，它们会在类被加载时完成初始化，而java类的加载由JVM保证线程安全，所以，创建一个Enum类型的枚举是线程安全的
-&lt;/c</summary>
-      
-    
-    
-    
-    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-    <category term="单例模式" scheme="http://example.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
