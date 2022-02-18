@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-02-11T13:38:00.109Z</updated>
+  <updated>2022-02-18T14:39:22.715Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>get和post的区别</title>
+    <link href="http://example.com/2022/02/18/get%E5%92%8Cpost%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
+    <id>http://example.com/2022/02/18/get%E5%92%8Cpost%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
+    <published>2022-02-18T14:38:00.000Z</published>
+    <updated>2022-02-18T14:39:22.715Z</updated>
+    
+    <content type="html"><![CDATA[<p>POST和GET都是向服务器提交数据，并且都会从服务器获取数据。</p><p>区别：</p><p>1、传送方式：get通过地址栏传输，post通过报文传输。</p><p>2、传送长度：get参数有长度限制（受限于url长度），而post无限制</p><p>3、GET和POST还有一个重大区别，简单的说：</p><p>GET产生一个TCP数据包；POST产生两个TCP数据包</p><p>长的说：</p><p>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；</p><p>而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</p><p>也就是说，GET只需要汽车跑一趟就把货送到了，而POST得跑两趟，第一趟，先去和服务器打个招呼“嗨，我等下要送一批货来，你们打开门迎接我”，然后再回头把货送过去。</p><p>因为POST需要两步，时间上消耗的要多一点，看起来GET比POST更有效。因此Yahoo团队有推荐用GET替换POST来优化网站性能。但这是一个坑！跳入需谨慎。为什么？</p><ol><li><p>GET与POST都有自己的语义，不能随便混用。</p></li><li><p>据研究，在网络环境好的情况下，发一次包的时间和发两次包的时间差别基本可以无视。而在网络环境差的情况下，两次包的TCP在验证数据包完整性上，有非常大的优点。</p></li><li><p>并不是所有浏览器都会在POST中发送两次包，Firefox就只发送一次。</p></li></ol><p>建议：</p><p>1、get方式的安全性较Post方式要差些，包含机密信息的话，建议用Post数据提交方式；</p><p>2、在做数据查询时，建议用Get方式；而在做数据添加、修改或删除时，建议用Post方式；</p><p>案例：一般情况下，登录的时候都是用的POST传输，涉及到密码传输，而页面查询的时候，如文章id查询文章，用get 地址栏的链接为：article.php?id=11，用post查询地址栏链接为：article.php， 不会将传输的数据展现出来。</p><p>拓展资料：</p><p>GET在浏览器回退时是无害的，而POST会再次提交请求。</p><p>GET产生的URL地址可以被Bookmark，而POST不可以。</p><p>GET请求会被浏览器主动cache，而POST不会，除非手动设置。</p><p>GET请求只能进行url编码，而POST支持多种编码方式。</p><p>GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。</p><p>GET请求在URL中传送的参数是有长度限制的，而POST么有。</p><p>对参数的数据类型，GET只接受ASCII字符，而POST没有限制。</p><p>GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。</p><p>GET参数通过URL传递，POST放在Request body中。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;POST和GET都是向服务器提交数据，并且都会从服务器获取数据。&lt;/p&gt;
+&lt;p&gt;区别：&lt;/p&gt;
+&lt;p&gt;1、传送方式：get通过地址栏传输，post通过报文传输。&lt;/p&gt;
+&lt;p&gt;2、传送长度：get参数有长度限制（受限于url长度），而post无限制&lt;/p&gt;
+&lt;p&gt;3、GET</summary>
+      
+    
+    
+    
+    <category term="计算机网络" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
+    
+    
+    <category term="get" scheme="http://example.com/tags/get/"/>
+    
+    <category term="post" scheme="http://example.com/tags/post/"/>
+    
+  </entry>
   
   <entry>
     <title>代理模式</title>
@@ -482,31 +512,6 @@
     
     
     <category term="对象" scheme="http://example.com/tags/%E5%AF%B9%E8%B1%A1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis底层数据结构之整数集合</title>
-    <link href="http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88/"/>
-    <id>http://example.com/2022/02/06/Redis%E5%BA%95%E5%B1%82%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B9%8B%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88/</id>
-    <published>2022-02-06T13:40:00.000Z</published>
-    <updated>2022-02-06T13:49:01.981Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-37.png" alt="upload successful"></p><p> 整数集合是Redis用于保存整数值得集合数据结构，可以保存int16、int32、int64de整数值，并且有序不会重复，具体由encoding决定保存是int16、32还是64.</p><p> 当将一个新元素加入整数集合时，而且这个元素类型长于当前集合类型，就会先对集合升级，然后在加入新元素。</p><p> 升级：</p><p> 1、根据新元素类型，开辟新的数组</p><p> 2、将原数组的元素转移到新数组的正确位置上，且转化为与新数组相同的类型</p><p> 3、将新元素加到新数组指定的位置</p><p> 好处：</p><p> 1、提升灵活性，C语言是静态类型语言，为了避免错误，不会将两种类型放在一个数据结构里面，通过底层数组升级操作，不必担心不同类型的整数出现类型错误</p><p> 2、节约内存，整数集合的升级操作，确保了只在需要的时候进行，尽量节约内存。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-37.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 整数集合是Redis用于保存整数值得集合数据结构，可以保存int16、int32、int64de整数值，并且有序不会重复，具体由encodi</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="整数集合" scheme="http://example.com/tags/%E6%95%B4%E6%95%B0%E9%9B%86%E5%90%88/"/>
     
   </entry>
   
