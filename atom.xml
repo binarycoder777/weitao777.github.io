@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-02-25T01:58:06.991Z</updated>
+  <updated>2022-03-02T11:40:36.822Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,81 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL怎么查看索引是否是高选择性？</title>
+    <link href="http://example.com/2022/03/02/MySQL%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E6%98%AF%E9%AB%98%E9%80%89%E6%8B%A9%E6%80%A7%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/02/MySQL%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E6%98%AF%E9%AB%98%E9%80%89%E6%8B%A9%E6%80%A7%EF%BC%9F/</id>
+    <published>2022-03-02T11:33:00.000Z</published>
+    <updated>2022-03-02T11:40:36.822Z</updated>
+    
+    <content type="html"><![CDATA[<p>通过show index查看结果列中的cardinality值（表示索引中不重复记录数量的预估值），在实际应用中cardinality/table.size应该尽可能接近1。</p><p>cardinality是在存储引擎层进行统计的。具体方式是通过采样的方法来完成。具体发生在insert和update操作中，策略为①表中1/16数据发生过变化②stat_modified_counter&gt;2 000 000 000（表中数据实际未增加，实际发生变化的还是这一行数据①就无法适用，则通过②的计数器stat_modirfied_counter表示发生变化次数）。</p><p> <img src="/images/pasted-106.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;通过show index查看结果列中的cardinality值（表示索引中不重复记录数量的预估值），在实际应用中cardinality/table.size应该尽可能接近1。&lt;/p&gt;
+&lt;p&gt;cardinality是在存储引擎层进行统计的。具体方式是通过采样的方法来完成。具体</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>InnoDB行溢出（Redundant）</title>
+    <link href="http://example.com/2022/03/02/InnoDB%E8%A1%8C%E6%BA%A2%E5%87%BA/"/>
+    <id>http://example.com/2022/03/02/InnoDB%E8%A1%8C%E6%BA%A2%E5%87%BA/</id>
+    <published>2022-03-02T10:45:00.000Z</published>
+    <updated>2022-03-02T10:53:16.247Z</updated>
+    
+    <content type="html"><![CDATA[<p>3个列长度总和是66000，innoDB存储引擎的页为16kb，16384字节，会产生行溢出，因此对于这种情况，数据不会存放于b+tree的叶子节点中，而是存入页类型为uncompress blob页中。</p><p> <img src="/images/pasted-105.png" alt="upload successful"></p><p> 每页中至少存放两条行记录（否则失去了B+tree的意义，变为了链表），因此如果一页中只能放一条记录，则会将数据放到溢出页。而对于Text或BLOB的数据类型亦然。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;3个列长度总和是66000，innoDB存储引擎的页为16kb，16384字节，会产生行溢出，因此对于这种情况，数据不会存放于b+tree的叶子节点中，而是存入页类型为uncompress blob页中。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-1</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="行结构" scheme="http://example.com/tags/%E8%A1%8C%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL中varchar中的N</title>
+    <link href="http://example.com/2022/03/02/MySQL%E4%B8%ADvarchar%E4%B8%AD%E7%9A%84N/"/>
+    <id>http://example.com/2022/03/02/MySQL%E4%B8%ADvarchar%E4%B8%AD%E7%9A%84N/</id>
+    <published>2022-03-02T10:42:00.000Z</published>
+    <updated>2022-03-02T10:44:12.635Z</updated>
+    
+    <content type="html"><![CDATA[<p>varchar(N)指的是字符长度，而官方文档中指的是最大支持65535是字节</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;varchar(N)指的是字符长度，而官方文档中指的是最大支持65535是字节&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="行" scheme="http://example.com/tags/%E8%A1%8C/"/>
+    
+  </entry>
   
   <entry>
     <title>如何在 Linux 系统中查看 TCP 状态？</title>
@@ -440,78 +515,6 @@
     
     
     <category term="主从复制模型" scheme="http://example.com/tags/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis内存优化</title>
-    <link href="http://example.com/2022/02/08/Redis%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/"/>
-    <id>http://example.com/2022/02/08/Redis%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/</id>
-    <published>2022-02-08T12:09:00.000Z</published>
-    <updated>2022-02-08T12:10:03.147Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-52.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-52.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="内存优化" scheme="http://example.com/tags/%E5%86%85%E5%AD%98%E4%BC%98%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis的回收进程如何工作</title>
-    <link href="http://example.com/2022/02/08/Redis%E7%9A%84%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C/"/>
-    <id>http://example.com/2022/02/08/Redis%E7%9A%84%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B%E5%A6%82%E4%BD%95%E5%B7%A5%E4%BD%9C/</id>
-    <published>2022-02-08T09:37:00.000Z</published>
-    <updated>2022-02-08T11:59:38.055Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-51.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-51.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="回收进程" scheme="http://example.com/tags/%E5%9B%9E%E6%94%B6%E8%BF%9B%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一个Redis实例能存放多少key？</title>
-    <link href="http://example.com/2022/02/08/%E4%B8%80%E4%B8%AARedis%E5%AE%9E%E4%BE%8B%E8%83%BD%E5%AD%98%E6%94%BE%E5%A4%9A%E5%B0%91key%EF%BC%9F/"/>
-    <id>http://example.com/2022/02/08/%E4%B8%80%E4%B8%AARedis%E5%AE%9E%E4%BE%8B%E8%83%BD%E5%AD%98%E6%94%BE%E5%A4%9A%E5%B0%91key%EF%BC%9F/</id>
-    <published>2022-02-08T09:27:00.000Z</published>
-    <updated>2022-02-08T09:28:21.147Z</updated>
-    
-    <content type="html"><![CDATA[<p>理论上 Redis 可以处理多达 2^32 的 keys，并且在实际中进行了测试，每个实例至少存放了 2 亿 5 千万的 keys。我们正在测试一些较大的<br>值。任何 list、set、和 sorted set 都可以放 2^32 个元素。换句话说，Redis 的存储极限是系统中的可用内存值。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;理论上 Redis 可以处理多达 2^32 的 keys，并且在实际中进行了测试，每个实例至少存放了 2 亿 5 千万的 keys。我们正在测试一些较大的&lt;br&gt;值。任何 list、set、和 sorted set 都可以放 2^32 个元素。换句话说，Redis 的存储极</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
     
   </entry>
   
