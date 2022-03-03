@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://example.com/2022/03/03/bean%E7%9A%84scope%E7%9A%84%E4%BD%BF%E7%94%A8%E9%99%B7%E9%98%B1/</loc>
+    <lastmod>2022-03-03</lastmod>
+  </url>
+  <url>
+    <loc>http://example.com/2022/03/03/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%B8%8E-FactoryBean/</loc>
+    <lastmod>2022-03-03</lastmod>
+  </url>
+  <url>
+    <loc>http://example.com/2022/03/03/bean%E7%9A%84scope/</loc>
+    <lastmod>2022-03-03</lastmod>
+  </url>
+  <url>
     <loc>http://example.com/2022/03/03/Spring%E7%9A%84IOC%E5%AE%B9%E5%99%A8%E4%B9%8BBeanFactory/</loc>
     <lastmod>2022-03-03</lastmod>
   </url>

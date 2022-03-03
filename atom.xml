@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-03T13:56:15.460Z</updated>
+  <updated>2022-03-03T16:01:27.658Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,83 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>bean的scope的使用陷阱</title>
+    <link href="http://example.com/2022/03/03/bean%E7%9A%84scope%E7%9A%84%E4%BD%BF%E7%94%A8%E9%99%B7%E9%98%B1/"/>
+    <id>http://example.com/2022/03/03/bean%E7%9A%84scope%E7%9A%84%E4%BD%BF%E7%94%A8%E9%99%B7%E9%98%B1/</id>
+    <published>2022-03-03T15:48:00.000Z</published>
+    <updated>2022-03-03T16:01:27.658Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们知道，拥有prototype类型scope的bean，在请求方每次向容器请求该类型对象的时候，容器都会返回一个全新的该对象实例。但是对于在类A中定义成员变量类B，并且通过setter注入类B，并getter返回类B时，会存在每次返回的对象都是同一个对象。</p><p>原因在于：虽然A拥有prototype类型的scope，但当容器将一个B的实例注入<br>A之后，A就会一直持有这个FXNewsBean实例的引用。虽然每<br>次输出都调用了getNewsBean()方法并返回了 FXNewsBean 的实例，但实际上每次返回的都是A持有的容器第一次注入的实例。这就是问题之所在。换句话说，第一个实例注入后，A再也没有重新向容器申请新的实例。所以，容器也不会重新为其注入新的B类型的实例。</p><p>解决的方案就在于保证get方法每次<br>从容器中取得新的B实例，而不是每次都返回其持有的单一实例。</p><p>1、方法注入：Spring容器提出了一种叫做方法注入（Method Injection）的方式，可以帮助我们解决上述问题。<br>我们所要做的很简单，只要让getNewsBean方法声明符合规定的格式，并在配置文件中通知容器，当<br>该方法被调用的时候，每次返回指定类型的对象实例即可。也就是说，该方法必须能够被子类实现或者覆写，因为容器会为我们要进行方法注入的对象使用<br>Cglib动态生成一个子类实现，从而替代当前对象。</p><p>2、使用BeanFactoryAware接口：<br>我们知道，即使没有方法注入，只要在实现 get方法的时候，能够保证每次调用BeanFactory的getBean(“newsBean”)，就同样可以每次都取得新的FXNewsBean对象实例。<br>Spring框架提供了一个BeanFactoryAware接口，容器在实例化实现了该接口的bean定义的过程<br>中，会自动将容器本身注入该bean。这样，该bean就持有了它所处的BeanFactory的引用</p><p>3、 使用ObjectFactoryCreatingFactoryBean：ObjectFactoryCreatingFactoryBean是Spring提供的一个FactoryBean实现，它返回一个<br>ObjectFactory实例。从ObjectFactoryCreatingFactoryBean返回的这个ObjectFactory实例可以<br>为我们返回容器管理的相关对象。实际上， ObjectFactoryCreatingFactoryBean 实现了<br>BeanFactoryAware接口，它返回的ObjectFactory实例只是特定于与Spring容器进行交互的一个实现<br>而已。使用它的好处就是，隔离了客户端对象对BeanFactory的直接引用。</p><p>4、方法替换：与方法注入只是通过相应方法为主体对象注入依赖对象不同，方法替换更多体现在方法的实现层<br>面上，它可以灵活替换或者说以新的方法实现覆盖掉原来某个方法的实现逻辑。基本上可以认为，方<br>法替换可以帮助我们实现简单的方法拦截功能。</p><p>首先，我们需要给出org.springframework.beans.factory.support.MethodReplacer的实现<br>类，在这个类中实现将要替换的方法逻辑。</p><p>有了要替换的逻辑之后，我们就可以把这个逻辑通过<replaced-method>配置到FXNewsProvider的bean定义中，使其生效。</p><p>最后需要强调的是，这种方式刚引入的时候执行效率不是很高。而且，当你充分了解并应用Spring<br>AOP之后，我想你也不会再回头求助这个特色功能。不过，怎么说这也是一个选择，场景合适的话，<br>为何不用呢？<br>哦，如果要替换的方法存在参数，或者对象存在多个重载的方法，可以在<replaced-method>内<br>部通过<arg-type>明确指定将要替换的方法参数类型。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我们知道，拥有prototype类型scope的bean，在请求方每次向容器请求该类型对象的时候，容器都会返回一个全新的该对象实例。但是对于在类A中定义成员变量类B，并且通过setter注入类B，并getter返回类B时，会存在每次返回的对象都是同一个对象。&lt;/p&gt;
+&lt;p&gt;</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="scop" scheme="http://example.com/tags/scop/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>工厂方法与 FactoryBean</title>
+    <link href="http://example.com/2022/03/03/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%B8%8E-FactoryBean/"/>
+    <id>http://example.com/2022/03/03/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%B8%8E-FactoryBean/</id>
+    <published>2022-03-03T15:05:00.000Z</published>
+    <updated>2022-03-03T15:31:28.499Z</updated>
+    
+    <content type="html"><![CDATA[<p>在强调“面向接口编程”的同时，有一点需要注意：虽然对象可以通过声明接口来避免对特定接<br>口实现类的过度耦合，但总归需要一种方式将声明依赖接口的对象与接口实现类关联起来。否则，只<br>依赖一个不做任何事情的接口是没有任何用处的。</p><p>如果该类是由我们设计并开发的，那么还好说，我们可以通过依赖注入，让容器帮助我们解除接<br>口与实现类之间的耦合性。但是，有时，我们需要依赖第三方库，需要实例化并使用第三方库中的相<br>关类，这时，接口与实现类的耦合性需要其他方式来避免。 </p><p>通常的做法是通过使用工厂方法（Factory Method）模式，提供一个工厂类来实例化具体的接口<br>实现类，这样，主体对象只需要依赖工厂类，具体使用的实现类有变更的话，只是变更工厂类，而主<br>体对象不需要做任何变动。</p><p>针对使用工厂方法模式实例化对象的方式，Spring的IoC容器同样提供了对应的集成支持。我们所<br>要做的，只是将工厂类所返回的具体的接口实现类注入给主体对象</p><p>1、 静态工厂方法（Static Factory Method）</p><p>2、非静态工厂方法（Instance Factory Method）</p><p>3、FactoryBean：FactoryBean是Spring容器提供的一种可以扩展容器对象实例化逻辑的接口，请不要将其与容器名称BeanFactory相混淆。FactoryBean，其主语是Bean，定语为Factory，也就是说，它本身与其他注册到容器的对象一样，只是一个Bean而已，只不过，这种类型的Bean本身就是生产对象的工厂<br>（Factory）。</p><p>当某些对象的实例化过程过于烦琐，通过XML配置过于复杂，使我们宁愿使用Java代码来完成这<br>个实例化过程的时候，或者，某些第三方库不能直接注册到Spring容器的时候，就可以实现org.spring.framework.beans.factory.FactoryBean接口，给出自己的对象实例化逻辑代码。当然，不使用Fac.toryBean，而像通常那样实现自定义的工厂方法类也是可以的。不过，FactoryBean可是Spring提供<br>的对付这种情况的“制式装备”哦！</p><p>Spring容器内部许多地方了使用FactoryBean。下面是一些比较常见的FactoryBean实现，你可以参照FactoryBean的Javadoc以了解更多内容。</p><p> <img src="/images/pasted-111.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在强调“面向接口编程”的同时，有一点需要注意：虽然对象可以通过声明接口来避免对特定接&lt;br&gt;口实现类的过度耦合，但总归需要一种方式将声明依赖接口的对象与接口实现类关联起来。否则，只&lt;br&gt;依赖一个不做任何事情的接口是没有任何用处的。&lt;/p&gt;
+&lt;p&gt;如果该类是由我们设计并开发</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="FactoryBean" scheme="http://example.com/tags/FactoryBean/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>bean的scope</title>
+    <link href="http://example.com/2022/03/03/bean%E7%9A%84scope/"/>
+    <id>http://example.com/2022/03/03/bean%E7%9A%84scope/</id>
+    <published>2022-03-03T14:23:00.000Z</published>
+    <updated>2022-03-03T15:05:21.116Z</updated>
+    
+    <content type="html"><![CDATA[<p>BeanFactory除了拥有作为IoC Service Provider的职责，作为一个轻量级容器，它还有着其他一些<br>职责，其中就包括对象的生命周期管理。</p><p>Spring容器最初提供了两种bean的scope类型：singleton和prototype，但发布2.0之后，又引入了另外三种scope类型，即request、session和global session类型。不过这三种类型有所限制，只能在Web应<br>用中使用。也就是说，只有在支持Web应用的ApplicationContext中使用这三个scope才是合理的。</p><p>1、singleton：标记为拥有singleton scope的对象定义，在Spring的IoC容器中只存在一个实例，所有对该对象的引用将共享这个实例。该实例从容器启动，并因为第一次被请求而初始化之后，将一直存活到容器退出，也就是说，它与IoC容器“几乎”拥有相同的“寿命”。</p><p>（注意：需要注意的一点是，不要因为名字的原因而与GoF所提出的Singleton模式相混淆，二者的语意是<br>不同的：标记为singleton的bean是由容器来保证这种类型的bean在同一个容器中只存在一个共享实例；<br>而Singleton模式则是保证在同一个Classloader中只存在一个这种类型的实例。）</p><p>2、 prototype：针对声明为拥有prototype scope的bean定义，容器在接到该类型对象的请求的时候，会每次都重新<br>生成一个新的对象实例给请求方。虽然这种类型的对象的实例化以及属性设置等工作都是由容器负责<br>的，但是只要准备完毕，并且对象实例返回给请求方之后，容器就不再拥有当前返回对象的引用，请<br>求方需要自己负责当前返回对象的后继生命周期的管理工作，包括该对象的销毁。也就是说，容器每<br>次返回给请求方一个新的对象实例之后，就任由这个对象实例“自生自灭”了。</p><p>3、 request：Spring容器，即XmlWebApplicationContext会为每个HTTP请求创建一个全新的RequestProcessor对象供当前请求使用，当请求结束后，该对象实例的生命周期即告结束。当同时有10个HTTP<br>请求进来的时候，容器会分别针对这10个请求返回10个全新的RequestProcessor对象实例，且它们<br>之间互不干扰。从不是很严格的意义上说，request可以看作prototype的一种特例，除了场景更加具体<br>之外，语意上差不多。</p><p>4、session：对于Web应用来说，放到session中的最普遍的信息就是用户的登录信息，对于这种放到session中<br>的信息，我们可使用如下形式指定其scope为session</p><p>5、global session：global session只有应用在基于portlet的Web应用程序中才有意义，它映射到portlet的global范围的 3<br>session。如果在普通的基于servlet的Web应用中使用了这个类型的scope，容器会将其作为普通的session<br>类型的scope对待。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;BeanFactory除了拥有作为IoC Service Provider的职责，作为一个轻量级容器，它还有着其他一些&lt;br&gt;职责，其中就包括对象的生命周期管理。&lt;/p&gt;
+&lt;p&gt;Spring容器最初提供了两种bean的scope类型：singleton和prototype，</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    <category term="Spring " scheme="http://example.com/categories/Spring/Spring/"/>
+    
+    
+    <category term="scope" scheme="http://example.com/tags/scope/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring的IOC容器之BeanFactory</title>
@@ -442,71 +519,6 @@
     
     
     <category term="代理模式" scheme="http://example.com/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>innoDB中的锁</title>
-    <link href="http://example.com/2022/02/10/innoDB%E4%B8%AD%E7%9A%84%E9%94%81/"/>
-    <id>http://example.com/2022/02/10/innoDB%E4%B8%AD%E7%9A%84%E9%94%81/</id>
-    <published>2022-02-10T05:38:00.000Z</published>
-    <updated>2022-02-10T11:19:02.156Z</updated>
-    
-    <content type="html"><![CDATA[<p>innoDB实现了共享锁（读锁）和排他锁（写锁）两种行级锁。意向共享锁和意向排他锁两种表级别的锁。</p><p> <img src="/images/pasted-97.png" alt="upload successful"></p><p> <img src="/images/pasted-98.png" alt="upload successful"></p><p> <img src="/images/pasted-99.png" alt="upload successful"></p><p> <img src="/images/pasted-100.png" alt="upload successful"></p><p> <img src="/images/pasted-101.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;innoDB实现了共享锁（读锁）和排他锁（写锁）两种行级锁。意向共享锁和意向排他锁两种表级别的锁。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-97.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/im</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="锁" scheme="http://example.com/tags/%E9%94%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>lock与latch</title>
-    <link href="http://example.com/2022/02/10/lock%E4%B8%8Elatch/"/>
-    <id>http://example.com/2022/02/10/lock%E4%B8%8Elatch/</id>
-    <published>2022-02-10T05:36:00.000Z</published>
-    <updated>2022-02-10T05:38:14.315Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-96.png" alt="upload successful"> </p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-96.png&quot; alt=&quot;upload successful&quot;&gt;
- &lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="锁" scheme="http://example.com/tags/%E9%94%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL分区</title>
-    <link href="http://example.com/2022/02/09/MySQL%E5%88%86%E5%8C%BA/"/>
-    <id>http://example.com/2022/02/09/MySQL%E5%88%86%E5%8C%BA/</id>
-    <published>2022-02-09T12:14:49.000Z</published>
-    <updated>2022-02-09T12:14:49.287Z</updated>
-    
-    
-    
-    
     
   </entry>
   
