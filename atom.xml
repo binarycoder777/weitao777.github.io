@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-02T11:40:36.822Z</updated>
+  <updated>2022-03-03T13:56:15.460Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,154 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Spring的IOC容器之BeanFactory</title>
+    <link href="http://example.com/2022/03/03/Spring%E7%9A%84IOC%E5%AE%B9%E5%99%A8%E4%B9%8BBeanFactory/"/>
+    <id>http://example.com/2022/03/03/Spring%E7%9A%84IOC%E5%AE%B9%E5%99%A8%E4%B9%8BBeanFactory/</id>
+    <published>2022-03-03T13:21:00.000Z</published>
+    <updated>2022-03-03T13:56:15.460Z</updated>
+    
+    <content type="html"><![CDATA[<p>BeanFactory，顾名思义，就是生产Bean的工厂。当然，严格来说，这个“生产过程”可能不像<br>说起来那么简单。既然Spring框架提倡使用POJO，那么把每个业务对象看作一个JavaBean对象，或许<br>更容易理解为什么Spring的IoC基本容器会起这么一个名字。作为Spring提供的基本的IoC容器，<br>BeanFactory可以完成作为IoC Service Provider的所有职责，包括业务对象的注册和对象间依赖关系的<br>绑定。</p><p>BeanFactory就像一个汽车生产厂。你从其他汽车零件厂商或者自己的零件生产部门取得汽车零<br>件送入这个汽车生产厂，最后，只需要从生产线的终点取得成品汽车就可以了。相似地，将应用所需<br>的所有业务对象交给BeanFactory之后，剩下要做的，就是直接从BeanFactory取得最终组装完成并<br>且可用的对象。至于这个最终业务对象如何组装，你不需要关心，BeanFactory会帮你搞定。</p><p>所以，对于客户端来说，与BeanFactory打交道其实很简单。最基本地，BeanFactory肯定会公<br>开一个取得组装完成的对象的方法接口，就像代码清单4-1中真正的BeanFactory的定义所展示的那<br>样。</p><p>BeanFactory就像一个汽车生产厂。你从其他汽车零件厂商或者自己的零件生产部门取得汽车零件送入这个汽车生产厂，最后，只需要从生产线的终点取得成品汽车就可以了。相似地，将应用所需的所有业务对象交给BeanFactory之后，剩下要做的，就是直接从BeanFactory取得最终组装完成并<br>且可用的对象。至于这个最终业务对象如何组装，你不需要关心，BeanFactory会帮你搞定。</p><p>当BeanFactory说这些事情让它来做的时候，可能没有告诉你它会怎么来做<br>这个事情。不过没关系，我们通常只需将“生产线图纸”交给BeanFactory就行了。通常情况下，它会通过常用的图纸（XML文件）来注册并管理各个业务对象之间的依赖关系。</p><p>当然BeanFactory只是一个接口，我们最终需要一个该接口的实现来进行实际的Bean的管理，DefaultListableBeanFactory就是这么一个比较通用的BeanFactory实现类。</p><p>DefaultListableBeanFactory除了间接地实现了BeanFactory接口，还实现了BeanDefinitionRegistry接口，该接口才是在BeanFactory的实现中担当Bean注册管理的角色。基本上，BeanFactory接口只定义如何访问容器内管理的Bean的方法，各个BeanFactory的具体实现类负责具体Bean的注册以及管理工作。BeanDefinitionRegistry接口定义抽象了Bean的注册逻辑。通常情况下，具体的BeanFactory实现类会实现这个接口来管理Bean的注册。</p><p> <img src="/images/pasted-110.png" alt="upload successful"></p><p> 每一个受管的对象，在容器中都会有一个BeanDefinition的实例（instance）与之相对应，该<br>BeanDefinition的实例负责保存对象的所有必要信息，包括其对应的对象的class类型、是否是抽象<br>类、构造方法参数以及其他属性等。当客户端向BeanFactory请求相应对象的时候，BeanFactory会<br>通过这些信息为客户端返回一个完备可用的对象实例。RootBeanDefinition和ChildBeanDefinition是BeanDefinition的两个主要实现类。</p><p>采用外部配置文件时，Spring的IoC容器有一个统一的处理方式。通常情况下，需要根据不同的外<br>部配置文件格式，给出相应的BeanDefinitionReader实现类，由BeanDefinitionReader的相应实<br>现类负责将相应的配置文件内容读取并映射到BeanDefinition，然后将映射后的BeanDefinition注<br>册到一个BeanDefinitionRegistry，之后，BeanDefinitionRegistry即完成Bean的注册和加载。<br>当然，大部分工作，包括解析文件格式、装配BeanDefinition之类的工作，都是由BeanDefinitionReader的相应实现类来做的，BeanDefinitionRegistry只不过负责保管而已。</p><p>与为  Properties配置文件格式提供PropertiesBeanDefinitionReader相对应，Spring同样为XML<br>格式的配置文件提供了现成的BeanDefinitionReader实现，即XmlBeanDefinitionReader。<br>XmlBeanDefinitionReader负责读取Spring指定格式的XML配置文件并解析，之后将解析后的文件内<br>容映射到相应的BeanDefinition，并加载到相应的<br>BeanDefinitionRegistry中（在这里是DefaultListableBeanFactory）。这时，整个BeanFactory就可以放给客户端使用了。除了提供XmlBeanDefinitionReader用于XML格式配置文件的加载，Spring还在DefaultListableBeanFactory的基础上构建了简化XML格式配置加载的XmlBeanFactory实现。</p><p>如果要通过注解标注的方式为类注入所需要的依赖，现在可以使用@Autowired以 及@Component等对相关类进行标记。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;BeanFactory，顾名思义，就是生产Bean的工厂。当然，严格来说，这个“生产过程”可能不像&lt;br&gt;说起来那么简单。既然Spring框架提倡使用POJO，那么把每个业务对象看作一个JavaBean对象，或许&lt;br&gt;更容易理解为什么Spring的IoC基本容器会起这么一</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="BeanFactory" scheme="http://example.com/tags/BeanFactory/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring的IOC容器</title>
+    <link href="http://example.com/2022/03/03/Spring%E7%9A%84IOC%E5%AE%B9%E5%99%A8/"/>
+    <id>http://example.com/2022/03/03/Spring%E7%9A%84IOC%E5%AE%B9%E5%99%A8/</id>
+    <published>2022-03-03T13:11:00.000Z</published>
+    <updated>2022-03-03T13:20:31.109Z</updated>
+    
+    <content type="html"><![CDATA[<p>Spring的IoC容器是一个IoC Service Provider，但是，这只是它被冠以IoC之名的部分原因，我们不能忽略的是“容器”。Spring的IoC容器是一个提供IoC支持的轻量级容器，除了基本的IoC支持，它作为轻量级容器还提供了IoC之外的支持。如在Spring的IoC容器之上，Spring还提供了相应的AOP框架支持、企业级服务集成等服务。Spring的IoC容器和IoCService Provider所提供的服务之间存在一定的交集。</p><p> <img src="/images/pasted-109.png" alt="upload successful"></p><p> Spring提供了两种容器类型：BeanFactoryApplicationContext</p><p>  BeanFactory。基础类型IoC容器，提供完整的IoC服务支持。如果没有特殊指定，默认采用延迟初始化策略（lazy-load）。只有当客户端对象需要访问容器中的某个受管对象的时候，才对该受管对象进行初始化以及依赖注入操作。所以，相对来说，容器启动初期速度较快，所需要的资源有限。对于资源有限，并且功能要求不是很严格的场景，BeanFactory是比较合适的<br>IoC容器选择。</p><p>  ApplicationContext在BeanFactory的基础上构建，是相对比较高级的容器实现，除了拥有BeanFactory的所有支持，ApplicationContext还提供了其他高级特性，比如事件发布、国际化信息支持等。ApplicationContext所管理的对象，在该类型容器启动之后，默认全部初始化并绑定完成。所以，相对于BeanFactory来说，ApplicationContext要求更多的系统资源，同时，因为在启动时就完成所有初始化，容器启动时间较之BeanFactory也会长一些。在那些系统资源充足，并且要求更多功能的场景中，ApplicationContext类型的容器是比较合适的选择。 </p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Spring的IoC容器是一个IoC Service Provider，但是，这只是它被冠以IoC之名的部分原因，我们不能忽略的是“容器”。Spring的IoC容器是一个提供IoC支持的轻量级容器，除了基本的IoC支持，它作为轻量级容器还提供了IoC之外的支持。如在Spri</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="IOC" scheme="http://example.com/tags/IOC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>—IoC Service Provider 如何管理对象间的 依赖关系</title>
+    <link href="http://example.com/2022/03/03/%E2%80%94IoC-Service-Provider-%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E5%AF%B9%E8%B1%A1%E9%97%B4%E7%9A%84-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/"/>
+    <id>http://example.com/2022/03/03/%E2%80%94IoC-Service-Provider-%E5%A6%82%E4%BD%95%E7%AE%A1%E7%90%86%E5%AF%B9%E8%B1%A1%E9%97%B4%E7%9A%84-%E4%BE%9D%E8%B5%96%E5%85%B3%E7%B3%BB/</id>
+    <published>2022-03-03T10:30:00.000Z</published>
+    <updated>2022-03-03T13:11:08.016Z</updated>
+    
+    <content type="html"><![CDATA[<p>IoC Service Provider不是人类，也就不能像酒吧服务生那样通过大脑来记忆和存储所有的相关信<br>息。所以，它需要寻求其他方式来记录诸多对象之间的对应关系。比如：</p><p> 它可以通过最基本的文本文件来记录被注入对象和其依赖对象之间的对应关系； </p><p> 它也可以通过描述性较强的XML文件格式来记录对应信息；</p><p> 它还可以通过编写代码的方式来注册这些对应信息； </p><p> 甚至，如果愿意，它也可以通过语音方式来记录对象间的依赖注入关系（“嗨，它要一个这种类型的对象，拿这个给它”）。</p><p>那么，实际情况下，各种具体的IoC Service Provider实现又是通过哪些方式来记录“服务信息”的呢？我们可以归纳一下，当前流行的 IoC Service Provider产品使用的注册对象管理信息的方式主要有以下几种。</p><p>1、直接编码方式</p><p>2、配置文件方式</p><p>3、元数据方式</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;IoC Service Provider不是人类，也就不能像酒吧服务生那样通过大脑来记忆和存储所有的相关信&lt;br&gt;息。所以，它需要寻求其他方式来记录诸多对象之间的对应关系。比如：&lt;/p&gt;
+&lt;p&gt; 它可以通过最基本的文本文件来记录被注入对象和其依赖对象之间的对应关系； &lt;/</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="IOC" scheme="http://example.com/tags/IOC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>IoC Service Provider 的职责</title>
+    <link href="http://example.com/2022/03/03/IoC-Service-Provider-%E7%9A%84%E8%81%8C%E8%B4%A3/"/>
+    <id>http://example.com/2022/03/03/IoC-Service-Provider-%E7%9A%84%E8%81%8C%E8%B4%A3/</id>
+    <published>2022-03-03T10:27:00.000Z</published>
+    <updated>2022-03-03T10:28:50.333Z</updated>
+    
+    <content type="html"><![CDATA[<p>IoC Service Provider的职责相对来说比较简单，主要有两个：业务对象的构建管理和业务对象间<br>的依赖绑定。</p><p> 业务对象的构建管理。在IoC场景中，业务对象无需关心所依赖的对象如何构建如何取得，但这部分工作始终需要有人来做。所以，IoC Service Provider需要将对象的构建逻辑从客户端对象那里剥离出来，以免这部分逻辑污染业务对象的实现。</p><p> 业务对象间的依赖绑定。对于IoC Service Provider来说，这个职责是最艰巨也是最重要的，这是它的最终使命之所在。如果不能完成这个职责，那么，无论业务对象如何的“呼喊”，也不<br>会得到依赖对象的任何响应（最常见的倒是会收到一个NullPointerException）。IoC Service Provider通过结合之前构建和管理的所有业务对象，以及各个业务对象间可以识别的依赖关系，将这些对象所依赖的对象注入绑定，从而保证每个业务对象在使用的时候，可以处于就绪状<br>态。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;IoC Service Provider的职责相对来说比较简单，主要有两个：业务对象的构建管理和业务对象间&lt;br&gt;的依赖绑定。&lt;/p&gt;
+&lt;p&gt; 业务对象的构建管理。在IoC场景中，业务对象无需关心所依赖的对象如何构建如何取得，但这部分工作始终需要有人来做。所以，IoC S</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="IoC Service Provider" scheme="http://example.com/tags/IoC-Service-Provider/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>IOC的基本理念：让别人为你服务</title>
+    <link href="http://example.com/2022/03/03/IOC%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%90%86%E5%BF%B5%EF%BC%9A%E8%AE%A9%E5%88%AB%E4%BA%BA%E4%B8%BA%E4%BD%A0%E6%9C%8D%E5%8A%A1/"/>
+    <id>http://example.com/2022/03/03/IOC%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%90%86%E5%BF%B5%EF%BC%9A%E8%AE%A9%E5%88%AB%E4%BA%BA%E4%B8%BA%E4%BD%A0%E6%9C%8D%E5%8A%A1/</id>
+    <published>2022-03-03T09:01:00.000Z</published>
+    <updated>2022-03-03T10:25:33.400Z</updated>
+    
+    <content type="html"><![CDATA[<p>IOC即控制反转，它还有一个别名叫做依赖注入（Dependency<br>Injection）。</p><p>在我日常开发中，经常需要一个对象依赖于另一个对象的服务。最简单而有效的方式就是直接在类的构造函数中新建相应的依赖类。这就好比要装修新房，需要用家具，这个时候，根据通常解决<br>对象依赖关系的做法，我们就会直接打造出需要的家具来。不过，通常都是分工明确的，所以，大多数情况下，我们可以去家具广场将家具买回来，然后根据需要装修布置即可。不管是直接打造家具（通过new构造对象），还是去家具广场买家具（通过工厂设计模式），有一个共同点需要我们关注，那就是我们都是自己主动地去获取依赖的对象！可是回头想想，我们自己每次用到什么依赖对象都要主动地去获取，这是否真的必要？我们最终所要做的，其实就是直接调用依赖对象所提供的某项服务而已。只要用到这个依赖对象的时候，它能够准备就绪，我们完全可以不管这个对象是自己找来的还是别人送过来的。</p><p>实际上IOC就是为了帮助我们解决这种问题的，而提供了更加轻松简洁的方式。它的反转，就反转在让你从原来的事必躬亲，转变为现在的享受服务。</p><p>通常情况下，被注入对象会直接依赖于被依赖对象。但是，在IoC的场景中，二者之间通过IoC Service Provider来打交道，所有的被注入对象和依赖对象现在由IoC Service Provider统一管理。被注入对象需要什么，直接跟IoC Service Provider招呼一声，后者就会把相应的被依赖对象注入到被注入对象中，从而达到IoC Service Provider为被注入对象服务的目的。IoC Service Provider在这里就是通常的IoC容器所充当的角色。从被注入对象的角度看，与之前直接寻求依赖对象相比，依赖对象的取得方式发生了反转，控制也从被注入对象转到了IoC Service Provider那里。</p><p> <img src="/images/pasted-107.png" alt="upload successful"></p><p> （IoC Service Provider在这里是一个抽象出来的概念，它可以指代任何将IoC场景中的业务对象绑定<br>到一起的实现方式。它可以是一段代码，也可以是一组相关的类，甚至可以是比较通用的IoC框架或<br>者IoC容器实现。）</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;IOC即控制反转，它还有一个别名叫做依赖注入（Dependency&lt;br&gt;Injection）。&lt;/p&gt;
+&lt;p&gt;在我日常开发中，经常需要一个对象依赖于另一个对象的服务。最简单而有效的方式就是直接在类的构造函数中新建相应的依赖类。这就好比要装修新房，需要用家具，这个时候，根据</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="IOC的理解" scheme="http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring三种注入方法比较</title>
+    <link href="http://example.com/2022/03/03/Spring%E4%B8%89%E7%A7%8D%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%E6%AF%94%E8%BE%83/"/>
+    <id>http://example.com/2022/03/03/Spring%E4%B8%89%E7%A7%8D%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%E6%AF%94%E8%BE%83/</id>
+    <published>2022-03-03T08:53:00.000Z</published>
+    <updated>2022-03-03T08:54:49.415Z</updated>
+    
+    <content type="html"><![CDATA[<p> 接口注入。从注入方式的使用上来说，接口注入是现在不甚提倡的一种方式，基本处于“退<br>役状态”。因为它强制被注入对象实现不必要的接口，带有侵入性。而构造方法注入和setter<br>方法注入则不需要如此。</p><p>构造方法注入。这种注入方式的优点就是，对象在构造完成之后，即已进入就绪状态，可以  马上使用。缺点就是，当依赖对象比较多的时候，构造方法的参数列表会比较长。而通过反<br>射构造对象的时候，对相同类型的参数的处理会比较困难，维护和使用上也比较麻烦。而且<br>在Java中，构造方法无法被继承，无法设置默认值。对于非必须的依赖处理，可能需要引入多<br>个构造方法，而参数数量的变动可能造成维护上的不便。</p><p>setter方法注入。因为方法可以命名，所以setter方法注入在描述性上要比构造方法注入好一些。  另外，setter方法可以被继承，允许设置默认值，而且有良好的IDE支持。缺点当然就是对象无<br>法在构造完成后马上进入就绪状态。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; 接口注入。从注入方式的使用上来说，接口注入是现在不甚提倡的一种方式，基本处于“退&lt;br&gt;役状态”。因为它强制被注入对象实现不必要的接口，带有侵入性。而构造方法注入和setter&lt;br&gt;方法注入则不需要如此。&lt;/p&gt;
+&lt;p&gt;构造方法注入。这种注入方式的优点就是，对象在构造完</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="注入方式" scheme="http://example.com/tags/%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL怎么查看索引是否是高选择性？</title>
@@ -359,162 +507,6 @@
     
     
     
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL表</title>
-    <link href="http://example.com/2022/02/09/MySQL%E8%A1%A8/"/>
-    <id>http://example.com/2022/02/09/MySQL%E8%A1%A8/</id>
-    <published>2022-02-09T10:47:00.000Z</published>
-    <updated>2022-02-09T12:07:08.587Z</updated>
-    
-    <content type="html"><![CDATA[<p>innoDB中，表根据主键顺序存放。每张表都有一个主键，在建表时没有显示定义主键，则innoDB会先判断表中是否有非空的唯一索引，如果有，则该索引即为主键（对于多个非空唯一索引，根据定义的顺序选择，而不是建表列的顺序选择），如果没有，则会自动创建一个6字节的指针。</p><p>innoDB中，数据被逻辑的放在一个表空间。表空间由段组成，段又由区组成，区又有页组成，页时最基本的单位。如下：<br> <img src="/images/pasted-83.png" alt="upload successful"></p><p>innoDB默认情况下有一个共享表空间，如果用户开启参数innodb_file_per_table则每张表的数据单独放到一个表空间。（需要注意的是：单独的表空间只是存放数据、索引和插入缓冲bitmap页，对于其他数据，如回滚信息、插入缓冲索引页等仍是存放在共享表空间）</p><p>对于段由innoDB管理，数据段即为B+tree的叶子节点，索引段即为B+tree的非叶子节点，回滚段较为特殊。</p><p>区则是连续页（默认16kb/页）组成的空间（大小1mb）。一个区默认有64个连续的页。为了保证区中页的连续性，innoDB会一次从磁盘申请4-5个区。值得注意的是：</p><p> <img src="/images/pasted-84.png" alt="upload successful"></p><p> innoDB常见页：</p><p> <img src="/images/pasted-85.png" alt="upload successful"></p><p> 页又由行组成最多允许7992（16kb/2-200）行记录。innoDB提供了Compact和Redundant格式的行数据格式。需要注意：除了下图的信息外，还存在事务ID列（6字节）和回滚指针列（7字节），如果innoDB没有定义主键还会有一个6字节的rowid列</p><p> Compact行记录：</p><p> <img src="/images/pasted-86.png" alt="upload successful"></p><p> <img src="/images/pasted-87.png" alt="upload successful"></p><p> Redundant行记录格式：</p><p> <img src="/images/pasted-88.png" alt="upload successful"></p><p> <img src="/images/pasted-89.png" alt="upload successful"></p><p>当然一般情况下innoDB的数据都是放在页类型为B+tree-node中，但是当发生行溢出，数据存放在Uncompress BLOB页中。<br> <img src="/images/pasted-90.png" alt="upload successful"></p><p> innoDB数据页结构：</p><p> <img src="/images/pasted-92.png" alt="upload successful"><br> <img src="/images/pasted-91.png" alt="upload successful"></p><p> <img src="/images/pasted-93.png" alt="upload successful"></p><p> <img src="/images/pasted-94.png" alt="upload successful"></p><p> <img src="/images/pasted-95.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;innoDB中，表根据主键顺序存放。每张表都有一个主键，在建表时没有显示定义主键，则innoDB会先判断表中是否有非空的唯一索引，如果有，则该索引即为主键（对于多个非空唯一索引，根据定义的顺序选择，而不是建表列的顺序选择），如果没有，则会自动创建一个6字节的指针。&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="表" scheme="http://example.com/tags/%E8%A1%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL文件</title>
-    <link href="http://example.com/2022/02/09/MySQL%E6%96%87%E4%BB%B6/"/>
-    <id>http://example.com/2022/02/09/MySQL%E6%96%87%E4%BB%B6/</id>
-    <published>2022-02-09T08:05:00.000Z</published>
-    <updated>2022-02-09T08:39:14.232Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、参数文件：MySQL实例启动时会读取参数文件来初始化。</p><p>2、日志文件：</p><p>错误日志（记录了MySQL执行期间的错误信息）</p><p>二进制日志（记录了对MySQL执行的写操作，默认未开启。</p><p>作用：<br>1、恢复，可以通过binlog进行数据的恢复<br>2、复制：通过复制和执行binlog对远程的MySQL进行实时数据同步（主从复制）<br>3、审计：对binlog数据进行审计，看是否有对数据库进行注入的攻击</p><p> <img src="/images/pasted-81.png" alt="upload successful"></p><p> <img src="/images/pasted-82.png" alt="upload successful"><br>）</p><p>慢查询日志（可以从中得到一些SQL优化信息，默认未开启）</p><p>查询日志（记录了所有对MySQL的请求信息）</p><p>3、套接字文件</p><p>4、pid文件</p><p>5、表结构定义文件（以frm为后缀名）：记录了该表的表结构定义。除此之外还用于存放视图的定义。</p><p>6、innoDB存储引擎文件：</p><p>a）表空间文件（默认10mb，名为ibdata1）：可以设置基于innoDB存储的单独的。idb独立表空间文件（仅存储数据、索引等信息，其他信息还是存放于表空间文件）。</p><p> <img src="/images/pasted-78.png" alt="upload successful"></p><p> b）、redolog文件（默认会有两个名为ib_logfile0和ib_logfile1的文件）：每个innoDB至少有一个redolog组（每组至少有两个redolog文件），redolog冲缓冲区写入磁盘是按512字节，即一个扇区大小，可以保障写入必定成功（所有不需要doublewrite）</p><p> <img src="/images/pasted-79.png" alt="upload successful"></p><p> <img src="/images/pasted-80.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、参数文件：MySQL实例启动时会读取参数文件来初始化。&lt;/p&gt;
-&lt;p&gt;2、日志文件：&lt;/p&gt;
-&lt;p&gt;错误日志（记录了MySQL执行期间的错误信息）&lt;/p&gt;
-&lt;p&gt;二进制日志（记录了对MySQL执行的写操作，默认未开启。&lt;/p&gt;
-&lt;p&gt;作用：&lt;br&gt;1、恢复，可以通过bi</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="文件" scheme="http://example.com/tags/%E6%96%87%E4%BB%B6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>innoDB存储引擎</title>
-    <link href="http://example.com/2022/02/09/innoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/"/>
-    <id>http://example.com/2022/02/09/innoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E/</id>
-    <published>2022-02-09T03:04:00.000Z</published>
-    <updated>2022-02-09T07:37:44.969Z</updated>
-    
-    <content type="html"><![CDATA[<p>innoDB存储引擎是开源的第一个完整支持ACID事务的MySQL存储引擎（第一个支持事务的是BDB存储引擎），其特点是行锁设计、支持MVCC、支持外键、一致性非锁定读等。被广泛的应用。</p><p> <img src="/images/pasted-58.png" alt="upload successful"></p><p> innoDB存储引擎有多个内存块，组成了一个大的内存池，每个内存块有指定的后台线程来维护其运行。</p><p> 1、main线程主要负责将缓冲区的数据异步刷新到磁盘，保证数据的一致性（包括脏页的刷新、合并插入缓冲、undo页的回收等）</p><p> 2、IO线程主要是负责IO请求的回调，包括read、write、insert buffer、log等，其使用了AIO机制，保证了IO性能。</p><p> 3、Purge线程主要用于回收提交事务之后，undo页可能不再需要，需要对其进行回收。（1.2版本支持多个Purge线程，目的是进一步加快undo页的回收，提升性能）</p><p> 4、Page cleaner线程主要用于脏页的刷新操作，减轻main线程的压力。</p><p> innoDB是基于磁盘存储的，为了权衡磁盘速度和CPU速度的差异，提供了一块缓冲池技术来提升性能。（因此可以将缓冲池区域设置大一点来进行优化操作）innoDB1.0允许多个缓冲池实例，磁盘读取的页根据哈希值均匀分配到不同缓冲池中（目的：减少数据库资源竞争，增加数据库并发处理能力）</p><p> 在数据的读取中，会先去缓冲池中查看是否存在于缓冲池，如果存在直接读取，不存在则去磁盘读取，在同步到缓冲池中。而对于写操作则是先写到缓冲池，然后根据Checkpoint机制将脏数据刷新到磁盘，保证磁盘和内存数据的一致性。</p><p> 缓冲池具体的数据页有：</p><p> <img src="/images/pasted-59.png" alt="upload successful"></p><p> 为了管理这些数据页，innoDB使用了一个freeLIst链表来管理空闲的页内存，LRUList来管理已经分配的页内存，flushList来管理脏页。（脏页及存在于LRUList，又存在于flushList，是两者共享的）</p><p> 对于LRUList管理的页，采用了LRU（最近最少使用）算法来管理（缓冲池页大小默认16kb），在LRU列表中加入了一个midpoint位置（默认是5/8位置处），midpoint位置前面的是热点数据区域，后面的是冷数据区域（设置冷、热数据区域主要是为了保证一些经常被访问的数据存在于内存中，提示效率的一种考虑）。当一个新的页被分配到LRULIst上，会先加入到midpoint位置后面（这样做是为了防止当进行全表查询的时候，多个页会覆盖调热数据区域的页，而这些查的数据页又只使用一次，后续不再使用，当后面访问热区域的页时有会从磁盘中查找，浪费性能），同时也指定了一个从冷数据区域晋升到热数据区域的参数，当到了晋升时间后，冷数据区域的页就会晋升到热数据区域。</p><p>值得注意的是：空闲页的内存freeList+以分配的页内存LRUList并不等于缓冲池的内存，因为缓冲池中包含得其他部分页（自适应哈希索引、lock信息等）不需要LRU维护，不存在于LRUList中。</p><p> <img src="/images/pasted-60.png" alt="upload successful"></p><p> 另外，页是支持压缩的，16kb的页可以压缩成1kb、2kb、4kb、8kb。页的大小发生变化，所有对于压缩的页，会使用zipLRUList进行管理。（注意：LRUList包含zipLRUList中的页）</p><p> 对于zipLIRList的页的分配采用伙伴算法</p><p>例如压缩后的页为4kb</p><p>1、先检查4kb的zipLRUList是否有空闲页，存在即分配</p><p>2、否则，检查8kb的zipLRUList看是否存在空闲页，存在则将8kb分为两个4kb，将4kb的页放入4kbzipLRUList<br>，然后为其分配</p><p>3、在否则，检查16kb的freeList看是否存在空闲页，存在则将16kb分为两个4kb，一个8kb，分别放入对应zipLRUList，然后为其分配</p><p> <img src="/images/pasted-61.png" alt="upload successful"></p><p> 由上图可知，innoDB除了缓冲池，还存在redolog日志缓冲和额外内存池。</p><p> 其中redolog日志缓冲（默认8mb大小）是redolog文件的缓冲区（redolog文件记录了写请求的指令，对页的写指令都会记录到这个文件中，后续数据库恢复会使用到这个文件）当满足以下条件就会将缓冲区的数据刷新到文件中。</p><p> 1、每个事物提交会进行刷新</p><p> 2、当缓冲区小于一半，会进行刷新</p><p> 3、main线程每秒会进行一次刷新</p><p> 而额外的内存池则是在对于一些数据结构本身进行进行内存分配时会从额外内存储进行申请。</p><p>前面提到进行写操作入时，一般会先写到缓冲区，然后在根据checkpoint机制将脏页刷新到内存，保持内存和磁盘数据的一致性。但考虑到如果频繁发生写操作，而对脏数据刷新到磁盘不加以控制，每来一个写操作，都会进行一次刷新，那就会产生大量的io，导致整体性能下降；除此之外，在刷新的时候如果出现了宕机，数据也会丢失。因此采用提交事物前，先写redolog日志，然后在修改内存中的页，即使将脏页刷新到磁盘时出现宕机，也能够根据redolog日志进行恢复。而chenckpoint技术就是为了解决</p><p>1、缩短数据库的恢复时间（因为chenckpoint前的脏页都已经刷新到磁盘了，只需对chenckpoint之后的进行恢复）<br>2、缓冲池不够时将脏页刷新到磁盘。（当缓冲池不够用时，会根据LRU算法将最近最少用的页淘汰，而淘汰时会检测是否为脏页，如果是则执行checkpoint，将脏页刷新到磁盘）<br>3、redolog日志不够用时，刷新脏页（即redolog的大小是有限制的，chenckpont前的是可重用的，而chenckpoint之后的是需要的，如果redolog文件里面全部都是需要使用的，则必须进行checkpoint）</p><p>在innoDB中，使用LSN（八字节）标记版本，每个页都有自己的LSN，redolog日志中和checkpoint中也有。</p><p>在innoDB中存在两种checkpoint，即sharp checkpoint（默认）和fuzzy checkpoint。</p><p>sharp checkpoint发生在数据库关闭时，此时会将所有脏页刷新到磁盘（会发生迟钝）</p><p>fuzzy checkpoint则是每次只刷新部分脏页到磁盘。以下是几种发生fuzzy checkpoint的情况：</p><p> <img src="/images/pasted-62.png" alt="upload successful"></p><p> 1、main线程会每秒或10秒的速度从fulshList中刷新页到磁盘。</p><p> 2、当缓冲池没有多余空闲空间，会根据LRU算法冲LRUList淘汰页，对于淘汰的页会检测是否是脏页，是则会刷新到磁盘。</p><p> 3、当redolog不可用时会强制flushList中的脏页进行刷新</p><p> 4、当脏页太多，也会强制进行checkpoint刷新脏页到磁盘。</p><p> innoDB主要工作都是在main线程中完成的，其内部由多个循环组成（主循环、后台循环、刷新循环、暂停循环），在多个循环中切换进行工作。</p><p> innoDB1.0</p><p> 主循环：</p><p> <img src="/images/pasted-64.png" alt="upload successful"></p><p> <img src="/images/pasted-65.png" alt="upload successful"></p><p> 后台循环：</p><p> <img src="/images/pasted-66.png" alt="upload successful"></p><p> innoDB1.2基于上述IO限制，加入了innoDB_io_capacitiy用于表示IO（默认200），对于刷新的页用百分比来控制<br> <img src="/images/pasted-67.png" alt="upload successful"><br> 另外一个参数是innoDB_max_dirty_pct（默认75），当脏页小于innoDB_max_dirty_pct也会刷新一定量的脏页（之前是不会刷新的）。</p><p>  <img src="/images/pasted-61.png" alt="upload successful"><br>  接下来说一说innoDB的插入缓冲。insert buffer和数据页一样，是物理页的一部分。</p><p>  在innoDB中，主键是唯一标识，插入记录一般按主键递增顺序插入。因此，聚集索引一般是顺序的（比如自增id这种），对于顺序的一般插入操作速度很快，但对于主键是uuid之类则和辅助索引一样，是随机的。因此对于这种情况，按顺序插入则相对要慢得多。因此insert buffer的作用就是对于非聚集索引的插入或者更新操作先判断是否存在缓冲池，若存在则直接插入，不存在则放到insert buffer中，在以一定频率进行inser buffer和辅助索引子节点的合并，提高对于非聚集索引的插入性能。当然使用insert buffer需要满足<br> <img src="/images/pasted-69.png" alt="upload successful"></p><p> <img src="/images/pasted-70.png" alt="upload successful"></p><p> insert buffer数据实现是一颗b+树，<br> <img src="/images/pasted-72.png" alt="upload successful"></p><p><img src="/images/pasted-73.png" alt="upload successful"></p><p> <img src="/images/pasted-74.png" alt="upload successful"></p><p> change buffer：在1.0.x版本引入了channge buffer，可以对增删改都进行缓冲<br> <img src="/images/pasted-71.png" alt="upload successful"></p><p> 两次写：当innoDB刷新某个页到磁盘中，但只刷新了部分，数据库就宕机了（部分写失效）。double write就是为了解决这种情况产生的。</p><p> <img src="/images/pasted-75.png" alt="upload successful"></p><p> double write由两部分组成。一部分时内存double write buffer（大小2mb），一部分是磁盘上的共享表空间中连续的128页（即两个区，大小为2mb）。在对脏页进行刷新时，并不直接写磁盘，而是通过memcpy函数将脏页先复杂到 doublewrite buffer，然后doubllewrite buffer再分两次顺序的写到共享表空间的物理磁盘上（每次写1mb）。完成之后，在将doublewrite buffer中的页写入各个表文件空间中。如果在写入表中磁盘时发生了宕机什么的。在恢复时，可以从共享表空间中找到一个备份页，将其复制到表空间。</p><p> <img src="/images/pasted-76.png" alt="upload successful"></p><p> 自适应哈希：innoDB会对表上各索引页的查询监控。如果建立哈希索引会提升性能，则建立哈希索引。而条件就是：对这个页的连续访问模式要一样。</p><p> 异步IO：innoDB采用AIO的方式处理磁盘操作，可以在发起一个IO请求后，立马发起另一个IO请求，当全部发送完后，等所有请求操作完。除此之外，还可以进行IO的合并操作。</p><p> 刷新邻接页：即刷新一个脏页时，会检测该页周围的页是否是脏页，是则一并刷新。</p><p> <img src="/images/pasted-77.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;innoDB存储引擎是开源的第一个完整支持ACID事务的MySQL存储引擎（第一个支持事务的是BDB存储引擎），其特点是行锁设计、支持MVCC、支持外键、一致性非锁定读等。被广泛的应用。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-58.png&quot; al</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="innoDB" scheme="http://example.com/tags/innoDB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>jedis和redission</title>
-    <link href="http://example.com/2022/02/08/jedis%E5%92%8Credission/"/>
-    <id>http://example.com/2022/02/08/jedis%E5%92%8Credission/</id>
-    <published>2022-02-08T12:45:00.000Z</published>
-    <updated>2022-02-08T12:46:11.557Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-57.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-57.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="框架实现" scheme="http://example.com/tags/%E6%A1%86%E6%9E%B6%E5%AE%9E%E7%8E%B0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一致性hash算法</title>
-    <link href="http://example.com/2022/02/08/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95/"/>
-    <id>http://example.com/2022/02/08/%E4%B8%80%E8%87%B4%E6%80%A7hash%E7%AE%97%E6%B3%95/</id>
-    <published>2022-02-08T12:33:00.000Z</published>
-    <updated>2022-02-08T12:34:21.071Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-55.png" alt="upload successful"></p><p> <img src="/images/pasted-56.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-55.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-56.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    <category term="Redis" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/Redis/"/>
-    
-    
-    <category term="一致性哈希算法" scheme="http://example.com/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis集群的主从复制模型</title>
-    <link href="http://example.com/2022/02/08/Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/"/>
-    <id>http://example.com/2022/02/08/Redis%E9%9B%86%E7%BE%A4%E7%9A%84%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/</id>
-    <published>2022-02-08T12:27:00.000Z</published>
-    <updated>2022-02-08T12:27:38.911Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-54.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-54.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="主从复制模型" scheme="http://example.com/tags/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6%E6%A8%A1%E5%9E%8B/"/>
     
   </entry>
   
