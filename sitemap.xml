@@ -856,14 +856,14 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/HashMap/</loc>
+    <loc>http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
   </url>
   
   <url>
-    <loc>http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
+    <loc>http://example.com/tags/HashMap/</loc>
     <lastmod>2022-03-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
