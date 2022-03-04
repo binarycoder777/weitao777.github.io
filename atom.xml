@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-03T16:01:27.658Z</updated>
+  <updated>2022-03-04T14:04:16.777Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,310 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>软件设计原则</title>
+    <link href="http://example.com/2022/03/04/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/"/>
+    <id>http://example.com/2022/03/04/%E8%BD%AF%E4%BB%B6%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/</id>
+    <published>2022-03-04T13:57:00.000Z</published>
+    <updated>2022-03-04T14:04:16.777Z</updated>
+    
+    <content type="html"><![CDATA[<p>在软件开发中，为了提高软件系统的可维护性和可复用性，增加软件的可扩展性和灵活性，程序员要尽量根据6条原则来开发程序，从而提高软件开发效率、节约软件开发成本和维护成本。</p><p>1、开闭原则：对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，实现一个热插拔的效果。</p><p>简言之，是为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类。因为抽象灵活性好，适应性广，只要抽象的合理，可以基本保持软件架构的稳定。而软件中易变的细节可以从抽象派生来的实现类来进行扩展，当软件需要发生变化时，只需要根据需求重新派生一个实现类来扩展就可以了。</p><p>2、里式替换原则：里氏代换原则是面向对象设计的基本原则之一。任何基类可以出现的地方，子类一定可以出现。通俗理解：子类可以扩展父类的功能，但不能改变父类原有的功能。换句话说，子类继承父类时，除添加新的方法完成新增功能外，尽量不要重写父类的方法。如果通过重写父类的方法来完成新的功能，这样写起来虽然简单，但是整个继承体系的可复用性会比较差，特别是运用多态比较频繁时，程序运行出错的概率会非常大。</p><p>3、依赖倒转原则：高层模块不应该依赖低层模块，两者都应该依赖其抽象；抽象不应该依赖细节，细节应该依赖抽象。简单的说就是要求对抽象进行编程，不要对实现进行编程，这样就降低了客户与实现模块间的耦合。</p><p>4、接口隔离原则：客户端不应该被迫依赖于它不使用的方法；一个类对另一个类的依赖应该建立在最小的接口上。</p><p>5、迪米特法则：迪米特法则又叫最少知识原则。<br>只和你的直接朋友交谈，不跟“陌生人”说话（Talk only to your immediate friends and<br>not to strangers）。<br>其含义是：如果两个软件实体无须直接通信，那么就不应当发生直接的相互调用，可以通过第三方转发<br>该调用。其目的是降低类之间的耦合度，提高模块的相对独立性。<br>迪米特法则中的“朋友”是指：当前对象本身、当前对象的成员对象、当前对象所创建的对象、当前对象<br>的方法参数等，这些对象同当前对象存在关联、聚合或组合关系，可以直接访问这些对象的方法。</p><p>6、合成复用原则：合成复用原则是指：尽量先使用组合或者聚合等关联关系来实现，其次才考虑使用继承关系来实现。<br>通常类的复用分为继承复用和合成复用两种。<br>继承复用虽然有简单和易实现的优点，但它也存在以下缺点：</p><ol><li>继承复用破坏了类的封装性。因为继承会将父类的实现细节暴露给子类，父类对子类是透明的，所<br>以这种复用又称为“白箱”复用。</li><li>子类与父类的耦合度高。父类的实现的任何改变都会导致子类的实现发生变化，这不利于类的扩展<br>与维护。</li><li>它限制了复用的灵活性。从父类继承而来的实现是静态的，在编译时已经定义，所以在运行时不可<br>能发生变化。<br>采用组合或聚合复用时，可以将已有对象纳入新对象中，使之成为新对象的一部分，新对象可以调用已<br>有对象的功能，它有以下优点：</li><li>它维持了类的封装性。因为成分对象的内部细节是新对象看不见的，所以这种复用又称为“黑箱”<br>复用。</li><li>对象间的耦合度低。可以在类的成员位置声明抽象。</li><li>复用的灵活性高。这种复用可以在运行时动态进行，新对象可以动态地引用与成分对象类型相同的<br>对象。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在软件开发中，为了提高软件系统的可维护性和可复用性，增加软件的可扩展性和灵活性，程序员要尽量根据6条原则来开发程序，从而提高软件开发效率、节约软件开发成本和维护成本。&lt;/p&gt;
+&lt;p&gt;1、开闭原则：对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，实现一</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="设计原则" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>UML类图</title>
+    <link href="http://example.com/2022/03/04/UML%E7%B1%BB%E5%9B%BE/"/>
+    <id>http://example.com/2022/03/04/UML%E7%B1%BB%E5%9B%BE/</id>
+    <published>2022-03-04T13:51:00.000Z</published>
+    <updated>2022-03-04T13:57:31.240Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-117.png" alt="upload successful"></p><p> 属性/方法名称前加的加号和减号表示了这个属性/方法的可见性，UML类图中表示可见性的符号有三种：</p><p>+：表示public</p><p>-：表示private</p><p>#：表示protected</p><p>属性的完整表示方式是： 可见性 名称 ：类型 [ = 缺省值]<br>方法的完整表示方式是： 可见性 名称(参数列表) [ ： 返回类型]</p><p>类之间关系的表示方式：</p><p>1、关联关系：关联关系是对象之间的一种引用关系，用于表示一类对象与另一类对象之间的联系，如老师和学生、师<br>傅和徒弟、丈夫和妻子等。关联关系是类与类之间最常用的一种关系，分为一般关联关系、聚合关系和组合关系。</p><p> <img src="/images/pasted-118.png" alt="upload successful"></p><p> <img src="/images/pasted-119.png" alt="upload successful"></p><p> 自关联：</p><p> <img src="/images/pasted-120.png" alt="upload successful"></p><p> 2、聚合关系：聚合关系是关联关系的一种，是强关联关系，是整体和部分之间的关系。<br>聚合关系也是通过成员对象来实现的，其中成员对象是整体对象的一部分，但是成员对象可以脱离整体<br>对象而独立存在。</p><p> <img src="/images/pasted-121.png" alt="upload successful"></p><p> 3、组合关系：组合表示类之间的整体与部分的关系，但它是一种更强烈的聚合关系。在组合关系中，整体对象可以控制部分对象的生命周期，一旦整体对象不存在，部分对象也将不存在，<br>部分对象不能脱离整体对象而存在。</p><p> <img src="/images/pasted-122.png" alt="upload successful"></p><p> 4、依赖关系：依赖关系是一种使用关系，它是对象之间耦合度最弱的一种关联方式，是临时性的关联。在代码中，某个类的方法通过局部变量、方法的参数或者对静态方法的调用来访问另一个类（被依赖类）中的某些方<br>法来完成一些职责。</p><p> <img src="/images/pasted-123.png" alt="upload successful"></p><p> 5、继承关系：继承关系是对象之间耦合度最大的一种关系，表示一般与特殊的关系，是父类与子类之间的关系，是一种继承关系。</p><p> <img src="/images/pasted-124.png" alt="upload successful"></p><p> 6、实现关系：实现关系是接口与实现类之间的关系。在这种关系中，类实现了接口，类中的操作实现了接口中所声明的所有的抽象操作。</p><p> <img src="/images/pasted-125.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-117.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 属性/方法名称前加的加号和减号表示了这个属性/方法的可见性，UML类图中表示可见性的符号有三种：&lt;/p&gt;
+&lt;p&gt;+：表示public&lt;/p</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="UML" scheme="http://example.com/tags/UML/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>设计模式的分类</title>
+    <link href="http://example.com/2022/03/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%88%86%E7%B1%BB/"/>
+    <id>http://example.com/2022/03/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%88%86%E7%B1%BB/</id>
+    <published>2022-03-04T13:31:00.000Z</published>
+    <updated>2022-03-04T13:34:39.072Z</updated>
+    
+    <content type="html"><![CDATA[<p>创建型模式：用于描述“怎样创建对象”，它的主要特点是“将对象的创建与使用分离”。（单例、原型、工厂方法、抽象工厂、建造者等）</p><p>结构型模式：用于描述如何将类或对象按某种布局成更大的结构。（代理、适配器、桥接、装饰、外观、享元、组合等）</p><p>行为型模式：用于描述类或对象之间怎样相互协作共同完成单个对象无法单独完成的任务，以及怎样分配职责。（模板方法、策略、命令、职责链、状态、观察者、中介者、迭代器、访<br>问者、备忘录、解释器等）</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;创建型模式：用于描述“怎样创建对象”，它的主要特点是“将对象的创建与使用分离”。（单例、原型、工厂方法、抽象工厂、建造者等）&lt;/p&gt;
+&lt;p&gt;结构型模式：用于描述如何将类或对象按某种布局成更大的结构。（代理、适配器、桥接、装饰、外观、享元、组合等）&lt;/p&gt;
+&lt;p&gt;行为型模式：</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="分类" scheme="http://example.com/tags/%E5%88%86%E7%B1%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>将革命进行得更彻底一些（classpath-scanning 功能介绍）</title>
+    <link href="http://example.com/2022/03/04/%E5%B0%86%E9%9D%A9%E5%91%BD%E8%BF%9B%E8%A1%8C%E5%BE%97%E6%9B%B4%E5%BD%BB%E5%BA%95%E4%B8%80%E4%BA%9B%EF%BC%88classpath-scanning-%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D%EF%BC%89/"/>
+    <id>http://example.com/2022/03/04/%E5%B0%86%E9%9D%A9%E5%91%BD%E8%BF%9B%E8%A1%8C%E5%BE%97%E6%9B%B4%E5%BD%BB%E5%BA%95%E4%B8%80%E4%BA%9B%EF%BC%88classpath-scanning-%E5%8A%9F%E8%83%BD%E4%BB%8B%E7%BB%8D%EF%BC%89/</id>
+    <published>2022-03-04T08:23:00.000Z</published>
+    <updated>2022-03-04T09:01:35.117Z</updated>
+    
+    <content type="html"><![CDATA[<p>到目前为止，我们还是需要将相应对象的bean定义，一个个地添加到IoC容器的配置文件中。与之前唯一的区别就是，不用在配置文件中明确指定依赖关<br>系了（改用注解来表达了嘛）。。既然使用注解来表达对象之间的依赖注入关系，那为什么不搞的彻底<br>一点儿，将那些几乎“光秃秃”的bean定义从配置文件中彻底消灭呢？OK，我们想到了，Spring开发<br>团队也想到了，classpath-scanning的功能正是因此而诞生的！</p><p>使用相应的注解对组成应用程序的相关类进行标注之后，classpath-scanning功能可以从某一顶层<br>包（base package）开始扫描。当扫描到某个类标注了相应的注解之后，就会提取该类的相关信息，构<br>建对应的BeanDefinition，然后把构建完的BeanDefinition注册到容器。这之后所发生的事情就不<br>用我说了，既然相关的类已经添加到了容器，那么后面BeanPostProcessor为@Autowired或者<br>@Resource所提供的注入肯定是有东西拿咯！</p><p>classpath-scanning功能的触发是由<a href="context:component-scan">context:component-scan</a>决定的。</p><p><a href="context:component-scan">context:component-scan</a>默认扫描的注解类型是@Component。不过，在@Component语义基<br>础上细化后的@Repository、@Service和@Controller也同样可以获得<a href="context:component-scan">context:component-scan</a><br>的青睐。@Component的语义更广、更宽泛，而@Repository、@Service和@Controller的语义则更具<br>体。所以，同样对于服务层的类定义来说，使用@Service标注它，要比使用@Component更为确切。<br>对于其他两种注解也是同样道理，我们暂且使用语义更广的@Component来标注FXNews相关类，以便<br>摆脱每次都要向IoC容器配置添加bean定义的苦恼。</p><p><a href="context:component-scan">context:component-scan</a>在扫描相关类定义并将它们添加到容器的时候，会使用一种默认的<br>命名规则，来生成那些添加到容器的bean定义的名称（beanName）。比如DowJonesNewsPersister通<br>过默认命名规则将获得dowJonesNewsPersister作为bean定义名称。如果想改变这一默认行为，可以指定一个自定义的名称</p><p>你或许会觉得有些诧异，因为我们并没有使用<a href="context:annotation-config">context:annotation-config</a>甚至直接将相应<br>的BeanPostProcessor添加到容器中，而FXNewsProvider怎么会获得相应的依赖注入呢？这个得怪<br><a href="context:component-scan">context:component-scan</a>“多管闲事”，它同时将AutowiredAnnotationBeanPostProcessor和<br>CommonAnnotationBeanPostProcessor一并注册到了容器中，所以，依赖注入的需求得以满足。如<br>果你不喜欢，非要自己通过 <a href="context:annotation-config">context:annotation-config</a> 或者直接添加相关 BeanPostProcessor的方式来满足@Autowired或者@Resource的需求，可以将<a href="context:component-scan">context:component-scan</a>的<br>annotation-config属性值从默认的true改为false。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;到目前为止，我们还是需要将相应对象的bean定义，一个个地添加到IoC容器的配置文件中。与之前唯一的区别就是，不用在配置文件中明确指定依赖关&lt;br&gt;系了（改用注解来表达了嘛）。。既然使用注解来表达对象之间的依赖注入关系，那为什么不搞的彻底&lt;br&gt;一点儿，将那些几乎“光秃秃”</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="注解" scheme="http://example.com/tags/%E6%B3%A8%E8%A7%A3/"/>
+    
+    <category term="IOC" scheme="http://example.com/tags/IOC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Autowired之外的选择——使用JSR250 标注依赖注入关系</title>
+    <link href="http://example.com/2022/03/04/Autowired%E4%B9%8B%E5%A4%96%E7%9A%84%E9%80%89%E6%8B%A9%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8JSR250-%E6%A0%87%E6%B3%A8%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%B3%E7%B3%BB/"/>
+    <id>http://example.com/2022/03/04/Autowired%E4%B9%8B%E5%A4%96%E7%9A%84%E9%80%89%E6%8B%A9%E2%80%94%E2%80%94%E4%BD%BF%E7%94%A8JSR250-%E6%A0%87%E6%B3%A8%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5%E5%85%B3%E7%B3%BB/</id>
+    <published>2022-03-04T08:20:00.000Z</published>
+    <updated>2022-03-04T08:22:53.133Z</updated>
+    
+    <content type="html"><![CDATA[<p>除了可以使用Spring提供的@Autowired和@Qualifier来<br>标注相应类定义之外，还可以使用JSR250的@Resource和@PostConstruct以及@PreDestroy对相应<br>类进行标注，这同样可以达到依赖注入的目的。</p><p>@Resource与@Autowired不同，它遵循的是byName自动绑定形式的行为准则，也就是说，IoC容<br>器将根据@Resource所指定的名称，到容器中查找beanName与之对应的实例，然后将查找到的对象实<br>例注入给@Resource所标注的对象。</p><p>JSR250规定，如果@Resource标注于属性域或者方法之上的话，相应的容器将负责把指定的资源<br>注入给当前对象，所以，除了像我们这样直接在属性域上标注@Resource，还可以在构造方法或者普<br>通方法定义上标注@Resource，这与@Autowired能够存在的地方大致相同。</p><p>确切地说， 10 @PostConstruct和@PreDestroy不是服务于依赖注入的，它们主要用于标注对象生<br>命周期管理相关方法，这与Spring的InitializingBean和DisposableBean接口，以及配置项中的<br>init-method和destroy-method起到类似的作用。</p><p>如果想某个方法在对象实例化之后被调用，以做某些准备工作，或者想在对象销毁之前调用某个<br>方法清理某些资源，那么就可以像我们这样，使用@PostConstruct和@PreDestroy来标注这些方法。<br>当然，是使用@PostConstruct和@PreDestroy，还是使用Spring的InitializingBean和Disposable-Bean接口，或者init-method和destroy-method配置项，可以根据个人的喜好自己决定。</p><p>天上永远不会掉馅饼，我们只是使用@Resource或者@PostConstruct和@PreDestroy标注了相应<br>对象，并不能给该对象带来想要的东西。所以，就像@Autowired需要AutowiredAnnotationBeanPostProcessor为它与IoC容器牵线搭桥一样，JSR250的这些注解也同样需要一个BeanPostProcessor帮助它们实现自身的价值。这个BeanPostProcessor就是org.springframework.context.<br>annotation.CommonAnnotationBeanPostProcessor，只有将CommonAnnotationBeanPostProcessor添<br>加到容器，JSR250的相关注解才能发挥作用</p><p>既然不管是@Autowired还是@Resource都需要添加相应的BeanPostProcessor到容器，那么我们<br>就可以在基于XSD的配置文件中使用一个<a href="context:annotation-config">context:annotation-config</a>配置搞定以上所有的<br>BeanPostProcessor配置</p><p><a href="context:annotation-config">context:annotation-config</a> 不但帮我们把 AutowiredAnnotationBeanPostProcessor 和<br>CommonAnnotationBeanPostProcessor注册到容器，同时还会把PersistenceAnnotationBeanPostProcessor和RequiredAnnotationBeanPostProcessor一并进行注册，可谓一举四得啊！</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;除了可以使用Spring提供的@Autowired和@Qualifier来&lt;br&gt;标注相应类定义之外，还可以使用JSR250的@Resource和@PostConstruct以及@PreDestroy对相应&lt;br&gt;类进行标注，这同样可以达到依赖注入的目的。&lt;/p&gt;
+&lt;p&gt;@</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+    <category term="注解" scheme="http://example.com/tags/%E6%B3%A8%E8%A7%A3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Qualifier的陪伴</title>
+    <link href="http://example.com/2022/03/04/Qualifier%E7%9A%84%E9%99%AA%E4%BC%B4/"/>
+    <id>http://example.com/2022/03/04/Qualifier%E7%9A%84%E9%99%AA%E4%BC%B4/</id>
+    <published>2022-03-04T08:19:00.000Z</published>
+    <updated>2022-03-04T08:20:06.461Z</updated>
+    
+    <content type="html"><![CDATA[<p>@Autowired是按照类型进行匹配，如果当前@Autowired标注的依赖在容器中只能找到一个实例<br>与之对应的话，那还好。可是，要是能够同时找到两个或者多个同一类型的对象实例，又该怎么办呢？<br>我们自己当然知道应该把具体哪个实例注入给当前对象，可是，IoC容器并不知道，所以，得通过某<br>种方式告诉它。这时，就可以使用@Qualifier对依赖注入的条件做进一步限定，使得容器不再迷茫。</p><p>@Qualifier实际上是byName自动绑定的注解版，既然IoC容器无法自己从多个同一类型的实例中<br>选取我们真正想要的那个，那么我们不妨就使用@Qualifier直接点名要哪个好了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;@Autowired是按照类型进行匹配，如果当前@Autowired标注的依赖在容器中只能找到一个实例&lt;br&gt;与之对应的话，那还好。可是，要是能够同时找到两个或者多个同一类型的对象实例，又该怎么办呢？&lt;br&gt;我们自己当然知道应该把具体哪个实例注入给当前对象，可是，IoC容器</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="注解" scheme="http://example.com/tags/%E6%B3%A8%E8%A7%A3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring基于注解的依赖注入</title>
+    <link href="http://example.com/2022/03/04/Spring%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/"/>
+    <id>http://example.com/2022/03/04/Spring%E5%9F%BA%E4%BA%8E%E6%B3%A8%E8%A7%A3%E7%9A%84%E4%BE%9D%E8%B5%96%E6%B3%A8%E5%85%A5/</id>
+    <published>2022-03-04T08:14:00.000Z</published>
+    <updated>2022-03-04T08:18:55.251Z</updated>
+    
+    <content type="html"><![CDATA[<p>@Autowired是基于注解的依赖注入的核心注解，它的存在可以让容器知道需要为当前类注入哪些<br>依赖。比如可以使用@Autowired对类进行标注，以表明要为该类注入的依赖。</p><p>@Autowired也是按照类型匹配进行依赖注入的</p><p>@Autowired可以标注于类定义的多个位置，包括如下几个。</p><p>1、域（Filed）或者说属性（Property）。不管它们声明的访问限制符是private、protected还是public，只要标注了@Autowired，它们所需要的依赖注入需求就都能够被满足。</p><p>2、构造方法定义（Constructor）。标注于类的构造方法之上的@Autowired，相当于抢夺了原有自<br>动绑定功能中“constructor”方式的权利，它将根据构造方法参数类型，来决定将什么样的依赖对象注入给当前对象。</p><p>3、方法定义（Method）。@Autowired不仅可以标注于传统的setter方法之上，而且还可以标注于任<br>意名称的方法定义之上，只要该方法定义了需要被注入的参数。</p><p>现在，虽然可以随意地在类定义的各种合适的地方标注@Autowired，希望这些被@Autowired标<br>注的依赖能够被注入，但是，仅将@Autowired标注于类定义中并不能让Spring的IoC容器聪明到自己<br>去查看这些注解，然后注入符合条件的依赖对象。容器需要某种方式来了解，哪些对象标注了<br>@Autowired，哪些对象可以作为可供选择的依赖对象来注入给需要的对象。在考虑使用什么方式实<br>现这一功能之前，我们先比较一下原有的自动绑定功能与使用@Autowired之后产生了哪些差别。</p><p>使用自动绑定的时候，我们将所有对象相关的bean定义追加到了容器的配置文件中，然后使用<br>default-autowire或者autowire告知容器，依照这两种属性指定的绑定方式，将容器中各个对象绑定到一起。在使用@Autowired之后，default-autowire或者autowire的职责就转给了@Autowired，<br>所以，现在，容器的配置文件中就只剩下了一个个孤伶伶的bean定义</p><p>为了给容器中定义的每个bean定义对应的实例注入依赖，可以遍历它们，然后通过反射，检查每<br>个bean定义对应的类上各种可能位置上的@Autowired。如果存在的话，就可以从当前容器管理的对象<br>中获取符合条件的对象，设置给@Autowired所标注的属性域、构造方法或者方法定义。</p><p>我们可以提供一个Spring<br>的IoC容器使用的BeanPostProcessor自定义实现，让这个BeanPostProcessor在实例化bean定义的<br>过程中，来检查当前对象是否有@Autowired标注的依赖需要注入。org.springframework.beans.<br>factory.annotation.AutowiredAnnotationBeanPostProcessor就是Spring提供的用于这一目的<br>的BeanPostProcessor实现。所以，很幸运，我们不用自己去实现它了。</p><p>相关类定义使用@Autowired标注之后，只要在IoC容器的配置文件中追加AutowiredAnnotationBeanPostProcessor就可以让整个应用开始运作了</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;@Autowired是基于注解的依赖注入的核心注解，它的存在可以让容器知道需要为当前类注入哪些&lt;br&gt;依赖。比如可以使用@Autowired对类进行标注，以表明要为该类注入的依赖。&lt;/p&gt;
+&lt;p&gt;@Autowired也是按照类型匹配进行依赖注入的&lt;/p&gt;
+&lt;p&gt;@Autow</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="注解" scheme="http://example.com/tags/%E6%B3%A8%E8%A7%A3/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ApplicationContext统一资源加载策略</title>
+    <link href="http://example.com/2022/03/04/ApplicationContext%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2022/03/04/ApplicationContext%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E7%AD%96%E7%95%A5/</id>
+    <published>2022-03-04T07:24:00.000Z</published>
+    <updated>2022-03-04T07:55:24.970Z</updated>
+    
+    <content type="html"><![CDATA[<p>Spring框架内部使用org.springframework.core.io.Resource接口作为所有资源的抽象和访<br>问接口</p><p>其中ClassPathResource就是Resource的一个特定类型的实现，代表的是位于Classpath中的资源。</p><p>Resource接口可以根据资源的不同类型，或者资源所处的不同场合，给出相应的具体实现。Spring<br>框架在这个理念的基础上，提供了一些实现类（可以在org.springframework.core.io包下找到这<br>些实现类）。</p><p> ByteArrayResource。将字节（byte）数组提供的数据作为一种资源进行封装，如果通过<br>InputStream形式访问该类型的资源，该实现会根据字节数组的数据，构造相应的ByteArrayInputStream并返回。</p><p> ClassPathResource。该实现从Java应用程序的ClassPath中加载具体资源并进行封装，可以使<br>用指定的类加载器（ClassLoader）或者给定的类进行资源加载。 </p><p> FileSystemResource。对java.io.File类型的封装，所以，我们可以以文件或者URL的形<br>式对该类型资源进行访问，只要能跟File打的交道，基本上跟FileSystemResource也可以。  </p><p> UrlResource。通过java.net.URL进行的具体资源查找定位的实现类，内部委派URL进行具<br>体的资源操作。  </p><p> InputStreamResource。将给定的InputStream视为一种资源的Resource实现类，较为少用。<br>可能的情况下，以ByteArrayResource以及其他形式资源实现代之。</p><p>如果给定的实现类不满足需求，还可以通过实现Resource接口自定义。</p><p>org.springframework.core.io.ResourceLoader接口是资源查找定位策略的统一抽象，具体的资源查找定<br>位策略则由相应的ResourceLoader实现类给出。</p><p>其中最主要的就是Resource getResource(String location);方法，通过它，我们就可以根<br>据指定的资源位置，定位到具体的资源实例。</p><p>1、可用的ResourceLoader：</p><p>ResourceLoader有一个默认的实现类，即org.springframework.core.io.DefaultResourceLoader，该类默认的资源查找处理逻辑如下。</p><p>(1) 首先检查资源路径是否以classpath:前缀打头，如果是，则尝试构造ClassPathResource类<br>型资源并返回。</p><p>(2) 否则，(a) 尝试通过URL，根据资源路径来定位资源，如果没有抛出MalformedURLException，<br>有则会构造UrlResource类型的资源并返回；(b)如果还是无法根据资源路径定位指定的资源，则委派<br>getResourceByPath(String) 方法来定位， DefaultResourceLoader 的<br>getResourceByPath(String)方法默认实现逻辑是，构造ClassPathResource类型的资源并返回。</p><p>为了避免DefaultResourceLoader在最后getResourceByPath(String)方法上的不恰当处理，<br>我们可以使用org.springframework.core.io.FileSystemResourceLoader，它继承自DefaultResourceLoader，但覆写了getResourceByPath(String)方法，使之从文件系统加载资源并以<br>FileSystemResource类型返回。这样，我们就可以取得预想的资源类型。</p><p>FileSystemResourceLoader在ResourceLoader家族中的兄弟FileSystemXmlApplicationContext，也是覆写了getResourceByPath(String)方法的逻辑，以改变DefaultResourceLoader的<br>默认资源加载行为，最终从文件系统中加载并返回FileSystemResource类型的资源。</p><p>2、 ResourcePatternResolver ——批量查找的ResourceLoader：</p><p>ResourcePatternResolver是ResourceLoader的扩展，ResourceLoader每次只能根据资源路径<br>返回确定的单个Resource实例，而ResourcePatternResolver则可以根据指定的资源路径匹配模式，<br>每次返回多个Resource实例。</p><p>ResourcePatternResolver在继承ResourceLoader原有定义的基础上，又引入了Resource[]<br>getResources(String)方法定义，以支持根据路径匹配模式返回多个Resources的功能。它同时还<br>引入了一种新的协议前缀classpath*:，针对这一点的支持，将由相应的子类实现给出。</p><p>ResourcePatternResolver最常用的一个实现是org.springframework.core.io.support.<br>PathMatchingResourcePatternResolver，该实现类支持ResourceLoader级别的资源加载，支持基<br>于Ant风格的路径匹配模式（类似于**/<em>.suffix之类的路径形式），支持ResourcePatternResolver新<br>增加的classpath</em>:前缀等，基本上集所有技能于一身。</p><p>在构造PathMatchingResourcePatternResolver实例的时候，可以指定一个ResourceLoader，<br>如果不指定的话，则PathMatchingResourcePatternResolver内部会默认构造一个DefaultResourceLoader实例。PathMatchingResourcePatternResolver内部会将匹配后确定的资源路径，<br>委派给它的ResourceLoader来查找和定位资源。这样，如果不指定任何ResourceLoader的话，PathMatchingResourcePatternResolver在加载资源的行为上会与DefaultResourceLoader基本相同，<br>只存在返回的Resource数量上的差异。</p><p>不过，可以通过传入其他类型的ResourceLoader来替换PathMatchingResourcePatternResolver<br>内部默认使用的DefaultResourceLoader，从而改变其默认行为。</p><p> <img src="/images/pasted-115.png" alt="upload successful"></p><p> ApplicationContext继承了ResourcePatternResolver，当<br>然就间接实现了ResourceLoader接口。所以，任何的ApplicationContext实现都可以看作是一个<br>ResourceLoader甚至ResourcePatternResolver。而这就是ApplicationContext支持Spring内统一<br>资源加载策略的真相。</p><p>通常，所有的ApplicationContext实现类会直接或者间接地继承org.springframework.<br>context.support.AbstractApplicationContext，从这个类上，我们就可以看到ApplicationContext与ResourceLoader之间的所有关系。AbstractApplicationContext继承了DefaultResourceLoader，那么，它的getResource(String)当然就直接用DefaultResourceLoader的了。剩<br>下需要它“效劳”的，就是ResourcePatternResolver的Resource[]getResources (String)，当<br>然，AbstractApplicationContext也不负众望，当即拿下。AbstractApplicationContext类的内<br>部声明有一个resourcePatternResolver，类型是ResourcePatternResolver，对应的实例类型为<br>PathMatchingResourcePatternResolver 。之前我们说过 PathMatchingResourcePatternResolver构造的时候会接受一个ResourceLoader，而AbstractApplicationContext本身又继承自<br>DefaultResourceLoader，当然就直接把自身给“贡献”了。这样，整个ApplicationContext的实<br>现类就完全可以支持ResourceLoader或者ResourcePatternResolver接口，你能说ApplicationContext不支持Spring的统一资源加载吗？说白了，ApplicationContext的实现类在作为ResourceLoader或者ResourcePatternResolver时候的行为，完全就是委派给了PathMatchingResourcePatternResolver和DefaultResourceLoader来做。</p><p> <img src="/images/pasted-116.png" alt="upload successful"></p><p> 1、既然ApplicationContext可以作为ResourceLoader或者ResourcePatternResolver来使用，<br>那么，很显然，我们可以通过ApplicationContext来加载任何Spring支持的Resource类型。与直接<br>使用ResourceLoader来做这些事情相比，很明显，ApplicationContext的表现过于“谦虚”了。</p><p>2、ApplicationContext容器本身就是一个ResourceLoader，我们为了该类还需要单独提供<br>一个resourceLoader实例就有些多于了，直接将当前的ApplicationContext容器作为ResourceLoader注入不就行了？而ResourceLoaderAware和ApplicationContextAware接口正好可以帮助我<br>们做到这一点，只不过现在的FooBar需要依赖于Spring的API了。不过，在我看来，这没有什么大不<br>了，因为我们从来也没有真正逃脱过依赖（这种依赖也好，那种依赖也罢）。</p><p>3、容器可以将bean定义文件中的字符串形式表达的信息，正确地转换成具体对象定<br>义的依赖类型。对于那些Spring容器提供的默认的PropertyEditors无法识别的对象类型，我们可以<br>提供自定义的PropertyEditor实现并注册到容器中，以供容器做类型转换的时候使用。默认情况下，<br>BeanFactory容器不会为org.springframework.core.io.Resource类型提供相应的PropertyEditor，所以，如果我们想注入Resource类型的bean定义，就需要注册自定义的PropertyEditor到<br>BeanFactory容器。不过，对于ApplicationContext来说，我们无需这么做，因为ApplicationContext容器可以正确识别Resource类型并转换后注入相关对象。</p><p>4、特定的 10 ApplicationContext容器实现，在作为ResourceLoader加载资源时，会有其特定的行为。<br>我们下面主要讨论两种类型的ApplicationContext容器，即ClassPathXmlApplicationContext和<br>FileSystemXmlApplicationContext。其他类型的ApplicationContext容器，会在稍后章节中提到。 11<br>我们知道，对于URL所接受的资源路径来说，通常开始都会有一个协议前缀，比如file:、http:、ftp:<br>等。既然Spring使用UrlResource对URL定位查找的资源进行了抽象，那么，同样也支持这样类型的<br>资源路径，而且，在这个基础上，Spring还扩展了协议前缀的集合。ResourceLoader中增加了一种新<br>的资源路径协议——classpath:，ResourcePatternResolver又增加了一种——classpath*:。这<br>样，我们就可以通过这些资源路径协议前缀，明确地告知Spring容器要从classpath中加载资源</p><p>当ClassPathXmlApplicationContext在实例化的时候，即使没有指明<br>classpath:或者classpath*:等前缀，它会默认从classpath中加载bean定义配置文件</p><p>而FileSystemXmlApplicationContext则有些不同，如果我们像如下代码那样指定conf/<br>appContext.xml，它会尝试从文件系统中加载bean定义文件</p><p>不过，我们可以像如下代码所示，通过在资源路径之前增加classpath:前缀，明确指定<br>FileSystemXmlApplicationContext从classpath中加载bean定义的配置文件</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Spring框架内部使用org.springframework.core.io.Resource接口作为所有资源的抽象和访&lt;br&gt;问接口&lt;/p&gt;
+&lt;p&gt;其中ClassPathResource就是Resource的一个特定类型的实现，代表的是位于Classpath中的资源。&lt;</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="资源加载" scheme="http://example.com/tags/%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD/"/>
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring IoC容器 ApplicationContext</title>
+    <link href="http://example.com/2022/03/04/Spring-IoC%E5%AE%B9%E5%99%A8-ApplicationContext/"/>
+    <id>http://example.com/2022/03/04/Spring-IoC%E5%AE%B9%E5%99%A8-ApplicationContext/</id>
+    <published>2022-03-04T07:21:00.000Z</published>
+    <updated>2022-03-04T07:23:24.352Z</updated>
+    
+    <content type="html"><![CDATA[<p>作为Spring提供的较之BeanFactory更为先进的IoC容器实现，ApplicationContext除了拥有<br>BeanFactory支持的所有功能之外，还进一步扩展了基本容器的功能，包括BeanFactoryPostProcessor、BeanPostProcessor以及其他特殊类型bean的自动识别、容器启动后bean实例的自动初始化、<br>国际化的信息支持、容器内事件发布等。</p><p>常见的ApplicationContext实现类有 </p><p>org.springframework.context.support.FileSystemXmlApplicationContext。在默认<br>情况下，从文件系统加载bean定义以及相关资源的ApplicationContext实现。</p><p>org.springframework.context.support.ClassPathXmlApplicationContext。在默认情况下，从Classpath加载bean定义以及相关资源的ApplicationContext实现。 </p><p>org.springframework.web.context.support.XmlWebApplicationContext。Spring提供的用于Web应用程序的ApplicationContext实现</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;作为Spring提供的较之BeanFactory更为先进的IoC容器实现，ApplicationContext除了拥有&lt;br&gt;BeanFactory支持的所有功能之外，还进一步扩展了基本容器的功能，包括BeanFactoryPostProcessor、BeanPostPr</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>了解Spring中bean的一生</title>
+    <link href="http://example.com/2022/03/04/%E4%BA%86%E8%A7%A3Spring%E4%B8%ADbean%E7%9A%84%E4%B8%80%E7%94%9F/"/>
+    <id>http://example.com/2022/03/04/%E4%BA%86%E8%A7%A3Spring%E4%B8%ADbean%E7%9A%84%E4%B8%80%E7%94%9F/</id>
+    <published>2022-03-04T06:10:00.000Z</published>
+    <updated>2022-03-04T06:52:30.847Z</updated>
+    
+    <content type="html"><![CDATA[<p>容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的BeanDefinition来保存实例化阶段将要用的必要信息。只有当请求方通过BeanFactory的getBean()方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动。BeanFactory的getBean（）<br>法可以被客户端对象显式调用，也可以在容器内部隐式地被调用。隐式调用有如下两种情况。</p><p> 对于BeanFactory来说，对象实例化默认采用延迟初始化。通常情况下，当对象A被请求而需<br>要第一次实例化的时候，如果它所依赖的对象B之前同样没有被实例化，那么容器会先实例化对象A所依赖的对象。这时容器内部就会首先实例化对象B，以及对象 A依赖的其他还没有实例化的对象。这种情况是容器内部调用getBean()，对于本次请求的请求方是隐式的。</p><p> ApplicationContext启动之后会实例化所有的bean定义，但ApplicationContext在实现的过程中依然遵循Spring容器实现流程的两个阶段，只不过它<br>会在启动阶段的活动完成之后，紧接着调用注册到该容器的所有bean定义的实例化方法<br>getBean()。这就是为什么当你得到ApplicationContext类型的容器引用时，容器内所有对<br>象已经被全部实例化完成。不信你查一下类org.<br>AbstractApplicationContext的refresh()方法。</p><p> <img src="/images/pasted-113.png" alt="upload successful"></p><p> 1、 Bean的实例化与</p><p> BeanWrapper：容器在内部实现的时候，采用“策略模式（Strategy Pattern）”来决定采用何种方式初始化bean实例。<br>通常，可以通过反射或者CGLIB动态字节码生成来初始化相应的bean实例或者动态生成其子类。</p><p>org.springframework.beans.factory.support.InstantiationStrategy定义是实例化策略<br>的抽象接口，其直接子类SimpleInstantiationStrategy实现了简单的对象实例化功能，可以通过<br>反射来实例化对象实例，但不支持方法注入方式的对象实例化。CglibSubclassingInstantiationStrategy继承了SimpleInstantiationStrategy的以反射方式实例化对象的功能，并且通过CGLIB<br>的动态字节码生成功能，该策略实现类可以动态生成某个类的子类，进而满足了方法注入所需的对象<br>实例化需求。默认情况下，容器内部采用的是CglibSubclassingInstantiationStrategy。</p><p>容器只要根据相应bean定义的BeanDefintion取得实例化信息，结合CglibSubclassingInstantiationStrategy以及不同的bean定义类型，就可以返回实例化完成的对象实例。但是，返回方<br>式上有些“点缀”。不是直接返回构造完成的对象实例，而是以BeanWrapper对构造完成的对象实例<br>进行包裹，返回相应的BeanWrapper实例。</p><p>BeanWrapper接口通常在Spring框架内部使用，它有一个实现类org.springframework.beans.<br>BeanWrapperImpl。其作用是对某个bean进行“包裹”，然后对这个“包裹”的bean进行操作，比如设置或者获取bean的相应属性值。而在第一步结束后返回BeanWrapper实例而不是原先的对象实例，<br>就是为了第二步“设置对象属性”。</p><p>BeanWrapper定义继承了org.springframework.beans.PropertyAccessor接口，可以以统一的<br>方式对对象属性进行访问；BeanWrapper定义同时又直接或者间接继承了PropertyEditorRegistry<br>和TypeConverter接口。不知你是否还记得CustomEditorConfigurer？当把各种PropertyEditor注<br>册给容器时，知道后面谁用到这些PropertyEditor吗？对，就是BeanWrapper！在第一步构造完成<br>对象之后，Spring会根据对象实例构造一个BeanWrapperImpl实例，然后将之前CustomEditorConfigurer注册的PropertyEditor复制一份给BeanWrapperImpl实例（这就是BeanWrapper同时又<br>是PropertyEditorRegistry的原因）。这样，当BeanWrapper转换类型、设置对象属性值时，就不<br>会无从下手了。</p><p>2、 各色的Aware接口：</p><p>当对象实例化完成并且相关属性以及依赖设置完成之后，Spring容器会检查当前对象实例是否实<br>现了一系列的以Aware命名结尾的接口定义。如果是，则将这些Aware接口定义中规定的依赖注入给当前对象实例。</p><p>3、 BeanPostProcessor</p><p>BeanPostProcessor的概念容易与BeanFactoryPostProcessor的概念混淆。但只要记住BeanPostProcessor是存在于对象实例化阶段，而BeanFactoryPostProcessor则是存在于容器启动阶段，<br>这两个概念就比较容易区分了。</p><p>与BeanFactoryPostProcessor通常会处理容器内所有符合条件的BeanDefinition类似，BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例。该接口声明了两个方法，分别在<br>两个不同的时机执行。postProcessBeforeInitialization()方法是BeanPostProcessor前置处理这一步将<br>会执行的方法，postProcessAfterInitialization()则是对应BeanPostProcessor后置处<br>理那一步将会执行的方法。BeanPostProcessor的两个方法中都传入了原来的对象实例的引用，这为<br>我们扩展容器的对象实例化过程中的行为提供了极大的便利，我们几乎可以对传入的对象实例执行任<br>何的操作。</p><p>通常比较常见的使用BeanPostProcessor的场景，是处理标记接口实现类，或者为当前对象提供<br>代理实现。除了检查标记接口以便应用自定义逻辑，还可以通过BeanPostProcessor对当前对象实例做更多<br>的处理。比如替换当前对象实例或者字节码增强当前对象实例等。Spring的AOP则更多地使用<br>BeanPostProcessor来为对象生成相应的代理对象，如org.springframework.aop.framework.<br>autoproxy.BeanNameAutoProxyCreator。</p><p> <img src="/images/pasted-114.png" alt="upload successful"></p><p> 4、 InitializingBean和init-method：</p><p> org.springframework.beans.factory.InitializingBean是容器内部广泛使用的一个对象生<br>命周期标识接口</p><p>该接口定义很简单，其作用在于，在对象实例化过程调用过“BeanPostProcessor的前置处理”<br>之后，会接着检测当前对象是否实现了InitializingBean接口，如果是，则会调用其afterPropertiesSet()方法进一步调整对象实例的状态。比如，在有些情况下，某个业务对象实例化完成后，还<br>不能处于可以使用状态。这个时候就可以让该业务对象实现该接口，并在方法afterPropertiesSet()<br>中完成对该业务对象的后续处理。</p><p>虽然该接口在Spring容器内部广泛使用，但如果真的让我们的业务对象实现这个接口，则显得<br>Spring容器比较具有侵入性。所以，Spring还提供了另一种方式来指定自定义的对象初始化操作，那就<br>是在XML配置的时候，使用<bean>的init-method属性。</p><p>  通过init-method，系统中业务对象的自定义初始化操作可以以任何方式命名，而不再受制于<br>InitializingBean的afterPropertiesSet()。如果系统开发过程中规定：所有业务对象的自定义初<br>始化操作都必须以init()命名，为了省去挨个<bean>的设置init-method这样的烦琐，我们还可以通<br>过最顶层的<beans>的default-init-method统一指定这一init()方法名。</p><p> 5、 DisposableBean与destroy-method：</p><p> 当所有的一切，该设置的设置，该注入的注入，该调用的调用完成之后，容器将检查singleton类<br>型的bean实例，看其是否实现了org.springframework.beans.factory.DisposableBean接口。或<br>者其对应的bean定义是否通过<bean>的destroy-method属性指定了自定义的对象销毁方法。如果是，<br>就会为该实例注册一个用于对象销毁的回调（Callback），以便在这些singleton类型的对象实例销毁之<br>前，执行销毁逻辑。</p><p>  与InitializingBean和init-method用于对象的自定义初始化相对应，DisposableBean和<br>destroy-method为对象提供了执行自定义销毁逻辑的机会。</p><p>最常见到的该功能的使用场景就是在Spring容器中注册数据库连接池，在系统退出后，连接池应<br>该关闭，以释放相应资源。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的BeanDefinition来保存实例化阶段将要用的必要信息。只有当请求方通过BeanFactory的getBean()方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="bean" scheme="http://example.com/tags/bean/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>插手“容器的启动”</title>
+    <link href="http://example.com/2022/03/04/%E6%8F%92%E6%89%8B%E2%80%9C%E5%AE%B9%E5%99%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E2%80%9D/"/>
+    <id>http://example.com/2022/03/04/%E6%8F%92%E6%89%8B%E2%80%9C%E5%AE%B9%E5%99%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E2%80%9D/</id>
+    <published>2022-03-04T02:33:00.000Z</published>
+    <updated>2022-03-04T06:09:45.853Z</updated>
+    
+    <content type="html"><![CDATA[<p>Spring提供了一种叫做BeanFactoryPostProcessor的容器扩展机制。该机制允许我们在容器实<br>例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。这就相当于在容<br>器实现的第一阶段最后加入一道工序，让我们对最终的BeanDefinition做一些额外的操作，比如修改其中bean定义的某些属性，为bean定义增加其他信息等。</p><p>如果要自定义实现BeanFactoryPostProcessor，通常我们需要实org.springframework.<br>beans.factory.config.BeanFactoryPostProcessor接口。同时，因为一个容器可能拥有多个BeanFactoryPostProcessor，这个时候可能需要实现类同时实现Spring的org.springframework.core.<br>Ordered接口，以保证各个BeanFactoryPostProcessor可以按照预先设定的顺序执行（如果顺序紧<br>要的话）。但是，因为Spring已经提供了几个现成的BeanFactoryPostProcessor实现类，所以，大多时候，我们很少自己去实现某个BeanFactoryPostProcessor。其中，org.springframework.beans.<br>factory.config.PropertyPlaceholderConfigurer和org.springframework.beans.factory. config.Property OverrideConfigurer是两个比较常用的BeanFactoryPostProcessor。另外，为了处理配置文件中的数据类型与真正的业务对象所定义的数据类型转换，Spring还允许我们通过<br>org.springframework.beans.factory.config.CustomEditorConfigurer来注册自定义的PropertyEditor以补助容器中默认的PropertyEditor。可以参考BeanFactoryPostProcessor的Javadoc来了解更多其实现子类的情况。</p><p>对于BeanFactory来说，我们需要用手动方式应用所有的BeanFactoryPostProcessor</p><p>对于ApplicationContext来说，情况看起来要好得多。因为ApplicationContext会自动识别配<br>置文件中的BeanFactoryPostProcessor并应用它，所以，相对于BeanFactory，在ApplicationContext<br>中加载并应用BeanFactoryPostProcessor，仅需要在XML配置文件中将这些BeanFactoryPostProcessor简单配置一下即可。</p><p>1、PropertyPlaceholderConfigurer：</p><p>通常情况下，我们不想将类似于系统管理相关的信息同业务对象相关的配置信息混杂到XML配置<br>文件中，以免部署或者维护期间因为改动繁杂的XML配置文件而出现问题。我们会将一些数据库连接<br>信息、邮件服务器等相关信息单独配置到一个properties文件中，这样，如果因系统资源变动的话，只<br>需要关注这些简单properties配置文件即可。PropertyPlaceholderConfigurer允许我们在XML配置文件中使用占位符（PlaceHolder），<br>并将这些占位符所代表的资源单独配置到简单的properties文件中来加载。</p><p>基本机制就是之前所说的那样。当BeanFactory在第一阶段加载完成所有配置信息时，BeanFactory中保存的对象的属性信息还只是以占位符的形式存在，如${jdbc.url}、${jdbc.driver}。当<br>PropertyPlaceholderConfigurer作为BeanFactoryPostProcessor被应用时，它会使用properties<br>配置文件中的配置信息来替换相应BeanDefinition中占位符所表示的属性值。这样，当进入容器实<br>现的第二阶段实例化bean时，bean定义中的属性值就是最终替换完成的了。<br>PropertyPlaceholderConfigurer不单会从其配置的properties文件中加载配置项，同时还会检<br>查Java的System类中的Properties，可以通过setSystemPropertiesMode()或者setSystemPropertiesModeName()来控制是否加载或者覆盖System相应Properties的行为。PropertyPlaceholderConfigurer提供了SYSTEM_PROPERTIES_MODE_FALLBACK、SYSTEM_PROPERTIES_MODE_NEVER和SYSTEM_PROPERTIES_MODE_OVERRIDE三种模式。默认采用的是SYSTEM_PROPERTIES_ MODE_FALLBACK，即如果properties文件中找不到相应配置项，则到System的Properties中查找，我们还可以选择不检查System<br>的Properties或者覆盖它。</p><p>2、 CustomEditorConfigurer：<br>我们知道，不管对象是什么类型，也不管这些对象所声明的依赖对象是什么类型，通常都是通过<br>XML（或者properties甚至其他媒介）文件格式来配置这些对象类型。但XML所记载的，都是String类<br>型，即容器从XML格式的文件中读取的都是字符串形式，最终应用程序却是由各种类型的对象所构成。<br>要想完成这种由字符串到具体对象的转换（不管这个转换工作最终由谁来做），都需要这种转换规则<br>相关的信息，而CustomEditorConfigurer就是帮助我们传达类似信息的。</p><p>Spring内部通过JavaBean的PropertyEditor来帮助进行String类型到其他类型的转换工作。只要<br>为每种对象类型提供一个 PropertyEditor ，就可以根据该对象类型取得与其相对应的<br>PropertyEditor来做具体的类型转换。Spring容器内部在做具体的类型转换的时候，会采用JavaBean<br>框架内默认的PropertyEditor搜寻逻辑，从而继承了对原生类型以及java.lang.String.java.awt.<br>Color和java.awt.Font等类型的转换支持。同时，Spring框架还提供了自身实现的一些PropertyEditor，这些PropertyEditor大部分都位于org.springframework. beans.propertyeditors包<br>下。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Spring提供了一种叫做BeanFactoryPostProcessor的容器扩展机制。该机制允许我们在容器实&lt;br&gt;例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。这就相当于在容&lt;br&gt;器实现的第一阶段最后加入一道工序，让我们对最终</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring容器背后的秘密</title>
+    <link href="http://example.com/2022/03/04/Spring%E5%AE%B9%E5%99%A8%E8%83%8C%E5%90%8E%E7%9A%84%E7%A7%98%E5%AF%86/"/>
+    <id>http://example.com/2022/03/04/Spring%E5%AE%B9%E5%99%A8%E8%83%8C%E5%90%8E%E7%9A%84%E7%A7%98%E5%AF%86/</id>
+    <published>2022-03-04T02:22:00.000Z</published>
+    <updated>2022-03-04T02:34:21.122Z</updated>
+    
+    <content type="html"><![CDATA[<p>Spring的IOC容器它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。</p><p>Spring的IOC容器在实现上述过程中可以分为两个阶段：容器启动阶段和Bean实例化阶段。</p><p>Spring的IoC容器在实现的时候，充分运用了这两个实现阶段的不同特点，在每个阶段都加入了相应的容器扩展点，以便我们可以根据具体场景的需要加入自定义的扩展逻辑。</p><p> <img src="/images/pasted-112.png" alt="upload successful"></p><p>1、容器启动阶段：<br>容器启动伊始，首先会通过某种途径加载Configuration MetaData。除了代码方式比较直接，在大部分情况下，容器需要依赖某些工具类（BeanDefinitionReader）对加载的Configuration MetaData进行解析和分析，并将分析后的信息编组为相应的BeanDefinition，最后把这些保存了bean定义必要信息的BeanDefinition，注册到相应的BeanDefinitionRegistry，这样容器启动工作就完成了。</p><p>总地来说，该阶段所做的工作可以认为是准备性的，重点更加侧重于对象管理信息的收集。当然，<br>一些验证性或者辅助性的工作也可以在这个阶段完成。</p><p>2、 Bean实例化阶段：经过第一阶段，现在所有的bean定义信息都通过BeanDefinition的方式注册到了BeanDefinitionRegistry中。当某个请求方通过容器的getBean方法明确地请求某个对象，或者因依赖关系容器需要隐式地调用getBean方法时，就会触发第二阶段的活动。<br>该阶段，容器会首先检查所请求的对象之前是否已经初始化。如果没有，则会根据注册的BeanDefinition所提供的信息实例化被请求对象，并为其注入依赖。如果该对象实现了某些回调接口，也会根据回调接口的要求来装配它。当该对象装配完毕之后，容器会立即将其返回请求方使用。</p><p>如果说第一阶段只是根据图纸装配生产线的话，那么第二阶段就是使用装配好的生产线来生产具体的产品了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Spring的IOC容器它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。&lt;/p&gt;
+&lt;p&gt;Spring的IOC容器在实现上述过程中可以分为两个阶</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="IOC" scheme="http://example.com/tags/IOC/"/>
+    
+  </entry>
   
   <entry>
     <title>bean的scope的使用陷阱</title>
@@ -213,312 +517,6 @@
     
     
     <category term="IOC的理解" scheme="http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring三种注入方法比较</title>
-    <link href="http://example.com/2022/03/03/Spring%E4%B8%89%E7%A7%8D%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%E6%AF%94%E8%BE%83/"/>
-    <id>http://example.com/2022/03/03/Spring%E4%B8%89%E7%A7%8D%E6%B3%A8%E5%85%A5%E6%96%B9%E6%B3%95%E6%AF%94%E8%BE%83/</id>
-    <published>2022-03-03T08:53:00.000Z</published>
-    <updated>2022-03-03T08:54:49.415Z</updated>
-    
-    <content type="html"><![CDATA[<p> 接口注入。从注入方式的使用上来说，接口注入是现在不甚提倡的一种方式，基本处于“退<br>役状态”。因为它强制被注入对象实现不必要的接口，带有侵入性。而构造方法注入和setter<br>方法注入则不需要如此。</p><p>构造方法注入。这种注入方式的优点就是，对象在构造完成之后，即已进入就绪状态，可以  马上使用。缺点就是，当依赖对象比较多的时候，构造方法的参数列表会比较长。而通过反<br>射构造对象的时候，对相同类型的参数的处理会比较困难，维护和使用上也比较麻烦。而且<br>在Java中，构造方法无法被继承，无法设置默认值。对于非必须的依赖处理，可能需要引入多<br>个构造方法，而参数数量的变动可能造成维护上的不便。</p><p>setter方法注入。因为方法可以命名，所以setter方法注入在描述性上要比构造方法注入好一些。  另外，setter方法可以被继承，允许设置默认值，而且有良好的IDE支持。缺点当然就是对象无<br>法在构造完成后马上进入就绪状态。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; 接口注入。从注入方式的使用上来说，接口注入是现在不甚提倡的一种方式，基本处于“退&lt;br&gt;役状态”。因为它强制被注入对象实现不必要的接口，带有侵入性。而构造方法注入和setter&lt;br&gt;方法注入则不需要如此。&lt;/p&gt;
-&lt;p&gt;构造方法注入。这种注入方式的优点就是，对象在构造完</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="注入方式" scheme="http://example.com/tags/%E6%B3%A8%E5%85%A5%E6%96%B9%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL怎么查看索引是否是高选择性？</title>
-    <link href="http://example.com/2022/03/02/MySQL%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E6%98%AF%E9%AB%98%E9%80%89%E6%8B%A9%E6%80%A7%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/02/MySQL%E6%80%8E%E4%B9%88%E6%9F%A5%E7%9C%8B%E7%B4%A2%E5%BC%95%E6%98%AF%E5%90%A6%E6%98%AF%E9%AB%98%E9%80%89%E6%8B%A9%E6%80%A7%EF%BC%9F/</id>
-    <published>2022-03-02T11:33:00.000Z</published>
-    <updated>2022-03-02T11:40:36.822Z</updated>
-    
-    <content type="html"><![CDATA[<p>通过show index查看结果列中的cardinality值（表示索引中不重复记录数量的预估值），在实际应用中cardinality/table.size应该尽可能接近1。</p><p>cardinality是在存储引擎层进行统计的。具体方式是通过采样的方法来完成。具体发生在insert和update操作中，策略为①表中1/16数据发生过变化②stat_modified_counter&gt;2 000 000 000（表中数据实际未增加，实际发生变化的还是这一行数据①就无法适用，则通过②的计数器stat_modirfied_counter表示发生变化次数）。</p><p> <img src="/images/pasted-106.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;通过show index查看结果列中的cardinality值（表示索引中不重复记录数量的预估值），在实际应用中cardinality/table.size应该尽可能接近1。&lt;/p&gt;
-&lt;p&gt;cardinality是在存储引擎层进行统计的。具体方式是通过采样的方法来完成。具体</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>InnoDB行溢出（Redundant）</title>
-    <link href="http://example.com/2022/03/02/InnoDB%E8%A1%8C%E6%BA%A2%E5%87%BA/"/>
-    <id>http://example.com/2022/03/02/InnoDB%E8%A1%8C%E6%BA%A2%E5%87%BA/</id>
-    <published>2022-03-02T10:45:00.000Z</published>
-    <updated>2022-03-02T10:53:16.247Z</updated>
-    
-    <content type="html"><![CDATA[<p>3个列长度总和是66000，innoDB存储引擎的页为16kb，16384字节，会产生行溢出，因此对于这种情况，数据不会存放于b+tree的叶子节点中，而是存入页类型为uncompress blob页中。</p><p> <img src="/images/pasted-105.png" alt="upload successful"></p><p> 每页中至少存放两条行记录（否则失去了B+tree的意义，变为了链表），因此如果一页中只能放一条记录，则会将数据放到溢出页。而对于Text或BLOB的数据类型亦然。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;3个列长度总和是66000，innoDB存储引擎的页为16kb，16384字节，会产生行溢出，因此对于这种情况，数据不会存放于b+tree的叶子节点中，而是存入页类型为uncompress blob页中。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-1</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="行结构" scheme="http://example.com/tags/%E8%A1%8C%E7%BB%93%E6%9E%84/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL中varchar中的N</title>
-    <link href="http://example.com/2022/03/02/MySQL%E4%B8%ADvarchar%E4%B8%AD%E7%9A%84N/"/>
-    <id>http://example.com/2022/03/02/MySQL%E4%B8%ADvarchar%E4%B8%AD%E7%9A%84N/</id>
-    <published>2022-03-02T10:42:00.000Z</published>
-    <updated>2022-03-02T10:44:12.635Z</updated>
-    
-    <content type="html"><![CDATA[<p>varchar(N)指的是字符长度，而官方文档中指的是最大支持65535是字节</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;varchar(N)指的是字符长度，而官方文档中指的是最大支持65535是字节&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="行" scheme="http://example.com/tags/%E8%A1%8C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何在 Linux 系统中查看 TCP 状态？</title>
-    <link href="http://example.com/2022/02/25/%E5%A6%82%E4%BD%95%E5%9C%A8-Linux-%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%9F%A5%E7%9C%8B-TCP-%E7%8A%B6%E6%80%81%EF%BC%9F/"/>
-    <id>http://example.com/2022/02/25/%E5%A6%82%E4%BD%95%E5%9C%A8-Linux-%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%9F%A5%E7%9C%8B-TCP-%E7%8A%B6%E6%80%81%EF%BC%9F/</id>
-    <published>2022-02-25T01:56:00.000Z</published>
-    <updated>2022-02-25T01:58:06.991Z</updated>
-    
-    <content type="html"><![CDATA[<p>netstat-napt</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;netstat-napt&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="计算机网络" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-    <category term="TCP" scheme="http://example.com/tags/TCP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>最左匹配原则</title>
-    <link href="http://example.com/2022/02/24/%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99/"/>
-    <id>http://example.com/2022/02/24/%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99/</id>
-    <published>2022-02-24T08:02:00.000Z</published>
-    <updated>2022-02-24T08:04:16.906Z</updated>
-    
-    <content type="html"><![CDATA[<p>MySQL中的索引可以以一定顺序引用多列，这种索引叫作联合索引。如User表的name和city加联合索引就是(name,city)，而最左前缀原则指的是，如果查询的时候查询条件精确匹配索引的左边连续一列或几列，则此列就可以被用到。如下：</p><p>   select * from user where name=xx and city=xx ; ／／可以命中索引 </p><p>   select * from user where name=xx ; // 可以命中索引 </p><p>   select * from user where city=xx; // 无法命中索引 </p><pre><code>需要注意：查询的时候如果两个条件都用上了，但是顺序不同，如 city= xx and name ＝xx，那么现在的查询引擎会自动优化为匹配联合索引的顺序，这样是能够命中索引的.由于最左前缀原则，在创建联合索引时，索引字段的顺序需要考虑字段值去重之后的个数，较多的放前面。ORDERBY子句也遵循此规则。</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;MySQL中的索引可以以一定顺序引用多列，这种索引叫作联合索引。如User表的name和city加联合索引就是(name,city)，而最左前缀原则指的是，如果查询的时候查询条件精确匹配索引的左边连续一列或几列，则此列就可以被用到。如下：&lt;/p&gt;
-&lt;p&gt;   select </summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="最左匹配原则" scheme="http://example.com/tags/%E6%9C%80%E5%B7%A6%E5%8C%B9%E9%85%8D%E5%8E%9F%E5%88%99/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一条SQL语句执行得很慢的原因有哪些？</title>
-    <link href="http://example.com/2022/02/24/%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E5%BE%97%E5%BE%88%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F/"/>
-    <id>http://example.com/2022/02/24/%E4%B8%80%E6%9D%A1SQL%E8%AF%AD%E5%8F%A5%E6%89%A7%E8%A1%8C%E5%BE%97%E5%BE%88%E6%85%A2%E7%9A%84%E5%8E%9F%E5%9B%A0%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F/</id>
-    <published>2022-02-24T07:50:00.000Z</published>
-    <updated>2022-02-24T07:59:49.798Z</updated>
-    
-    <content type="html"><![CDATA[<p>一个 SQL 执行的很慢，我们要分两种情况讨论：</p><p>1、大多数情况下很正常，偶尔很慢，则有如下原因</p><p>(1)、数据库在刷新脏页，例如 redo log 页写满了需要同步到磁盘。</p><p>(2)、执行的时候，遇到锁，如表锁、行锁。</p><p>2、这条 SQL 语句一直执行的很慢，则有如下原因。</p><p>(1)、没有用上索引：例如该字段没有索引；由于对字段进行运算、函数操作导致无法用索引。</p><p>(2)、数据库选错了索引。</p><pre><code>转载：https://mp.weixin.qq.com/s?__biz=Mzg2OTA0Njk0OA==&amp;mid=2247485185&amp;idx=1&amp;sn=66ef08b4ab6af5757792223a83fc0d45&amp;chksm=cea248caf9d5c1dc72ec8a281ec16aa3ec3e8066dbb252e27362438a26c33fbe842b0e0adf47&amp;token=79317275&amp;lang=zh_CN%23rd</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;一个 SQL 执行的很慢，我们要分两种情况讨论：&lt;/p&gt;
-&lt;p&gt;1、大多数情况下很正常，偶尔很慢，则有如下原因&lt;/p&gt;
-&lt;p&gt;(1)、数据库在刷新脏页，例如 redo log 页写满了需要同步到磁盘。&lt;/p&gt;
-&lt;p&gt;(2)、执行的时候，遇到锁，如表锁、行锁。&lt;/p&gt;
-&lt;p&gt;</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="性能" scheme="http://example.com/tags/%E6%80%A7%E8%83%BD/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>分库分表之后的主键处理方式</title>
-    <link href="http://example.com/2022/02/24/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8E%E7%9A%84%E4%B8%BB%E9%94%AE%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/"/>
-    <id>http://example.com/2022/02/24/%E5%88%86%E5%BA%93%E5%88%86%E8%A1%A8%E4%B9%8B%E5%90%8E%E7%9A%84%E4%B8%BB%E9%94%AE%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</id>
-    <published>2022-02-24T04:56:00.000Z</published>
-    <updated>2022-02-24T05:00:22.852Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、UUID：不适合作为主键，其太长了而且无序，插入效率低</p><p>2、数据库自增id：两台数据库分别设置不同步⻓，⽣成不重复ID的策略来实现⾼可⽤。这种⽅式⽣成的 id 有序，但是需要独⽴部署数据库实例，成本⾼，还会有性能瓶颈。</p><p>3、利⽤ redis ⽣成 id : 性能⽐᫾好，灵活⽅便，不依赖于数据库。但是，引⼊了新的组件造成<br>系统更加复杂，可⽤性降低，编码更加复杂，增加了系统成本。</p><p>4、Twitter的snowflake算法：</p><p> <img src="/images/pasted-102.png" alt="upload successful"></p><p> 1.第一位</p><p>占用1bit，其值始终是0，没有实际作用。</p><p>2.时间戳</p><p>占用41bit，精确到毫秒，总共可以容纳约140年的时间。</p><p>3.工作机器id</p><p>占用10bit，其中高位5bit是数据中心ID（datacenterId），低位5bit是工作节点ID（workerId），做多可以容纳1024个节点。</p><p>4.序列号</p><p>占用12bit，这个值在同一毫秒同一节点上从0开始不断累加，最多可以累加到4095。</p><p>SnowFlake算法在同一毫秒内最多可以生成多少个全局唯一ID呢？只需要做一个简单的乘法：</p><p>1024x4096</p><p>SnowFlake算法的优点：</p><p>1.生成ID时不依赖于DB，完全在内存生成，高性能高可用。</p><p>2.ID呈趋势递增，后续插入索引树的时候性能较好。</p><p>SnowFlake算法的缺点：</p><p>依赖于系统时钟的一致性。如果某台机器的系统时钟回拨，有可能造成ID冲突，或者ID乱序。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、UUID：不适合作为主键，其太长了而且无序，插入效率低&lt;/p&gt;
-&lt;p&gt;2、数据库自增id：两台数据库分别设置不同步⻓，⽣成不重复ID的策略来实现⾼可⽤。这种⽅式⽣成的 id 有序，但是需要独⽴部署数据库实例，成本⾼，还会有性能瓶颈。&lt;/p&gt;
-&lt;p&gt;3、利⽤ redis </summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="主键" scheme="http://example.com/tags/%E4%B8%BB%E9%94%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>http常见状态码</title>
-    <link href="http://example.com/2022/02/23/http%E5%B8%B8%E8%A7%81%E7%8A%B6%E6%80%81%E7%A0%81/"/>
-    <id>http://example.com/2022/02/23/http%E5%B8%B8%E8%A7%81%E7%8A%B6%E6%80%81%E7%A0%81/</id>
-    <published>2022-02-23T07:48:00.000Z</published>
-    <updated>2022-02-23T07:56:43.034Z</updated>
-    
-    <content type="html"><![CDATA[<p>1xx：表示一种提示信息，一般是服务器的中间状态，不常用</p><p>2xx：表示服务器已经成功处理了请求</p><p>200：成功<br>204：成功（响应头没有body数据）<br>206：用于http分块下载或者断点续传，表示响应的body里面的数据并不完整，只是一部分</p><p>3xx：客户端请求的资源发生了变动需要重定向</p><p>301：表示永久重定向，即访问的资源永久不存在</p><p>302：临时重定向，即访问的资源还在，需要换一个url访问</p><p>301和302会在响应头使用location字段表明重定向的url进行重定向</p><p>304：不具有跳转含义，表明请求的资源未修改，重定向缓存文件。</p><p>4xx：请求的报文有误，服务器无法处理</p><p>400：请求错误，具体不清楚</p><p>403：服务器禁止访问资源</p><p>404：访问的资源在服务器找不到</p><p>5xx 类状态码表示客户端请求报⽂正确，但是服务器处理时内部发⽣了错误，属于服务器端的错误码。</p><p>「500 Internal Server Error」与 400 类型，是个笼统通⽤的错误码，服务器发⽣了什么错误，我们并不知道。</p><p>「501 Not Implemented」表示客户端请求的功能还不⽀持，类似“即将开业，敬请期待”的意思。</p><p>「502 Bad Gateway」通常是服务器作为⽹关或代理时返回的错误码，表示服务器⾃身⼯作正常，访问后端服务器<br>发⽣了错误。</p><p>「503 Service Unavailable」表示服务器当前很忙，暂时⽆法响应服务器，类似“⽹络服务正忙，请稍后᯿试”的意<br>思。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1xx：表示一种提示信息，一般是服务器的中间状态，不常用&lt;/p&gt;
-&lt;p&gt;2xx：表示服务器已经成功处理了请求&lt;/p&gt;
-&lt;p&gt;200：成功&lt;br&gt;204：成功（响应头没有body数据）&lt;br&gt;206：用于http分块下载或者断点续传，表示响应的body里面的数据并不完整，只是</summary>
-      
-    
-    
-    
-    <category term="计算机网络" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-    <category term="http" scheme="http://example.com/tags/http/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>http</title>
-    <link href="http://example.com/2022/02/23/http/"/>
-    <id>http://example.com/2022/02/23/http/</id>
-    <published>2022-02-23T07:37:47.000Z</published>
-    <updated>2022-02-23T07:38:21.504Z</updated>
-    
-    <content type="html"><![CDATA[<p>http是计算机世界里面两点之间进行文字、图片、视频等超文本数据传输的协议</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;http是计算机世界里面两点之间进行文字、图片、视频等超文本数据传输的协议&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    
-  </entry>
-  
-  <entry>
-    <title>get和post的区别</title>
-    <link href="http://example.com/2022/02/18/get%E5%92%8Cpost%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
-    <id>http://example.com/2022/02/18/get%E5%92%8Cpost%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
-    <published>2022-02-18T14:38:00.000Z</published>
-    <updated>2022-02-18T14:39:22.715Z</updated>
-    
-    <content type="html"><![CDATA[<p>POST和GET都是向服务器提交数据，并且都会从服务器获取数据。</p><p>区别：</p><p>1、传送方式：get通过地址栏传输，post通过报文传输。</p><p>2、传送长度：get参数有长度限制（受限于url长度），而post无限制</p><p>3、GET和POST还有一个重大区别，简单的说：</p><p>GET产生一个TCP数据包；POST产生两个TCP数据包</p><p>长的说：</p><p>对于GET方式的请求，浏览器会把http header和data一并发送出去，服务器响应200（返回数据）；</p><p>而对于POST，浏览器先发送header，服务器响应100 continue，浏览器再发送data，服务器响应200 ok（返回数据）。</p><p>也就是说，GET只需要汽车跑一趟就把货送到了，而POST得跑两趟，第一趟，先去和服务器打个招呼“嗨，我等下要送一批货来，你们打开门迎接我”，然后再回头把货送过去。</p><p>因为POST需要两步，时间上消耗的要多一点，看起来GET比POST更有效。因此Yahoo团队有推荐用GET替换POST来优化网站性能。但这是一个坑！跳入需谨慎。为什么？</p><ol><li><p>GET与POST都有自己的语义，不能随便混用。</p></li><li><p>据研究，在网络环境好的情况下，发一次包的时间和发两次包的时间差别基本可以无视。而在网络环境差的情况下，两次包的TCP在验证数据包完整性上，有非常大的优点。</p></li><li><p>并不是所有浏览器都会在POST中发送两次包，Firefox就只发送一次。</p></li></ol><p>建议：</p><p>1、get方式的安全性较Post方式要差些，包含机密信息的话，建议用Post数据提交方式；</p><p>2、在做数据查询时，建议用Get方式；而在做数据添加、修改或删除时，建议用Post方式；</p><p>案例：一般情况下，登录的时候都是用的POST传输，涉及到密码传输，而页面查询的时候，如文章id查询文章，用get 地址栏的链接为：article.php?id=11，用post查询地址栏链接为：article.php， 不会将传输的数据展现出来。</p><p>拓展资料：</p><p>GET在浏览器回退时是无害的，而POST会再次提交请求。</p><p>GET产生的URL地址可以被Bookmark，而POST不可以。</p><p>GET请求会被浏览器主动cache，而POST不会，除非手动设置。</p><p>GET请求只能进行url编码，而POST支持多种编码方式。</p><p>GET请求参数会被完整保留在浏览器历史记录里，而POST中的参数不会被保留。</p><p>GET请求在URL中传送的参数是有长度限制的，而POST么有。</p><p>对参数的数据类型，GET只接受ASCII字符，而POST没有限制。</p><p>GET比POST更不安全，因为参数直接暴露在URL上，所以不能用来传递敏感信息。</p><p>GET参数通过URL传递，POST放在Request body中。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;POST和GET都是向服务器提交数据，并且都会从服务器获取数据。&lt;/p&gt;
-&lt;p&gt;区别：&lt;/p&gt;
-&lt;p&gt;1、传送方式：get通过地址栏传输，post通过报文传输。&lt;/p&gt;
-&lt;p&gt;2、传送长度：get参数有长度限制（受限于url长度），而post无限制&lt;/p&gt;
-&lt;p&gt;3、GET</summary>
-      
-    
-    
-    
-    <category term="计算机网络" scheme="http://example.com/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/"/>
-    
-    
-    <category term="get" scheme="http://example.com/tags/get/"/>
-    
-    <category term="post" scheme="http://example.com/tags/post/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>代理模式</title>
-    <link href="http://example.com/2022/02/11/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://example.com/2022/02/11/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</id>
-    <published>2022-02-11T13:22:00.000Z</published>
-    <updated>2022-02-11T13:38:00.109Z</updated>
-    
-    <content type="html"><![CDATA[<p>代理模式是指，为其他对象提供一种代理以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户类和目标对象之间起到中介的作用。说直白一点就是在不修改目标对象的基础上，使用代理对象来增强目标对象的业务逻辑方法。</p><p>代理模式分为：静态代理和动态代理（jdk动态代理和cglib动态代理）</p><p>静态代理就是：代理类在程序运行前就确定好了和目标类的关系，在编译期就实现了。其中静态代理的缺点在于：</p><p>1、代码复杂，不便于管理：试想对于代理类，需要和目标类实现相同接口即每个代理类都要实现目标类的的方法，会出现代码重复，且考虑到如果接口增加一个方法，其所有实现类都要重写，维护也麻烦。</p><p>2、代理类依赖于目标类：当代理类考虑代理多个服务的时候，不便于实现</p><p>动态代理是在程序运行期间根据jvm反射机制动态生成的。</p><p>jdk动态代理：基于java反射机制实现的。具体通过使用java.lang.reflect 包提供三个类支持代理模式 Proxy, Method和 InovcationHandler。（要求：求目标对象必须实现接口）</p><pre><code>public interface UsbSell &#123;    Object sell(float amount);&#125;public class UsbFactory implements UsbSell &#123;public Object sell(float amount) &#123;    float price = 0;    if (amount &gt; 100)&#123;        price = (float) (amount * (1 + 0.2));    &#125;else &#123;        price = (float) (amount * (1 + 0.5));    &#125;    return price;    &#125;&#125;public class ProxySeller &#123;private Object target;public ProxySeller() &#123;&#125;public ProxySeller(Object target) &#123;    this.target = target;&#125;public Object getProxy()&#123;    return Proxy.newProxyInstance(target.getClass().getClassLoader(), target.getClass().getInterfaces(), new InvocationHandler() &#123;        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;            float res = (Float) method.invoke(target,args);            System.out.println(&quot;==&quot;+res);            return proxy;        &#125;    &#125;);&#125;&#125;public class Main &#123;public static void main(String[] args) &#123;    UsbFactory factory = new UsbFactory();    ProxySeller seller = new ProxySeller(factory);    UsbSell proxy = (UsbSell)seller.getProxy();    UsbSell s = (UsbSell)proxy.sell(50);    s.sell(50);&#125;&#125;</code></pre><p> cglib动态代理：一个开源项目。对于无接口的类，要为其创建动态代理，就要使用 CGLIB 来实现。CGLIB 代理的生成原理是生成目标类的子类，而子类是增强过的，这个子类对象就是代理对象。所以，使用CGLIB 生成动态代理，要求目标类必须能够被继承，即不能是 final 的类。</p><pre><code>     public class Saller &#123;public float sell(int amount)&#123;    float price = 100;    if (amount &gt; 100)&#123;        price = (float) (price * (1 + 0.2));    &#125;else &#123;        price = (float) (price * (1 + 0.5));    &#125;    return price;&#125;&#125;public class ProxySaller implements MethodInterceptor &#123;private Object target;public ProxySaller() &#123;&#125;public ProxySaller(Object target) &#123;    this.target = target;&#125;public Object getProxySaller()&#123;    Enhancer enhancer = new Enhancer();    enhancer.setSuperclass(target.getClass());    enhancer.setCallback(this);    Saller saller = (Saller) enhancer.create();    return saller;&#125;public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable &#123;    Float price = (Float) methodProxy.invoke(target,objects);    System.out.println(&quot;===&quot;+price);    return price;&#125;&#125;public class Main &#123;public static void main(String[] args) &#123;    Saller saller = new Saller();    ProxySaller proxySaller = new ProxySaller(saller);    Saller proxy = (Saller) proxySaller.getProxySaller();    proxy.sell(100);&#125;&#125;</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;代理模式是指，为其他对象提供一种代理以控制对这个对象的访问。在某些情况下，一个对象不适合或者不能直接引用另一个对象，而代理对象可以在客户类和目标对象之间起到中介的作用。说直白一点就是在不修改目标对象的基础上，使用代理对象来增强目标对象的业务逻辑方法。&lt;/p&gt;
-&lt;p&gt;代理模式</summary>
-      
-    
-    
-    
-    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
-    
-    
-    <category term="代理模式" scheme="http://example.com/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   
