@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-04T14:04:16.777Z</updated>
+  <updated>2022-03-05T02:44:20.102Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>反射和反序列化对单例模式的破坏</title>
+    <link href="http://example.com/2022/03/05/%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%A0%B4%E5%9D%8F/"/>
+    <id>http://example.com/2022/03/05/%E5%8F%8D%E5%B0%84%E5%92%8C%E5%8F%8D%E5%BA%8F%E5%88%97%E5%8C%96%E5%AF%B9%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E7%A0%B4%E5%9D%8F/</id>
+    <published>2022-03-05T01:45:00.000Z</published>
+    <updated>2022-03-05T02:44:20.102Z</updated>
+    
+    <content type="html"><![CDATA[<p>除了枚举单列模式外，其余的单例实现方式都有可能被反射和反序列化所破坏。那么如何解决反射和反序列化对单例模式的破坏呢？</p><p>1、反射方式破解单例的解决方法:这种方式比较好理解。当通过反射方式调用构造方法进行创建创建时，直接抛异常。不运行此中操<br>作。</p><pre><code>/** * @author atao * @version 1.0.0 * @ClassName Demo7.java * @Description 懒汉式-方式3（双重检查锁）双重检查锁模式是一种非常好的单例实现模式，解决了单例、性能、线程安全问题，上面的双重检 * 测锁模式看上去完美无缺，其实是存在问题，在多线程的情况下，可能会出现空指针问题，出现问 * 题的原因是JVM在实例化对象的时候会进行优化和指令重排序操作。 * 要解决双重检查锁模式带来空指针异常的问题，只需要使用 volatile 关键字, volatile 关 * 键字可以保证可见性和有序性。 * @createTime 2022年03月05日 10:35:00 */public class Demo7 &#123;private static volatile Demo7 singleton;private Demo7()&#123;    // 解决反射对单例模式的破坏    if (singleton != null)&#123;        throw new RuntimeException();    &#125;&#125;public static Demo7 getInstance()&#123;    if (singleton == null)&#123;        synchronized (Demo2.class)&#123;            if (singleton == null)&#123;                singleton = new Demo7();            &#125;        &#125;    &#125;    return singleton;&#125;&#125;</code></pre><p>2、在Singleton类中添加 readResolve() 方法，在反序列化时被反射调用，如果定义了这个方法，<br>就返回这个方法的值，如果没有定义，则返回新new出来的对象。</p><pre><code>/** * @author atao * @version 1.0.0 * @ClassName Demo8.java * @Description  懒汉式-方式4（静态内部类方式）静态内部类单例模式中实例由内部类创建，由于 JVM 在加载外部类的过程中, 是不会加载静态 * 内部类的, 只有内部类的属性/方法被调用时才会被加载, 并初始化其静态属性。静态属性由于被 * static 修饰，保证只被实例化一次，并且严格保证实例化顺序。 * @createTime 2022年03月05日 10:37:00 */public class Demo8 &#123;    private Demo8 singleton;    private Demo8()&#123;    &#125;    private static class inner&#123;        public static Demo8 singleton = new Demo8();    &#125;    public static Demo8 getInstance()&#123;        return Demo8.inner.singleton;    &#125;    /**     * 解决反序列化对单例模式的破坏     * @return     */    private Object readResolve()&#123;        return Demo8.inner.singleton;    &#125;&#125;</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;除了枚举单列模式外，其余的单例实现方式都有可能被反射和反序列化所破坏。那么如何解决反射和反序列化对单例模式的破坏呢？&lt;/p&gt;
+&lt;p&gt;1、反射方式破解单例的解决方法:这种方式比较好理解。当通过反射方式调用构造方法进行创建创建时，直接抛异常。不运行此中操&lt;br&gt;作。&lt;/p&gt;
+&lt;</summary>
+      
+    
+    
+    
+    <category term="设计模式" scheme="http://example.com/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+    <category term="单例模式" scheme="http://example.com/tags/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F/"/>
+    
+    <category term="破坏" scheme="http://example.com/tags/%E7%A0%B4%E5%9D%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>软件设计原则</title>
@@ -492,31 +520,6 @@
     
     
     <category term="IoC Service Provider" scheme="http://example.com/tags/IoC-Service-Provider/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>IOC的基本理念：让别人为你服务</title>
-    <link href="http://example.com/2022/03/03/IOC%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%90%86%E5%BF%B5%EF%BC%9A%E8%AE%A9%E5%88%AB%E4%BA%BA%E4%B8%BA%E4%BD%A0%E6%9C%8D%E5%8A%A1/"/>
-    <id>http://example.com/2022/03/03/IOC%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%90%86%E5%BF%B5%EF%BC%9A%E8%AE%A9%E5%88%AB%E4%BA%BA%E4%B8%BA%E4%BD%A0%E6%9C%8D%E5%8A%A1/</id>
-    <published>2022-03-03T09:01:00.000Z</published>
-    <updated>2022-03-03T10:25:33.400Z</updated>
-    
-    <content type="html"><![CDATA[<p>IOC即控制反转，它还有一个别名叫做依赖注入（Dependency<br>Injection）。</p><p>在我日常开发中，经常需要一个对象依赖于另一个对象的服务。最简单而有效的方式就是直接在类的构造函数中新建相应的依赖类。这就好比要装修新房，需要用家具，这个时候，根据通常解决<br>对象依赖关系的做法，我们就会直接打造出需要的家具来。不过，通常都是分工明确的，所以，大多数情况下，我们可以去家具广场将家具买回来，然后根据需要装修布置即可。不管是直接打造家具（通过new构造对象），还是去家具广场买家具（通过工厂设计模式），有一个共同点需要我们关注，那就是我们都是自己主动地去获取依赖的对象！可是回头想想，我们自己每次用到什么依赖对象都要主动地去获取，这是否真的必要？我们最终所要做的，其实就是直接调用依赖对象所提供的某项服务而已。只要用到这个依赖对象的时候，它能够准备就绪，我们完全可以不管这个对象是自己找来的还是别人送过来的。</p><p>实际上IOC就是为了帮助我们解决这种问题的，而提供了更加轻松简洁的方式。它的反转，就反转在让你从原来的事必躬亲，转变为现在的享受服务。</p><p>通常情况下，被注入对象会直接依赖于被依赖对象。但是，在IoC的场景中，二者之间通过IoC Service Provider来打交道，所有的被注入对象和依赖对象现在由IoC Service Provider统一管理。被注入对象需要什么，直接跟IoC Service Provider招呼一声，后者就会把相应的被依赖对象注入到被注入对象中，从而达到IoC Service Provider为被注入对象服务的目的。IoC Service Provider在这里就是通常的IoC容器所充当的角色。从被注入对象的角度看，与之前直接寻求依赖对象相比，依赖对象的取得方式发生了反转，控制也从被注入对象转到了IoC Service Provider那里。</p><p> <img src="/images/pasted-107.png" alt="upload successful"></p><p> （IoC Service Provider在这里是一个抽象出来的概念，它可以指代任何将IoC场景中的业务对象绑定<br>到一起的实现方式。它可以是一段代码，也可以是一组相关的类，甚至可以是比较通用的IoC框架或<br>者IoC容器实现。）</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;IOC即控制反转，它还有一个别名叫做依赖注入（Dependency&lt;br&gt;Injection）。&lt;/p&gt;
-&lt;p&gt;在我日常开发中，经常需要一个对象依赖于另一个对象的服务。最简单而有效的方式就是直接在类的构造函数中新建相应的依赖类。这就好比要装修新房，需要用家具，这个时候，根据</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="IOC的理解" scheme="http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/"/>
     
   </entry>
   
