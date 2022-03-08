@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-07T13:01:58.232Z</updated>
+  <updated>2022-03-08T12:48:29.130Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,84 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Spring AOP实现机制的一个小小陷阱</title>
+    <link href="http://example.com/2022/03/08/Spring%20AOP%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E5%B0%8F%E9%99%B7%E9%98%B1/"/>
+    <id>http://example.com/2022/03/08/Spring%20AOP%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E5%B0%8F%E9%99%B7%E9%98%B1/</id>
+    <published>2022-03-08T12:36:00.000Z</published>
+    <updated>2022-03-08T12:48:29.130Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们知道Spring AOP采用代理模式实现，具体的横切逻辑会被添加到动态生成的代理对象中，只要调用的是目标对象的代理对象上的方法就可以保证目标对象的方法执行可以被拦截。</p><p>不过遗憾的是，代理模式的实现机制在处理方法调用的时序方面会给使用这种机制实现的AOP产品造成一个缺憾。在处理对象方法中，不管你如何添加横切逻辑，也不管添加多少横切逻辑，有一点是确定的，你最终需要调用目标对象的同一方法来执行最初所应以的方法逻辑。如果目标对象中原始方法调用依赖于其他对象，那没问题。我们可以为目标对象注入所依赖对象的代理，并且可以保证相应的Joinpoint被拦截并且织入相应横切逻辑。但是如果目标对象中的原始方法调用直接调用自身方法时，会导致出现问题</p><p> <img src="/images/pasted-133.png" alt="upload successful"></p><p> 在代理对象的method1执行经历了层层拦截后，最终会将调用转向目标对象上的method1，之后调用流程全部在走targetobject之上，当method1调用method2时，它调用targetobject的method2，而不是代理对象的method2，而针对method2的横切逻辑是织入到代理对象上的，因此method1中调用的method2没有被成功拦截。</p><p> 好在Spring AOP提供了AopContent来公开当前目标对象的代理对象，我们只要在目标对象中使用AopContent.currentProxy()就可以获取当前目标对象所对应的代理对象。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我们知道Spring AOP采用代理模式实现，具体的横切逻辑会被添加到动态生成的代理对象中，只要调用的是目标对象的代理对象上的方法就可以保证目标对象的方法执行可以被拦截。&lt;/p&gt;
+&lt;p&gt;不过遗憾的是，代理模式的实现机制在处理方法调用的时序方面会给使用这种机制实现的AOP产品</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AOP的常见应用案例</title>
+    <link href="http://example.com/2022/03/08/AOP%E7%9A%84%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B/"/>
+    <id>http://example.com/2022/03/08/AOP%E7%9A%84%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B/</id>
+    <published>2022-03-08T11:26:00.000Z</published>
+    <updated>2022-03-08T12:33:39.435Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、异常处理：</p><p>通常将Error和RuntimeException及其子类称作非受检异常。（编译器不会对这些类型的异常进行编译期检查），而其他的则为受检异常（编写程序期间就应进行处理）。Fault Barrier即为对非受检异常的处理。</p><p>对于这些非受检异常的处理可以归并于溢出进行处理，而不是让他们散落到系统的各处。介于此，我们可以通过实现一个Aspect来处理，让其对系统中所有可能的falut情况进行统一的处理。而这个专职于处理Falut的Aspect即为Falut Barrier。</p><p>2、安全检查：</p><p>Filter是Servlet规范为我们提供的一种AOP支持。通过它我们可以为基于servlet的web应用添加相应的资源访问控制等等。但是，基于filter的web应用的资源访问控制仅仅是特定领域安全检查需求。而通过AOP，我们可以为任何类型的应用添加安全支持。（Spring Security则是基于Spring的一款强大的安全框架）</p><p>3、缓存：</p><p>AOP应用的另一个主要场景则是为系统透明地添加缓存支持。缓存可以在很大程度上提升系统性能。为了避免需要添加的缓存实现逻辑影响业务逻辑的实现，我们可以让缓存的实现独立于业务对象的实现外，将系统中的缓存需求通过AOP的Aspect进行封装，只在系统中某个点确切需要缓存的情况下才进行织入。（现在已经有许多现成的Caching产品实现，入EhCache、Redis等）</p><p>Spring Modules项目提供了对现有Caching产品的集成，这样可以通过外部声明的方式为系统中的Joinpoint加Caching支持。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、异常处理：&lt;/p&gt;
+&lt;p&gt;通常将Error和RuntimeException及其子类称作非受检异常。（编译器不会对这些类型的异常进行编译期检查），而其他的则为受检异常（编写程序期间就应进行处理）。Fault Barrier即为对非受检异常的处理。&lt;/p&gt;
+&lt;p&gt;对于这些</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+    <category term="应用" scheme="http://example.com/tags/%E5%BA%94%E7%94%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>C语言程序经过预处理、编译、汇编和链接等各个阶段的变化情况</title>
+    <link href="http://example.com/2022/03/08/C%E8%AF%AD%E8%A8%80%E7%A8%8B%E5%BA%8F%E7%BB%8F%E8%BF%87%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81%E7%BC%96%E8%AF%91%E3%80%81%E6%B1%87%E7%BC%96%E5%92%8C%E9%93%BE%E6%8E%A5%E7%AD%89%E5%90%84%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E5%8F%98%E5%8C%96%E6%83%85%E5%86%B5/"/>
+    <id>http://example.com/2022/03/08/C%E8%AF%AD%E8%A8%80%E7%A8%8B%E5%BA%8F%E7%BB%8F%E8%BF%87%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81%E7%BC%96%E8%AF%91%E3%80%81%E6%B1%87%E7%BC%96%E5%92%8C%E9%93%BE%E6%8E%A5%E7%AD%89%E5%90%84%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E5%8F%98%E5%8C%96%E6%83%85%E5%86%B5/</id>
+    <published>2022-03-08T07:59:00.000Z</published>
+    <updated>2022-03-08T11:26:01.536Z</updated>
+    
+    <content type="html"><![CDATA[<p>编译过程概述：通常编译程序的过程分为词法分析、语法分析、语义分析、目目标代码生成4个阶段（如果编译器支持优化，还可以有中间代码生成和代码优化两个阶段）。</p><p> <img src="/images/pasted-132.png" alt="upload successful"></p><p>1、词法分析</p><p>此阶段的任务是从左到右一个字符一个字符地读入源程序，对构成源程序的字符进行扫描和分解，从而识别出一个个单词（逻辑上紧密相连的一组有集体含义的字符）。</p><p>2、语法分析</p><p>此阶段的任务是在词法分析的基础上将单词序列分解成各类语法短语（也称语法单位）可表示成语法树。</p><p>注：词法分析和语法分析本质上都是对源程序的结构进行分析。</p><p>3、语义分析</p><p>语义分析是审查源程序有无语义错误，为代码生成阶段收集类型信息。</p><p>4、中间代码生成</p><p>“中间代码”是一种结构简单，含义明确的记号系统，这种记号系统可以设计为多种多样的形式，重要的设计原则为两点：一是容易生成；二是容易将它翻译成目标代码。很多编译程序采用了一种近似“三地址指令”的“四元式”中间代码。这种四元式的形式为：（运算符，运算对象1，运算对象2，结果）</p><p>5、代码优化</p><p>将中间代码进行变换或进行改造，目的：使生成的目标代码更为高效，即省时间和空间</p><p>6、目标代码生成</p><p>任务是把中间代码变换成特定机器上的绝对指令代码或可重定位的指令代码或汇编指令代码。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;编译过程概述：通常编译程序的过程分为词法分析、语法分析、语义分析、目目标代码生成4个阶段（如果编译器支持优化，还可以有中间代码生成和代码优化两个阶段）。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-132.png&quot; alt=&quot;upload succes</summary>
+      
+    
+    
+    
+    <category term="编译原理" scheme="http://example.com/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/"/>
+    
+    
+    <category term="基础概念" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring AOP 一世</title>
@@ -449,81 +527,6 @@
     
     
     <category term="注解" scheme="http://example.com/tags/%E6%B3%A8%E8%A7%A3/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>ApplicationContext统一资源加载策略</title>
-    <link href="http://example.com/2022/03/04/ApplicationContext%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E7%AD%96%E7%95%A5/"/>
-    <id>http://example.com/2022/03/04/ApplicationContext%E7%BB%9F%E4%B8%80%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD%E7%AD%96%E7%95%A5/</id>
-    <published>2022-03-04T07:24:00.000Z</published>
-    <updated>2022-03-04T07:55:24.970Z</updated>
-    
-    <content type="html"><![CDATA[<p>Spring框架内部使用org.springframework.core.io.Resource接口作为所有资源的抽象和访<br>问接口</p><p>其中ClassPathResource就是Resource的一个特定类型的实现，代表的是位于Classpath中的资源。</p><p>Resource接口可以根据资源的不同类型，或者资源所处的不同场合，给出相应的具体实现。Spring<br>框架在这个理念的基础上，提供了一些实现类（可以在org.springframework.core.io包下找到这<br>些实现类）。</p><p> ByteArrayResource。将字节（byte）数组提供的数据作为一种资源进行封装，如果通过<br>InputStream形式访问该类型的资源，该实现会根据字节数组的数据，构造相应的ByteArrayInputStream并返回。</p><p> ClassPathResource。该实现从Java应用程序的ClassPath中加载具体资源并进行封装，可以使<br>用指定的类加载器（ClassLoader）或者给定的类进行资源加载。 </p><p> FileSystemResource。对java.io.File类型的封装，所以，我们可以以文件或者URL的形<br>式对该类型资源进行访问，只要能跟File打的交道，基本上跟FileSystemResource也可以。  </p><p> UrlResource。通过java.net.URL进行的具体资源查找定位的实现类，内部委派URL进行具<br>体的资源操作。  </p><p> InputStreamResource。将给定的InputStream视为一种资源的Resource实现类，较为少用。<br>可能的情况下，以ByteArrayResource以及其他形式资源实现代之。</p><p>如果给定的实现类不满足需求，还可以通过实现Resource接口自定义。</p><p>org.springframework.core.io.ResourceLoader接口是资源查找定位策略的统一抽象，具体的资源查找定<br>位策略则由相应的ResourceLoader实现类给出。</p><p>其中最主要的就是Resource getResource(String location);方法，通过它，我们就可以根<br>据指定的资源位置，定位到具体的资源实例。</p><p>1、可用的ResourceLoader：</p><p>ResourceLoader有一个默认的实现类，即org.springframework.core.io.DefaultResourceLoader，该类默认的资源查找处理逻辑如下。</p><p>(1) 首先检查资源路径是否以classpath:前缀打头，如果是，则尝试构造ClassPathResource类<br>型资源并返回。</p><p>(2) 否则，(a) 尝试通过URL，根据资源路径来定位资源，如果没有抛出MalformedURLException，<br>有则会构造UrlResource类型的资源并返回；(b)如果还是无法根据资源路径定位指定的资源，则委派<br>getResourceByPath(String) 方法来定位， DefaultResourceLoader 的<br>getResourceByPath(String)方法默认实现逻辑是，构造ClassPathResource类型的资源并返回。</p><p>为了避免DefaultResourceLoader在最后getResourceByPath(String)方法上的不恰当处理，<br>我们可以使用org.springframework.core.io.FileSystemResourceLoader，它继承自DefaultResourceLoader，但覆写了getResourceByPath(String)方法，使之从文件系统加载资源并以<br>FileSystemResource类型返回。这样，我们就可以取得预想的资源类型。</p><p>FileSystemResourceLoader在ResourceLoader家族中的兄弟FileSystemXmlApplicationContext，也是覆写了getResourceByPath(String)方法的逻辑，以改变DefaultResourceLoader的<br>默认资源加载行为，最终从文件系统中加载并返回FileSystemResource类型的资源。</p><p>2、 ResourcePatternResolver ——批量查找的ResourceLoader：</p><p>ResourcePatternResolver是ResourceLoader的扩展，ResourceLoader每次只能根据资源路径<br>返回确定的单个Resource实例，而ResourcePatternResolver则可以根据指定的资源路径匹配模式，<br>每次返回多个Resource实例。</p><p>ResourcePatternResolver在继承ResourceLoader原有定义的基础上，又引入了Resource[]<br>getResources(String)方法定义，以支持根据路径匹配模式返回多个Resources的功能。它同时还<br>引入了一种新的协议前缀classpath*:，针对这一点的支持，将由相应的子类实现给出。</p><p>ResourcePatternResolver最常用的一个实现是org.springframework.core.io.support.<br>PathMatchingResourcePatternResolver，该实现类支持ResourceLoader级别的资源加载，支持基<br>于Ant风格的路径匹配模式（类似于**/<em>.suffix之类的路径形式），支持ResourcePatternResolver新<br>增加的classpath</em>:前缀等，基本上集所有技能于一身。</p><p>在构造PathMatchingResourcePatternResolver实例的时候，可以指定一个ResourceLoader，<br>如果不指定的话，则PathMatchingResourcePatternResolver内部会默认构造一个DefaultResourceLoader实例。PathMatchingResourcePatternResolver内部会将匹配后确定的资源路径，<br>委派给它的ResourceLoader来查找和定位资源。这样，如果不指定任何ResourceLoader的话，PathMatchingResourcePatternResolver在加载资源的行为上会与DefaultResourceLoader基本相同，<br>只存在返回的Resource数量上的差异。</p><p>不过，可以通过传入其他类型的ResourceLoader来替换PathMatchingResourcePatternResolver<br>内部默认使用的DefaultResourceLoader，从而改变其默认行为。</p><p> <img src="/images/pasted-115.png" alt="upload successful"></p><p> ApplicationContext继承了ResourcePatternResolver，当<br>然就间接实现了ResourceLoader接口。所以，任何的ApplicationContext实现都可以看作是一个<br>ResourceLoader甚至ResourcePatternResolver。而这就是ApplicationContext支持Spring内统一<br>资源加载策略的真相。</p><p>通常，所有的ApplicationContext实现类会直接或者间接地继承org.springframework.<br>context.support.AbstractApplicationContext，从这个类上，我们就可以看到ApplicationContext与ResourceLoader之间的所有关系。AbstractApplicationContext继承了DefaultResourceLoader，那么，它的getResource(String)当然就直接用DefaultResourceLoader的了。剩<br>下需要它“效劳”的，就是ResourcePatternResolver的Resource[]getResources (String)，当<br>然，AbstractApplicationContext也不负众望，当即拿下。AbstractApplicationContext类的内<br>部声明有一个resourcePatternResolver，类型是ResourcePatternResolver，对应的实例类型为<br>PathMatchingResourcePatternResolver 。之前我们说过 PathMatchingResourcePatternResolver构造的时候会接受一个ResourceLoader，而AbstractApplicationContext本身又继承自<br>DefaultResourceLoader，当然就直接把自身给“贡献”了。这样，整个ApplicationContext的实<br>现类就完全可以支持ResourceLoader或者ResourcePatternResolver接口，你能说ApplicationContext不支持Spring的统一资源加载吗？说白了，ApplicationContext的实现类在作为ResourceLoader或者ResourcePatternResolver时候的行为，完全就是委派给了PathMatchingResourcePatternResolver和DefaultResourceLoader来做。</p><p> <img src="/images/pasted-116.png" alt="upload successful"></p><p> 1、既然ApplicationContext可以作为ResourceLoader或者ResourcePatternResolver来使用，<br>那么，很显然，我们可以通过ApplicationContext来加载任何Spring支持的Resource类型。与直接<br>使用ResourceLoader来做这些事情相比，很明显，ApplicationContext的表现过于“谦虚”了。</p><p>2、ApplicationContext容器本身就是一个ResourceLoader，我们为了该类还需要单独提供<br>一个resourceLoader实例就有些多于了，直接将当前的ApplicationContext容器作为ResourceLoader注入不就行了？而ResourceLoaderAware和ApplicationContextAware接口正好可以帮助我<br>们做到这一点，只不过现在的FooBar需要依赖于Spring的API了。不过，在我看来，这没有什么大不<br>了，因为我们从来也没有真正逃脱过依赖（这种依赖也好，那种依赖也罢）。</p><p>3、容器可以将bean定义文件中的字符串形式表达的信息，正确地转换成具体对象定<br>义的依赖类型。对于那些Spring容器提供的默认的PropertyEditors无法识别的对象类型，我们可以<br>提供自定义的PropertyEditor实现并注册到容器中，以供容器做类型转换的时候使用。默认情况下，<br>BeanFactory容器不会为org.springframework.core.io.Resource类型提供相应的PropertyEditor，所以，如果我们想注入Resource类型的bean定义，就需要注册自定义的PropertyEditor到<br>BeanFactory容器。不过，对于ApplicationContext来说，我们无需这么做，因为ApplicationContext容器可以正确识别Resource类型并转换后注入相关对象。</p><p>4、特定的 10 ApplicationContext容器实现，在作为ResourceLoader加载资源时，会有其特定的行为。<br>我们下面主要讨论两种类型的ApplicationContext容器，即ClassPathXmlApplicationContext和<br>FileSystemXmlApplicationContext。其他类型的ApplicationContext容器，会在稍后章节中提到。 11<br>我们知道，对于URL所接受的资源路径来说，通常开始都会有一个协议前缀，比如file:、http:、ftp:<br>等。既然Spring使用UrlResource对URL定位查找的资源进行了抽象，那么，同样也支持这样类型的<br>资源路径，而且，在这个基础上，Spring还扩展了协议前缀的集合。ResourceLoader中增加了一种新<br>的资源路径协议——classpath:，ResourcePatternResolver又增加了一种——classpath*:。这<br>样，我们就可以通过这些资源路径协议前缀，明确地告知Spring容器要从classpath中加载资源</p><p>当ClassPathXmlApplicationContext在实例化的时候，即使没有指明<br>classpath:或者classpath*:等前缀，它会默认从classpath中加载bean定义配置文件</p><p>而FileSystemXmlApplicationContext则有些不同，如果我们像如下代码那样指定conf/<br>appContext.xml，它会尝试从文件系统中加载bean定义文件</p><p>不过，我们可以像如下代码所示，通过在资源路径之前增加classpath:前缀，明确指定<br>FileSystemXmlApplicationContext从classpath中加载bean定义的配置文件</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Spring框架内部使用org.springframework.core.io.Resource接口作为所有资源的抽象和访&lt;br&gt;问接口&lt;/p&gt;
-&lt;p&gt;其中ClassPathResource就是Resource的一个特定类型的实现，代表的是位于Classpath中的资源。&lt;</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="资源加载" scheme="http://example.com/tags/%E8%B5%84%E6%BA%90%E5%8A%A0%E8%BD%BD/"/>
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring IoC容器 ApplicationContext</title>
-    <link href="http://example.com/2022/03/04/Spring-IoC%E5%AE%B9%E5%99%A8-ApplicationContext/"/>
-    <id>http://example.com/2022/03/04/Spring-IoC%E5%AE%B9%E5%99%A8-ApplicationContext/</id>
-    <published>2022-03-04T07:21:00.000Z</published>
-    <updated>2022-03-04T07:23:24.352Z</updated>
-    
-    <content type="html"><![CDATA[<p>作为Spring提供的较之BeanFactory更为先进的IoC容器实现，ApplicationContext除了拥有<br>BeanFactory支持的所有功能之外，还进一步扩展了基本容器的功能，包括BeanFactoryPostProcessor、BeanPostProcessor以及其他特殊类型bean的自动识别、容器启动后bean实例的自动初始化、<br>国际化的信息支持、容器内事件发布等。</p><p>常见的ApplicationContext实现类有 </p><p>org.springframework.context.support.FileSystemXmlApplicationContext。在默认<br>情况下，从文件系统加载bean定义以及相关资源的ApplicationContext实现。</p><p>org.springframework.context.support.ClassPathXmlApplicationContext。在默认情况下，从Classpath加载bean定义以及相关资源的ApplicationContext实现。 </p><p>org.springframework.web.context.support.XmlWebApplicationContext。Spring提供的用于Web应用程序的ApplicationContext实现</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;作为Spring提供的较之BeanFactory更为先进的IoC容器实现，ApplicationContext除了拥有&lt;br&gt;BeanFactory支持的所有功能之外，还进一步扩展了基本容器的功能，包括BeanFactoryPostProcessor、BeanPostPr</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>了解Spring中bean的一生</title>
-    <link href="http://example.com/2022/03/04/%E4%BA%86%E8%A7%A3Spring%E4%B8%ADbean%E7%9A%84%E4%B8%80%E7%94%9F/"/>
-    <id>http://example.com/2022/03/04/%E4%BA%86%E8%A7%A3Spring%E4%B8%ADbean%E7%9A%84%E4%B8%80%E7%94%9F/</id>
-    <published>2022-03-04T06:10:00.000Z</published>
-    <updated>2022-03-04T06:52:30.847Z</updated>
-    
-    <content type="html"><![CDATA[<p>容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的BeanDefinition来保存实例化阶段将要用的必要信息。只有当请求方通过BeanFactory的getBean()方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动。BeanFactory的getBean（）<br>法可以被客户端对象显式调用，也可以在容器内部隐式地被调用。隐式调用有如下两种情况。</p><p> 对于BeanFactory来说，对象实例化默认采用延迟初始化。通常情况下，当对象A被请求而需<br>要第一次实例化的时候，如果它所依赖的对象B之前同样没有被实例化，那么容器会先实例化对象A所依赖的对象。这时容器内部就会首先实例化对象B，以及对象 A依赖的其他还没有实例化的对象。这种情况是容器内部调用getBean()，对于本次请求的请求方是隐式的。</p><p> ApplicationContext启动之后会实例化所有的bean定义，但ApplicationContext在实现的过程中依然遵循Spring容器实现流程的两个阶段，只不过它<br>会在启动阶段的活动完成之后，紧接着调用注册到该容器的所有bean定义的实例化方法<br>getBean()。这就是为什么当你得到ApplicationContext类型的容器引用时，容器内所有对<br>象已经被全部实例化完成。不信你查一下类org.<br>AbstractApplicationContext的refresh()方法。</p><p> <img src="/images/pasted-113.png" alt="upload successful"></p><p> 1、 Bean的实例化与</p><p> BeanWrapper：容器在内部实现的时候，采用“策略模式（Strategy Pattern）”来决定采用何种方式初始化bean实例。<br>通常，可以通过反射或者CGLIB动态字节码生成来初始化相应的bean实例或者动态生成其子类。</p><p>org.springframework.beans.factory.support.InstantiationStrategy定义是实例化策略<br>的抽象接口，其直接子类SimpleInstantiationStrategy实现了简单的对象实例化功能，可以通过<br>反射来实例化对象实例，但不支持方法注入方式的对象实例化。CglibSubclassingInstantiationStrategy继承了SimpleInstantiationStrategy的以反射方式实例化对象的功能，并且通过CGLIB<br>的动态字节码生成功能，该策略实现类可以动态生成某个类的子类，进而满足了方法注入所需的对象<br>实例化需求。默认情况下，容器内部采用的是CglibSubclassingInstantiationStrategy。</p><p>容器只要根据相应bean定义的BeanDefintion取得实例化信息，结合CglibSubclassingInstantiationStrategy以及不同的bean定义类型，就可以返回实例化完成的对象实例。但是，返回方<br>式上有些“点缀”。不是直接返回构造完成的对象实例，而是以BeanWrapper对构造完成的对象实例<br>进行包裹，返回相应的BeanWrapper实例。</p><p>BeanWrapper接口通常在Spring框架内部使用，它有一个实现类org.springframework.beans.<br>BeanWrapperImpl。其作用是对某个bean进行“包裹”，然后对这个“包裹”的bean进行操作，比如设置或者获取bean的相应属性值。而在第一步结束后返回BeanWrapper实例而不是原先的对象实例，<br>就是为了第二步“设置对象属性”。</p><p>BeanWrapper定义继承了org.springframework.beans.PropertyAccessor接口，可以以统一的<br>方式对对象属性进行访问；BeanWrapper定义同时又直接或者间接继承了PropertyEditorRegistry<br>和TypeConverter接口。不知你是否还记得CustomEditorConfigurer？当把各种PropertyEditor注<br>册给容器时，知道后面谁用到这些PropertyEditor吗？对，就是BeanWrapper！在第一步构造完成<br>对象之后，Spring会根据对象实例构造一个BeanWrapperImpl实例，然后将之前CustomEditorConfigurer注册的PropertyEditor复制一份给BeanWrapperImpl实例（这就是BeanWrapper同时又<br>是PropertyEditorRegistry的原因）。这样，当BeanWrapper转换类型、设置对象属性值时，就不<br>会无从下手了。</p><p>2、 各色的Aware接口：</p><p>当对象实例化完成并且相关属性以及依赖设置完成之后，Spring容器会检查当前对象实例是否实<br>现了一系列的以Aware命名结尾的接口定义。如果是，则将这些Aware接口定义中规定的依赖注入给当前对象实例。</p><p>3、 BeanPostProcessor</p><p>BeanPostProcessor的概念容易与BeanFactoryPostProcessor的概念混淆。但只要记住BeanPostProcessor是存在于对象实例化阶段，而BeanFactoryPostProcessor则是存在于容器启动阶段，<br>这两个概念就比较容易区分了。</p><p>与BeanFactoryPostProcessor通常会处理容器内所有符合条件的BeanDefinition类似，BeanPostProcessor会处理容器内所有符合条件的实例化后的对象实例。该接口声明了两个方法，分别在<br>两个不同的时机执行。postProcessBeforeInitialization()方法是BeanPostProcessor前置处理这一步将<br>会执行的方法，postProcessAfterInitialization()则是对应BeanPostProcessor后置处<br>理那一步将会执行的方法。BeanPostProcessor的两个方法中都传入了原来的对象实例的引用，这为<br>我们扩展容器的对象实例化过程中的行为提供了极大的便利，我们几乎可以对传入的对象实例执行任<br>何的操作。</p><p>通常比较常见的使用BeanPostProcessor的场景，是处理标记接口实现类，或者为当前对象提供<br>代理实现。除了检查标记接口以便应用自定义逻辑，还可以通过BeanPostProcessor对当前对象实例做更多<br>的处理。比如替换当前对象实例或者字节码增强当前对象实例等。Spring的AOP则更多地使用<br>BeanPostProcessor来为对象生成相应的代理对象，如org.springframework.aop.framework.<br>autoproxy.BeanNameAutoProxyCreator。</p><p> <img src="/images/pasted-114.png" alt="upload successful"></p><p> 4、 InitializingBean和init-method：</p><p> org.springframework.beans.factory.InitializingBean是容器内部广泛使用的一个对象生<br>命周期标识接口</p><p>该接口定义很简单，其作用在于，在对象实例化过程调用过“BeanPostProcessor的前置处理”<br>之后，会接着检测当前对象是否实现了InitializingBean接口，如果是，则会调用其afterPropertiesSet()方法进一步调整对象实例的状态。比如，在有些情况下，某个业务对象实例化完成后，还<br>不能处于可以使用状态。这个时候就可以让该业务对象实现该接口，并在方法afterPropertiesSet()<br>中完成对该业务对象的后续处理。</p><p>虽然该接口在Spring容器内部广泛使用，但如果真的让我们的业务对象实现这个接口，则显得<br>Spring容器比较具有侵入性。所以，Spring还提供了另一种方式来指定自定义的对象初始化操作，那就<br>是在XML配置的时候，使用<bean>的init-method属性。</p><p>  通过init-method，系统中业务对象的自定义初始化操作可以以任何方式命名，而不再受制于<br>InitializingBean的afterPropertiesSet()。如果系统开发过程中规定：所有业务对象的自定义初<br>始化操作都必须以init()命名，为了省去挨个<bean>的设置init-method这样的烦琐，我们还可以通<br>过最顶层的<beans>的default-init-method统一指定这一init()方法名。</p><p> 5、 DisposableBean与destroy-method：</p><p> 当所有的一切，该设置的设置，该注入的注入，该调用的调用完成之后，容器将检查singleton类<br>型的bean实例，看其是否实现了org.springframework.beans.factory.DisposableBean接口。或<br>者其对应的bean定义是否通过<bean>的destroy-method属性指定了自定义的对象销毁方法。如果是，<br>就会为该实例注册一个用于对象销毁的回调（Callback），以便在这些singleton类型的对象实例销毁之<br>前，执行销毁逻辑。</p><p>  与InitializingBean和init-method用于对象的自定义初始化相对应，DisposableBean和<br>destroy-method为对象提供了执行自定义销毁逻辑的机会。</p><p>最常见到的该功能的使用场景就是在Spring容器中注册数据库连接池，在系统退出后，连接池应<br>该关闭，以释放相应资源。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;容器启动之后，并不会马上就实例化相应的bean定义。我们知道，容器现在仅仅拥有所有对象的BeanDefinition来保存实例化阶段将要用的必要信息。只有当请求方通过BeanFactory的getBean()方法来请求某个对象实例的时候，才有可能触发Bean实例化阶段的活动</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="bean" scheme="http://example.com/tags/bean/"/>
     
   </entry>
   
