@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-07T07:58:03.500Z</updated>
+  <updated>2022-03-07T13:01:58.232Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,105 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Spring AOP 一世</title>
+    <link href="http://example.com/2022/03/07/Spring-AOP-%E4%B8%80%E4%B8%96/"/>
+    <id>http://example.com/2022/03/07/Spring-AOP-%E4%B8%80%E4%B8%96/</id>
+    <published>2022-03-07T12:03:00.000Z</published>
+    <updated>2022-03-07T13:01:58.232Z</updated>
+    
+    <content type="html"><![CDATA[<p>AOP的Joinpoint可以有许多类型，入构造方法调用、字段的设置及获取、方法调用等。但是在Spring AOP中，仅支持方法级别的Joinpoint。更确切的说，只支持方法执行类型的Joinpoint</p><p>Spring中以接口定义Pointcut作为其AOP框架中所有Pointcut的最顶级抽象，该接口定义了两个方法来捕获系统中相应的Joinpoint，并提供了一个TruePointcut类型实例。如果Pointcut类型为TruePointcut，默认会对系统中的所有对象，以及对象上所有被支持的Joinpoint进行匹配。</p><p> <img src="/images/pasted-129.png" alt="upload successful"></p><p> ClassFileter和MethodMatcher分别用于匹配将被执行织入操作的对象以及相应的方法。（重用不同级别的匹配定义，并且可以在不同或相同的级别上进行组合操作，或者强制让某个子类只覆写相应的方法）</p><p> <img src="/images/pasted-130.png" alt="upload successful"></p><p> Spring中各种advice实现全部遵循AOP ALLiance规定的接口。</p><p> <img src="/images/pasted-131.png" alt="upload successful"><br> advice实现了将被织入到Pointcut规定的Joinpoint处的横切逻辑。在Spring中，advice按照其自身实例能否在目标对象类的所有实例中共享这一标准，可以划分为两大类（per-class和per-instance）</p><p> per-class类型的advice：该类型可以在目标对象类的所有实例之间共享。这种类型的advice通常只提供方法拦截的功能。不会为目标对象类保存任何状态或添加新特性。除了上图没有列出的intriuduction类型的advice外，其余都属于pre-class。（如：BeforeAdvice、ThrowsAdvic、AfterReturningAdvice、AroundAdvice等）</p><p> per-instance类型的advice：introduction是唯一的一种per-instance型advice。其可以在不改目标类定义的情况下，为目标类添加新的属性和行为。</p><p> 当所有的Pointcut和advice准备好之后，就可以将其装入Aspect。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;AOP的Joinpoint可以有许多类型，入构造方法调用、字段的设置及获取、方法调用等。但是在Spring AOP中，仅支持方法级别的Joinpoint。更确切的说，只支持方法执行类型的Joinpoint&lt;/p&gt;
+&lt;p&gt;Spring中以接口定义Pointcut作为其AOP框</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring AOP的实现机制</title>
+    <link href="http://example.com/2022/03/07/Spring-AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/"/>
+    <id>http://example.com/2022/03/07/Spring-AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/</id>
+    <published>2022-03-07T11:43:00.000Z</published>
+    <updated>2022-03-07T11:57:38.005Z</updated>
+    
+    <content type="html"><![CDATA[<p>Spring AOP采用动态代理机制（先尝试jdk动态代理，如果没有实现相应接口，则采用cglib字节码生成技术）和字节码生成技术实现（对目标对象进行继承拓展，为其生成相应的子类，子类通过重写来扩展父类的行为，只要将横切逻辑的实现放到子类中，然后让系统使用扩展后的子类即可）。与最初AspectJ采用编译器将横切逻辑织入到目标对象不同，动态代理和字节码生成都是在运行期间为目标对象生成一个代理对象，而将横切逻辑织入到这个代理对象中，系统最终使用的是织入横切逻辑的代理对象而不是真正的目标对象。</p><p> <img src="/images/pasted-128.png" alt="upload successful"><br>注意：动态代理需要实现统一接口，而cglib生成字节码需要方法可以重写</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Spring AOP采用动态代理机制（先尝试jdk动态代理，如果没有实现相应接口，则采用cglib字节码生成技术）和字节码生成技术实现（对目标对象进行继承拓展，为其生成相应的子类，子类通过重写来扩展父类的行为，只要将横切逻辑的实现放到子类中，然后让系统使用扩展后的子类即可）</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AOP国家的公民</title>
+    <link href="http://example.com/2022/03/07/AOP%E5%9B%BD%E5%AE%B6%E7%9A%84%E5%85%AC%E6%B0%91/"/>
+    <id>http://example.com/2022/03/07/AOP%E5%9B%BD%E5%AE%B6%E7%9A%84%E5%85%AC%E6%B0%91/</id>
+    <published>2022-03-07T10:33:00.000Z</published>
+    <updated>2022-03-07T11:39:52.542Z</updated>
+    
+    <content type="html"><![CDATA[<p>Joinpoint：在系统运行前，AOP的功能模块都需要编织入OOP的功能模块中。所以，要进行这种编织，我们需要在哪些执行点进行。这些将要在其上执行编织操作的系统执行点即称之为Joinpoint。</p><p>Pointcut：Pointcut是Joinpoint的表达方式。将横切逻辑编织入当前系统的过程中，需要参考Pointcut规定的Joinpoint信息，才可以指定应该往系统的哪些Joinpoint上编织横切逻辑。即声明了一个Pointcut就指定了系统中符合条件的一组Joinpoint。</p><p>advice：advice是单一横切关注点逻辑的载体，它代表将会编织到Joinpoint的横切逻辑。如果将Aspect比作OOP中的class，那么advice就相当于class中的method。（常见的如before advice、after advice、after returning advice、after throwing advice，after advice、around advice等）</p><p>Aspect：Aspect是对系统中横切关注点进行模块化封装的AOP概念实体。通常情况下，Aspect可以含有多个Pointcut以及相关Advice定义。</p><p>织入和织入器：织入过程就是“飞架”AOP和OOP的那座桥，只有经过织入过程后，以Aspect模块化的横切关注点才会集成到OOP的现存系统中。而完成织入过程的那个人就是织入器。AspectJ有专门的编译器来完成织入操作，即ajc，所有ajc就是AspectJ完成织入的织入器；JBossAOP采用自定义的类加载器完成最终织入，那么这个类加载器就是他的织入器。SpringAOP使用一组自定义的类来完成最终的织入操作，proxyFactory类则是SpringAOP中最通用的织入器。</p><p>目标对象：符合Pointcut所指定的条件，将在织入过程中被织入横切逻辑的对象，称为目标对象。</p><p>当把所有这些概念组织到一个场景后，就有如下一副场景图：</p><p>   <img src="/images/pasted-127.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Joinpoint：在系统运行前，AOP的功能模块都需要编织入OOP的功能模块中。所以，要进行这种编织，我们需要在哪些执行点进行。这些将要在其上执行编织操作的系统执行点即称之为Joinpoint。&lt;/p&gt;
+&lt;p&gt;Pointcut：Pointcut是Joinpoint的表达方</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为什么需要AOP？</title>
+    <link href="http://example.com/2022/03/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81AOP%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/07/%E4%B8%BA%E4%BB%80%E4%B9%88%E9%9C%80%E8%A6%81AOP%EF%BC%9F/</id>
+    <published>2022-03-07T08:29:00.000Z</published>
+    <updated>2022-03-07T08:46:14.426Z</updated>
+    
+    <content type="html"><![CDATA[<p>软件开发的目的最终是为了解决各种需求，包括业务需求和系统需求。使用面向对象的思想，我们可以对业务需求等普通关注点进行很好的抽象和封装，并且使之模块化。但对于系统需求一类的关注点来说，情况有所不同。</p><p>对于业务需求而言，需求与具体实现直接的关系基本上是一对一的。我们可以在系统中某一个确定的点找到针对这种需求的实现。</p><p>但是在开发测试中或者进入生产环境后需要对系统进行监控，我们需要添加日志功能，除此之外，业务方法的执行可能需要一定的权限限制。那么方法执行前需要有相应的安全检查功能。对于这些系统需求，想要以面向对象的方式实现并集成待整个系统中，不仅仅是一个需求对应一个实现那么简单。可能遍布所有的业务对象。</p><p>因此，提出了AOP（面向切面编程），我们可以对类似于logging和security等系统需求进行模块化组织，简化系统需求和实现的对比关系，进而使得整个系统的实现更具模块化。</p><p>AOP是一种理念，其实现需要一种方式。就好似OOP需要对应的语言支撑一样。AOP也需要某种语言帮助实现相应的概念实体（AOL）。</p><p>静态AOP：相应的横切关注点以Aspect形式实现后，会通过特定的编译器，将实现后的Aspect编织到系统的静态类中。</p><p>静态AOP的优点：Aspect直接以java字节码的形式编译到java类。jvm可以想运行类一样运行，不会对系统造成任何性能损失。</p><p>静态AOP的缺点：灵活性不够，如果横切关注点需要改变织入位置，需要重新修改Aspect，编织进系统。</p><p>动态AOP：AOP的各种概念实体全部都是put的java类，所有容易开发和基础。Aspect和class一样以类的身份作为系统的一员。其织入过程在运行时进行，而不是预先编译织入。而且信息可以采用外部xml等形式保存，在调制编织点时不必变更系统其他模块，甚至在系统运行时，动态更改。但其缺点也很明显，就是在运行时编织，会造成一点的运行时性能损失。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;软件开发的目的最终是为了解决各种需求，包括业务需求和系统需求。使用面向对象的思想，我们可以对业务需求等普通关注点进行很好的抽象和封装，并且使之模块化。但对于系统需求一类的关注点来说，情况有所不同。&lt;/p&gt;
+&lt;p&gt;对于业务需求而言，需求与具体实现直接的关系基本上是一对一的。我</summary>
+      
+    
+    
+    
+    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
+    
+    
+    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
+    
+  </entry>
   
   <entry>
     <title>创建者模式对比</title>
@@ -425,105 +524,6 @@
     
     
     <category term="bean" scheme="http://example.com/tags/bean/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>插手“容器的启动”</title>
-    <link href="http://example.com/2022/03/04/%E6%8F%92%E6%89%8B%E2%80%9C%E5%AE%B9%E5%99%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E2%80%9D/"/>
-    <id>http://example.com/2022/03/04/%E6%8F%92%E6%89%8B%E2%80%9C%E5%AE%B9%E5%99%A8%E7%9A%84%E5%90%AF%E5%8A%A8%E2%80%9D/</id>
-    <published>2022-03-04T02:33:00.000Z</published>
-    <updated>2022-03-04T06:09:45.853Z</updated>
-    
-    <content type="html"><![CDATA[<p>Spring提供了一种叫做BeanFactoryPostProcessor的容器扩展机制。该机制允许我们在容器实<br>例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。这就相当于在容<br>器实现的第一阶段最后加入一道工序，让我们对最终的BeanDefinition做一些额外的操作，比如修改其中bean定义的某些属性，为bean定义增加其他信息等。</p><p>如果要自定义实现BeanFactoryPostProcessor，通常我们需要实org.springframework.<br>beans.factory.config.BeanFactoryPostProcessor接口。同时，因为一个容器可能拥有多个BeanFactoryPostProcessor，这个时候可能需要实现类同时实现Spring的org.springframework.core.<br>Ordered接口，以保证各个BeanFactoryPostProcessor可以按照预先设定的顺序执行（如果顺序紧<br>要的话）。但是，因为Spring已经提供了几个现成的BeanFactoryPostProcessor实现类，所以，大多时候，我们很少自己去实现某个BeanFactoryPostProcessor。其中，org.springframework.beans.<br>factory.config.PropertyPlaceholderConfigurer和org.springframework.beans.factory. config.Property OverrideConfigurer是两个比较常用的BeanFactoryPostProcessor。另外，为了处理配置文件中的数据类型与真正的业务对象所定义的数据类型转换，Spring还允许我们通过<br>org.springframework.beans.factory.config.CustomEditorConfigurer来注册自定义的PropertyEditor以补助容器中默认的PropertyEditor。可以参考BeanFactoryPostProcessor的Javadoc来了解更多其实现子类的情况。</p><p>对于BeanFactory来说，我们需要用手动方式应用所有的BeanFactoryPostProcessor</p><p>对于ApplicationContext来说，情况看起来要好得多。因为ApplicationContext会自动识别配<br>置文件中的BeanFactoryPostProcessor并应用它，所以，相对于BeanFactory，在ApplicationContext<br>中加载并应用BeanFactoryPostProcessor，仅需要在XML配置文件中将这些BeanFactoryPostProcessor简单配置一下即可。</p><p>1、PropertyPlaceholderConfigurer：</p><p>通常情况下，我们不想将类似于系统管理相关的信息同业务对象相关的配置信息混杂到XML配置<br>文件中，以免部署或者维护期间因为改动繁杂的XML配置文件而出现问题。我们会将一些数据库连接<br>信息、邮件服务器等相关信息单独配置到一个properties文件中，这样，如果因系统资源变动的话，只<br>需要关注这些简单properties配置文件即可。PropertyPlaceholderConfigurer允许我们在XML配置文件中使用占位符（PlaceHolder），<br>并将这些占位符所代表的资源单独配置到简单的properties文件中来加载。</p><p>基本机制就是之前所说的那样。当BeanFactory在第一阶段加载完成所有配置信息时，BeanFactory中保存的对象的属性信息还只是以占位符的形式存在，如${jdbc.url}、${jdbc.driver}。当<br>PropertyPlaceholderConfigurer作为BeanFactoryPostProcessor被应用时，它会使用properties<br>配置文件中的配置信息来替换相应BeanDefinition中占位符所表示的属性值。这样，当进入容器实<br>现的第二阶段实例化bean时，bean定义中的属性值就是最终替换完成的了。<br>PropertyPlaceholderConfigurer不单会从其配置的properties文件中加载配置项，同时还会检<br>查Java的System类中的Properties，可以通过setSystemPropertiesMode()或者setSystemPropertiesModeName()来控制是否加载或者覆盖System相应Properties的行为。PropertyPlaceholderConfigurer提供了SYSTEM_PROPERTIES_MODE_FALLBACK、SYSTEM_PROPERTIES_MODE_NEVER和SYSTEM_PROPERTIES_MODE_OVERRIDE三种模式。默认采用的是SYSTEM_PROPERTIES_ MODE_FALLBACK，即如果properties文件中找不到相应配置项，则到System的Properties中查找，我们还可以选择不检查System<br>的Properties或者覆盖它。</p><p>2、 CustomEditorConfigurer：<br>我们知道，不管对象是什么类型，也不管这些对象所声明的依赖对象是什么类型，通常都是通过<br>XML（或者properties甚至其他媒介）文件格式来配置这些对象类型。但XML所记载的，都是String类<br>型，即容器从XML格式的文件中读取的都是字符串形式，最终应用程序却是由各种类型的对象所构成。<br>要想完成这种由字符串到具体对象的转换（不管这个转换工作最终由谁来做），都需要这种转换规则<br>相关的信息，而CustomEditorConfigurer就是帮助我们传达类似信息的。</p><p>Spring内部通过JavaBean的PropertyEditor来帮助进行String类型到其他类型的转换工作。只要<br>为每种对象类型提供一个 PropertyEditor ，就可以根据该对象类型取得与其相对应的<br>PropertyEditor来做具体的类型转换。Spring容器内部在做具体的类型转换的时候，会采用JavaBean<br>框架内默认的PropertyEditor搜寻逻辑，从而继承了对原生类型以及java.lang.String.java.awt.<br>Color和java.awt.Font等类型的转换支持。同时，Spring框架还提供了自身实现的一些PropertyEditor，这些PropertyEditor大部分都位于org.springframework. beans.propertyeditors包<br>下。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Spring提供了一种叫做BeanFactoryPostProcessor的容器扩展机制。该机制允许我们在容器实&lt;br&gt;例化相应对象之前，对注册到容器的BeanDefinition所保存的信息做相应的修改。这就相当于在容&lt;br&gt;器实现的第一阶段最后加入一道工序，让我们对最终</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="容器" scheme="http://example.com/tags/%E5%AE%B9%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring容器背后的秘密</title>
-    <link href="http://example.com/2022/03/04/Spring%E5%AE%B9%E5%99%A8%E8%83%8C%E5%90%8E%E7%9A%84%E7%A7%98%E5%AF%86/"/>
-    <id>http://example.com/2022/03/04/Spring%E5%AE%B9%E5%99%A8%E8%83%8C%E5%90%8E%E7%9A%84%E7%A7%98%E5%AF%86/</id>
-    <published>2022-03-04T02:22:00.000Z</published>
-    <updated>2022-03-04T02:34:21.122Z</updated>
-    
-    <content type="html"><![CDATA[<p>Spring的IOC容器它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。</p><p>Spring的IOC容器在实现上述过程中可以分为两个阶段：容器启动阶段和Bean实例化阶段。</p><p>Spring的IoC容器在实现的时候，充分运用了这两个实现阶段的不同特点，在每个阶段都加入了相应的容器扩展点，以便我们可以根据具体场景的需要加入自定义的扩展逻辑。</p><p> <img src="/images/pasted-112.png" alt="upload successful"></p><p>1、容器启动阶段：<br>容器启动伊始，首先会通过某种途径加载Configuration MetaData。除了代码方式比较直接，在大部分情况下，容器需要依赖某些工具类（BeanDefinitionReader）对加载的Configuration MetaData进行解析和分析，并将分析后的信息编组为相应的BeanDefinition，最后把这些保存了bean定义必要信息的BeanDefinition，注册到相应的BeanDefinitionRegistry，这样容器启动工作就完成了。</p><p>总地来说，该阶段所做的工作可以认为是准备性的，重点更加侧重于对象管理信息的收集。当然，<br>一些验证性或者辅助性的工作也可以在这个阶段完成。</p><p>2、 Bean实例化阶段：经过第一阶段，现在所有的bean定义信息都通过BeanDefinition的方式注册到了BeanDefinitionRegistry中。当某个请求方通过容器的getBean方法明确地请求某个对象，或者因依赖关系容器需要隐式地调用getBean方法时，就会触发第二阶段的活动。<br>该阶段，容器会首先检查所请求的对象之前是否已经初始化。如果没有，则会根据注册的BeanDefinition所提供的信息实例化被请求对象，并为其注入依赖。如果该对象实现了某些回调接口，也会根据回调接口的要求来装配它。当该对象装配完毕之后，容器会立即将其返回请求方使用。</p><p>如果说第一阶段只是根据图纸装配生产线的话，那么第二阶段就是使用装配好的生产线来生产具体的产品了。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Spring的IOC容器它会以某种方式加载Configuration Metadata（通常也就是XML格式的配置信息），然后根据这些信息绑定整个系统的对象，最终组装成一个可用的基于轻量级容器的应用系统。&lt;/p&gt;
-&lt;p&gt;Spring的IOC容器在实现上述过程中可以分为两个阶</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="IOC" scheme="http://example.com/tags/IOC/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>bean的scope的使用陷阱</title>
-    <link href="http://example.com/2022/03/03/bean%E7%9A%84scope%E7%9A%84%E4%BD%BF%E7%94%A8%E9%99%B7%E9%98%B1/"/>
-    <id>http://example.com/2022/03/03/bean%E7%9A%84scope%E7%9A%84%E4%BD%BF%E7%94%A8%E9%99%B7%E9%98%B1/</id>
-    <published>2022-03-03T15:48:00.000Z</published>
-    <updated>2022-03-03T16:01:27.658Z</updated>
-    
-    <content type="html"><![CDATA[<p>我们知道，拥有prototype类型scope的bean，在请求方每次向容器请求该类型对象的时候，容器都会返回一个全新的该对象实例。但是对于在类A中定义成员变量类B，并且通过setter注入类B，并getter返回类B时，会存在每次返回的对象都是同一个对象。</p><p>原因在于：虽然A拥有prototype类型的scope，但当容器将一个B的实例注入<br>A之后，A就会一直持有这个FXNewsBean实例的引用。虽然每<br>次输出都调用了getNewsBean()方法并返回了 FXNewsBean 的实例，但实际上每次返回的都是A持有的容器第一次注入的实例。这就是问题之所在。换句话说，第一个实例注入后，A再也没有重新向容器申请新的实例。所以，容器也不会重新为其注入新的B类型的实例。</p><p>解决的方案就在于保证get方法每次<br>从容器中取得新的B实例，而不是每次都返回其持有的单一实例。</p><p>1、方法注入：Spring容器提出了一种叫做方法注入（Method Injection）的方式，可以帮助我们解决上述问题。<br>我们所要做的很简单，只要让getNewsBean方法声明符合规定的格式，并在配置文件中通知容器，当<br>该方法被调用的时候，每次返回指定类型的对象实例即可。也就是说，该方法必须能够被子类实现或者覆写，因为容器会为我们要进行方法注入的对象使用<br>Cglib动态生成一个子类实现，从而替代当前对象。</p><p>2、使用BeanFactoryAware接口：<br>我们知道，即使没有方法注入，只要在实现 get方法的时候，能够保证每次调用BeanFactory的getBean(“newsBean”)，就同样可以每次都取得新的FXNewsBean对象实例。<br>Spring框架提供了一个BeanFactoryAware接口，容器在实例化实现了该接口的bean定义的过程<br>中，会自动将容器本身注入该bean。这样，该bean就持有了它所处的BeanFactory的引用</p><p>3、 使用ObjectFactoryCreatingFactoryBean：ObjectFactoryCreatingFactoryBean是Spring提供的一个FactoryBean实现，它返回一个<br>ObjectFactory实例。从ObjectFactoryCreatingFactoryBean返回的这个ObjectFactory实例可以<br>为我们返回容器管理的相关对象。实际上， ObjectFactoryCreatingFactoryBean 实现了<br>BeanFactoryAware接口，它返回的ObjectFactory实例只是特定于与Spring容器进行交互的一个实现<br>而已。使用它的好处就是，隔离了客户端对象对BeanFactory的直接引用。</p><p>4、方法替换：与方法注入只是通过相应方法为主体对象注入依赖对象不同，方法替换更多体现在方法的实现层<br>面上，它可以灵活替换或者说以新的方法实现覆盖掉原来某个方法的实现逻辑。基本上可以认为，方<br>法替换可以帮助我们实现简单的方法拦截功能。</p><p>首先，我们需要给出org.springframework.beans.factory.support.MethodReplacer的实现<br>类，在这个类中实现将要替换的方法逻辑。</p><p>有了要替换的逻辑之后，我们就可以把这个逻辑通过<replaced-method>配置到FXNewsProvider的bean定义中，使其生效。</p><p>最后需要强调的是，这种方式刚引入的时候执行效率不是很高。而且，当你充分了解并应用Spring<br>AOP之后，我想你也不会再回头求助这个特色功能。不过，怎么说这也是一个选择，场景合适的话，<br>为何不用呢？<br>哦，如果要替换的方法存在参数，或者对象存在多个重载的方法，可以在<replaced-method>内<br>部通过<arg-type>明确指定将要替换的方法参数类型。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;我们知道，拥有prototype类型scope的bean，在请求方每次向容器请求该类型对象的时候，容器都会返回一个全新的该对象实例。但是对于在类A中定义成员变量类B，并且通过setter注入类B，并getter返回类B时，会存在每次返回的对象都是同一个对象。&lt;/p&gt;
-&lt;p&gt;</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="scop" scheme="http://example.com/tags/scop/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>工厂方法与 FactoryBean</title>
-    <link href="http://example.com/2022/03/03/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%B8%8E-FactoryBean/"/>
-    <id>http://example.com/2022/03/03/%E5%B7%A5%E5%8E%82%E6%96%B9%E6%B3%95%E4%B8%8E-FactoryBean/</id>
-    <published>2022-03-03T15:05:00.000Z</published>
-    <updated>2022-03-03T15:31:28.499Z</updated>
-    
-    <content type="html"><![CDATA[<p>在强调“面向接口编程”的同时，有一点需要注意：虽然对象可以通过声明接口来避免对特定接<br>口实现类的过度耦合，但总归需要一种方式将声明依赖接口的对象与接口实现类关联起来。否则，只<br>依赖一个不做任何事情的接口是没有任何用处的。</p><p>如果该类是由我们设计并开发的，那么还好说，我们可以通过依赖注入，让容器帮助我们解除接<br>口与实现类之间的耦合性。但是，有时，我们需要依赖第三方库，需要实例化并使用第三方库中的相<br>关类，这时，接口与实现类的耦合性需要其他方式来避免。 </p><p>通常的做法是通过使用工厂方法（Factory Method）模式，提供一个工厂类来实例化具体的接口<br>实现类，这样，主体对象只需要依赖工厂类，具体使用的实现类有变更的话，只是变更工厂类，而主<br>体对象不需要做任何变动。</p><p>针对使用工厂方法模式实例化对象的方式，Spring的IoC容器同样提供了对应的集成支持。我们所<br>要做的，只是将工厂类所返回的具体的接口实现类注入给主体对象</p><p>1、 静态工厂方法（Static Factory Method）</p><p>2、非静态工厂方法（Instance Factory Method）</p><p>3、FactoryBean：FactoryBean是Spring容器提供的一种可以扩展容器对象实例化逻辑的接口，请不要将其与容器名称BeanFactory相混淆。FactoryBean，其主语是Bean，定语为Factory，也就是说，它本身与其他注册到容器的对象一样，只是一个Bean而已，只不过，这种类型的Bean本身就是生产对象的工厂<br>（Factory）。</p><p>当某些对象的实例化过程过于烦琐，通过XML配置过于复杂，使我们宁愿使用Java代码来完成这<br>个实例化过程的时候，或者，某些第三方库不能直接注册到Spring容器的时候，就可以实现org.spring.framework.beans.factory.FactoryBean接口，给出自己的对象实例化逻辑代码。当然，不使用Fac.toryBean，而像通常那样实现自定义的工厂方法类也是可以的。不过，FactoryBean可是Spring提供<br>的对付这种情况的“制式装备”哦！</p><p>Spring容器内部许多地方了使用FactoryBean。下面是一些比较常见的FactoryBean实现，你可以参照FactoryBean的Javadoc以了解更多内容。</p><p> <img src="/images/pasted-111.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在强调“面向接口编程”的同时，有一点需要注意：虽然对象可以通过声明接口来避免对特定接&lt;br&gt;口实现类的过度耦合，但总归需要一种方式将声明依赖接口的对象与接口实现类关联起来。否则，只&lt;br&gt;依赖一个不做任何事情的接口是没有任何用处的。&lt;/p&gt;
-&lt;p&gt;如果该类是由我们设计并开发</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="FactoryBean" scheme="http://example.com/tags/FactoryBean/"/>
     
   </entry>
   
