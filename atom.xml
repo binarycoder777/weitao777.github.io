@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-11T14:09:54.174Z</updated>
+  <updated>2022-03-12T05:32:23.547Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,412 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Kafka-Kraft 模式</title>
+    <link href="http://example.com/2022/03/12/Kafka-Kraft-%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://example.com/2022/03/12/Kafka-Kraft-%E6%A8%A1%E5%BC%8F/</id>
+    <published>2022-03-12T05:30:00.000Z</published>
+    <updated>2022-03-12T05:32:23.547Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-154.png" alt="upload successful"></p><p> 左图为 Kafka 现有架构，元数据在 zookeeper 中，运行时动态选举 controller，由controller 进行 Kafka 集群管理。右图为 kraft 模式架构（实验性），不再依赖 zookeeper 集群，而是用三台 controller 节点代替 zookeeper，元数据保存在 controller 中，由 controller 直接进行 Kafka 集群管理。</p><p> 这样做的好处有以下几个：</p><p> ⚫ Kafka 不再依赖外部框架，而是能够独立运行； </p><p> ⚫ controller 管理集群时，不再需要从 zookeeper 中先读取数据，集群性能上升； </p><p> ⚫ 由于不依赖 zookeeper，集群扩展时不再受到 zookeeper 读写能力限制； </p><p> ⚫ controller 不再动态选举，而是由配置文件规定。这样我们可以有针对性的加强controller 节点的配置，而不是像以前一样对随机 controller 节点的高负载束手无策。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-154.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 左图为 Kafka 现有架构，元数据在 zookeeper 中，运行时动态选举 controller，由controller 进行 Kaf</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Kraft模式" scheme="http://example.com/tags/Kraft%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka数据积压（消费者如何提高吞吐量）</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%EF%BC%89/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%EF%BC%89/</id>
+    <published>2022-03-12T05:28:00.000Z</published>
+    <updated>2022-03-12T05:29:37.815Z</updated>
+    
+    <content type="html"><![CDATA[<p>1）如果是Kafka消费能力不足，则可以考虑增 加Topic的分区数，并且同时提升消费组的消费者<br>数量，消费者数 = 分区数。（两者缺一不可）</p><p>2）如果是下游的数据处理不及时：提高每批次拉取的数<br>量。批次拉取数据过少（拉取数据/处理时间 &lt; 生产速度），<br>使处理的数据小于生产的数据，也会造成数据积压。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1）如果是Kafka消费能力不足，则可以考虑增 加Topic的分区数，并且同时提升消费组的消费者&lt;br&gt;数量，消费者数 = 分区数。（两者缺一不可）&lt;/p&gt;
+&lt;p&gt;2）如果是下游的数据处理不及时：提高每批次拉取的数&lt;br&gt;量。批次拉取数据过少（拉取数据/处理时间 &amp;lt; </summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="数据积压" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B/"/>
+    
+    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka消费者漏消费和重复消费问题</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%BC%8F%E6%B6%88%E8%B4%B9%E5%92%8C%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%BC%8F%E6%B6%88%E8%B4%B9%E5%92%8C%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98/</id>
+    <published>2022-03-12T05:12:00.000Z</published>
+    <updated>2022-03-12T05:27:39.970Z</updated>
+    
+    <content type="html"><![CDATA[<p>重复消费：已经消费了数据，但是 offset 没提交，下次还会消费到当前数据。</p><p>漏消费：先提交 offset 后消费，有可能会造成数据的漏消费。</p><p> <img src="/images/pasted-153.png" alt="upload successful"></p><p>如果想完成Consumer端的精准一次性消费（既不漏消费也不重复消费），那么需要Kafka消费端将消费过程和提交offset<br>过程做原子绑定。此时我们需要将Kafka的offset保存到支持事务的自定义介质（比 如MySQL）。</p><pre><code>参考：https://blog.csdn.net/qingqing7/article/details/80054281?spm=1001.2101.3001.6650.14&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14.pc_relevant_default&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14.pc_relevant_default&amp;utm_relevant_index=25</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;重复消费：已经消费了数据，但是 offset 没提交，下次还会消费到当前数据。&lt;/p&gt;
+&lt;p&gt;漏消费：先提交 offset 后消费，有可能会造成数据的漏消费。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-153.png&quot; alt=&quot;upload suc</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
+    
+    <category term="漏消费" scheme="http://example.com/tags/%E6%BC%8F%E6%B6%88%E8%B4%B9/"/>
+    
+    <category term="重复消费" scheme="http://example.com/tags/%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka消费者的offset提交</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E7%9A%84offset%E6%8F%90%E4%BA%A4/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E7%9A%84offset%E6%8F%90%E4%BA%A4/</id>
+    <published>2022-03-12T05:00:00.000Z</published>
+    <updated>2022-03-12T05:11:59.292Z</updated>
+    
+    <content type="html"><![CDATA[<p>offset偏移量表明了该消费者当前消费的数据到哪一步，其存储在系统主题_consumer_offset中（0.9版本之前是存在Zookeeper中），以key,value形式，每隔一段时间kafka都会对其Compact（即保留当前最新的数据）。</p><p>1、自动提交offset：为了能让我们专注于业务处理，Kafka提供了自动提交offset功能，通过参数</p><p>⚫ enable.auto.commit：是否开启自动提交offset功能，默认是true</p><p>⚫ auto.commit.interval.ms：自动提交offset的时间间隔，默认是5s</p><p>2、手动提交：自动提交固然遍历，但基于时间的提交，我们很难把握那个度，因此更多时候，我们可以选择手动提交。</p><p>1）同步提交：同步提交会阻塞当前线程，一直到成功为止，并且失败会自动重试</p><p>2）异步提交：异步提交则不会阻塞当前线程，且没有重试机制，可能提交失败。</p><p>两者都会将本次提交的一批数据最高偏移量提交。</p><p>指定offset消费：auto.offset.reset = earliest | latest | none 默认是 latest。</p><p>当kafka中没有初始偏移量（消费者组第一次消费）或服务器上不存在当前偏移量时（数据被删除）需要指定offset消费。</p><p>1）earliest：自动将偏移量重置为最早的偏移量，–from-beginning。</p><p>2）latest（默认值）：自动将偏移量重置为最新偏移量。</p><p>（3）none：如果未找到消费者组的先前偏移量，则向消费者抛出异常。</p><p>（4）任意指定 offset 位移开始消费</p><p>指定时间消费：在生产环境中，会遇到最近消费的几个小时数据异常，想重新按照时间消费。例如要求按照时间消费前一天的数据</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;offset偏移量表明了该消费者当前消费的数据到哪一步，其存储在系统主题_consumer_offset中（0.9版本之前是存在Zookeeper中），以key,value形式，每隔一段时间kafka都会对其Compact（即保留当前最新的数据）。&lt;/p&gt;
+&lt;p&gt;1、自动提</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
+    
+    <category term="offset" scheme="http://example.com/tags/offset/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka消费者分区的分配以及再平衡</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E5%88%86%E5%8C%BA%E7%9A%84%E5%88%86%E9%85%8D%E4%BB%A5%E5%8F%8A%E5%86%8D%E5%B9%B3%E8%A1%A1/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E5%88%86%E5%8C%BA%E7%9A%84%E5%88%86%E9%85%8D%E4%BB%A5%E5%8F%8A%E5%86%8D%E5%B9%B3%E8%A1%A1/</id>
+    <published>2022-03-12T04:47:00.000Z</published>
+    <updated>2022-03-12T04:53:38.116Z</updated>
+    
+    <content type="html"><![CDATA[<p>一个consumer group中有多个consumer组成，一个 topic有多个partition组成，现在的问题是，到底由哪个consumer来消费哪个partition的数据。 </p><p>2、Kafka有四种主流的分区分配策略：<br> Range、RoundRobin、Sticky、CooperativeSticky。<br>可以通过配置参数partition.assignment.strategy，修改分区的分配策略。默认策略是Range + CooperativeSticky。Kafka可以同时使用多个分区分配策略。</p><p>1）Range 是对每个 topic 而言的。</p><p>首先对同一个 topic 里面的分区按照序号进行排序，并对消费者按照字母顺序进行排序。</p><p>假如现在有 7 个分区，3 个消费者，排序后的分区将会是0,1,2,3,4,5,6；消费者排序完之后将会是C0,C1,C2。例如，7/3 = 2 余 1 ，除不尽，那么 消费者 C0 便会多消费 1 个分区。 8/3=2余2，除不尽，那么C0和C1分别多消费一个。</p><p>通过 partitions数/consumer数 来决定每个消费者应该消费几个分区。如果除不尽，那么前面几个消费者将会多<br>消费 1 个分区。</p><p>注意：如果只是针对 1 个 topic 而言，C0消费者多消费1个分区影响不是很大。但是如果有 N 多个 topic，那么针对个 topic，消费者 C0都将多消费 1 个分区，topic越多，C0消 费的分区会比其他消费者明显多消费 N 个分区。容易产生数据倾斜！</p><p>（注意：说明：某个消费者挂掉后，消费者组需要按照超时时间 45s 来判断它是否退出，所以需要等待，时间到了 45s 后，判断它真的退出就会把任务分配给其他 broker 执行。）</p><p>2）RoundRobin 分区策略原理：</p><p>RoundRobin 针对集群中所有Topic而言。<br>RoundRobin 轮询分区策略，是把所有的 partition 和所有的<br>consumer 都列出来，然后按照 hashcode 进行排序，最后<br>通过轮询算法来分配 partition 给到各个消费者。</p><p>3） Sticky 以及再平衡：</p><p>粘性分区定义：可以理解为分配的结果带有“粘性的”。即在执行一次新的分配之前，<br>考虑上一次分配的结果，尽量少的调整分配的变动，可以节省大量的开销。<br>粘性分区是 Kafka 从 0.11.x 版本开始引入这种分配策略，首先会尽量均衡的放置分区<br>到消费者上面，在出现同一消费者组内消费者出现问题的时候，会尽量保持原有分配的分<br>区不变化。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;一个consumer group中有多个consumer组成，一个 topic有多个partition组成，现在的问题是，到底由哪个consumer来消费哪个partition的数据。 &lt;/p&gt;
+&lt;p&gt;2、Kafka有四种主流的分区分配策略：&lt;br&gt; Range、Round</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
+    
+    <category term="分区分配策略" scheme="http://example.com/tags/%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka高效读写数据</title>
+    <link href="http://example.com/2022/03/12/Kafka%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE/"/>
+    <id>http://example.com/2022/03/12/Kafka%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE/</id>
+    <published>2022-03-12T03:23:00.000Z</published>
+    <updated>2022-03-12T03:24:21.616Z</updated>
+    
+    <content type="html"><![CDATA[<p>1）Kafka 本身是分布式集群，可以采用分区技术，并行度高</p><p>2）读数据采用稀疏索引，可以快速定位要消费的数据</p><p>3）顺序写磁盘（Kafka 的 producer 生产数据，要写入到 log 文件中，写的过程是一直追加到文件末端，为顺序写。官网有数据表明，同样的磁盘，顺序写能到 600M/s，而随机写只有 100K/s。这与磁盘的机械机构有关，顺序写之所以快，是因为其省去了大量磁头寻址的时间。）</p><p>4）页缓存 + 零拷贝技术</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1）Kafka 本身是分布式集群，可以采用分区技术，并行度高&lt;/p&gt;
+&lt;p&gt;2）读数据采用稀疏索引，可以快速定位要消费的数据&lt;/p&gt;
+&lt;p&gt;3）顺序写磁盘（Kafka 的 producer 生产数据，要写入到 log 文件中，写的过程是一直追加到文件末端，为顺序写。官网有数</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="高效读写" scheme="http://example.com/tags/%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka文件清理策略</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E6%B8%85%E7%90%86%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E6%B8%85%E7%90%86%E7%AD%96%E7%95%A5/</id>
+    <published>2022-03-12T03:19:00.000Z</published>
+    <updated>2022-03-12T03:23:07.944Z</updated>
+    
+    <content type="html"><![CDATA[<p>Kafka 中默认的日志保存时间为 7 天，可以通过调整如下参数修改保存时间。<br>⚫ log.retention.hours，最低优先级小时，默认 7 天。</p><p>⚫ log.retention.minutes，分钟。 </p><p>⚫ log.retention.ms，最高优先级毫秒。 </p><p>⚫log.retention.check.interval.ms，负责设置检查周期，默认 5 分钟。</p><p>对于超过设置事件的数据，有两种清楚策略，delete和Compact</p><p>1）delete 日志删除：将过期数据删除</p><p>⚫ log.cleanup.policy = delete 所有数据启用删除策略</p><p>（1）基于时间：默认打开。以 segment 中所有记录中的最大时间戳作为该文件时间戳。</p><p>（2）基于大小：默认关闭。超过设置的所有日志总大小，删除最早segment。log.retention.bytes，默认等于-1，表示无穷大。</p><p>2）compact 日志压缩</p><p>compact日志压缩：对于相同key的不同value值，只保留最后一个版本。</p><p>⚫ log.cleanup.policy = compact 所有数据启用压缩策略</p><p> <img src="/images/pasted-152.png" alt="upload successful"></p><p>压缩后的offset可能是不连续的，比如上图中没有6，当从这些offset消费消息时，将会拿到比这个offset大 的offset对应的消息，实际上会拿到offset为7的消息，并从这个位置开始消费。</p><p>这种策略只适合特殊场景，比如消息的key是用户ID，value是用户的资料，通过这种压缩策略，整个消息<br>集里就保存了所有用户最新的资料。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Kafka 中默认的日志保存时间为 7 天，可以通过调整如下参数修改保存时间。&lt;br&gt;⚫ log.retention.hours，最低优先级小时，默认 7 天。&lt;/p&gt;
+&lt;p&gt;⚫ log.retention.minutes，分钟。 &lt;/p&gt;
+&lt;p&gt;⚫ log.retenti</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="清楚策略" scheme="http://example.com/tags/%E6%B8%85%E6%A5%9A%E7%AD%96%E7%95%A5/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka文件存储机制</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6/</id>
+    <published>2022-03-12T03:16:00.000Z</published>
+    <updated>2022-03-12T03:19:20.616Z</updated>
+    
+    <content type="html"><![CDATA[<p>Topic是逻辑上的概念，而partition是物理上的概念，每个partition对应于一个log文件，该log文件中存储的就是Producer生产的数据。Producer生产的数据会被不断追加到该log文件末端，为防止log文件过大导致数据定位效率低下，Kafka采取了分片和索引机制， 将每个partition分为多个segment。每个segment包括：“.index”文件、“.log”文件和.timeindex等文件。这些文件位于一个文件夹下，该文件夹的命名规则为：topic名称+分区序号，例如：first-0。</p><p> <img src="/images/pasted-150.png" alt="upload successful"></p><p> Log文件和Index文件详解：</p><p> <img src="/images/pasted-151.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Topic是逻辑上的概念，而partition是物理上的概念，每个partition对应于一个log文件，该log文件中存储的就是Producer生产的数据。Producer生产的数据会被不断追加到该log文件末端，为防止log文件过大导致数据定位效率低下，Kafka采取了</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="文件存储" scheme="http://example.com/tags/%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Leader Partition 负载平衡</title>
+    <link href="http://example.com/2022/03/12/Leader-Partition-%E8%B4%9F%E8%BD%BD%E5%B9%B3%E8%A1%A1/"/>
+    <id>http://example.com/2022/03/12/Leader-Partition-%E8%B4%9F%E8%BD%BD%E5%B9%B3%E8%A1%A1/</id>
+    <published>2022-03-12T03:11:00.000Z</published>
+    <updated>2022-03-12T03:15:02.258Z</updated>
+    
+    <content type="html"><![CDATA[<p>正常情况下，Kafka本身会自动把Leader Partition均匀分散在各个机器上，来保证每台机器的读写吞吐量都是均匀的。但是如果某些broker宕机，会导致Leader Partition过于集中在其他少部分几台broker上，这会导致少数几台broker的读写请求压力过高，其他宕机的broker重启之后都是follower partition，读写请求很低，造成集群负载不均衡。</p><p>策略：</p><p>1、auto.leader.rebalance.enable，默认是true。（自动Leader Partition 平衡）</p><p>2、leader.imbalance.per.broker.percentage，默认是10%。每个broker允许的不平衡的leader的比率。如果每个broker超过了这个值，控制器会触发leader的平衡。</p><p>3、leader.imbalance.check.interval.seconds，默认值300秒。检查leader负载是否平衡的间隔时间。</p><p>例如：针对broker0节点，分区2的AR优先副本是0节点，但是0节点却不是Leader节点，所以不平衡数加1，AR副本总数是4，所以broker0节点不平衡率为1/4&gt;10%，需要再平衡。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;正常情况下，Kafka本身会自动把Leader Partition均匀分散在各个机器上，来保证每台机器的读写吞吐量都是均匀的。但是如果某些broker宕机，会导致Leader Partition过于集中在其他少部分几台broker上，这会导致少数几台broker的读写请求压</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Leader" scheme="http://example.com/tags/Leader/"/>
+    
+    <category term="Partition" scheme="http://example.com/tags/Partition/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Leader 和 Follower 故障处理细节</title>
+    <link href="http://example.com/2022/03/12/Leader-%E5%92%8C-Follower-%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E7%BB%86%E8%8A%82/"/>
+    <id>http://example.com/2022/03/12/Leader-%E5%92%8C-Follower-%E6%95%85%E9%9A%9C%E5%A4%84%E7%90%86%E7%BB%86%E8%8A%82/</id>
+    <published>2022-03-12T03:06:00.000Z</published>
+    <updated>2022-03-12T03:10:07.966Z</updated>
+    
+    <content type="html"><![CDATA[<p>LEO（Log End Offset）：每个副本的最后一个offset，LEO其实就是最新的offset + 1。</p><p>HW（High Watermark）：所有副本中最小的LEO 。</p><p>1）Follower故障：</p><p>（1） Follower发生故障后会被临时踢出ISR</p><p>（2） 这个期间Leader和Follower继续接收数据</p><p>（3）待该Follower恢复后，Follower会读取本地磁盘记录的<br>上次的HW，并将log文件高于HW的部分截取掉，从HW开始向Leader进行同步。</p><p>（4）等该Follower的LEO大于等于该Partition的HW，即<br>Follower追上Leader之后，就可以重新加入ISR了。</p><p>2）Leader故障：</p><p>（1） Leader发生故障之后，会从ISR中选出一个新的Leader</p><p>（2）为保证多个副本之间的数据一致性，其余的Follower会先将各自的log文件高于HW的部分截掉，然后从新的Leader同步数据。</p><p>注意：这只能保证副本之间的数据一致性，并不能保证数据不丢失或者不重复。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;LEO（Log End Offset）：每个副本的最后一个offset，LEO其实就是最新的offset + 1。&lt;/p&gt;
+&lt;p&gt;HW（High Watermark）：所有副本中最小的LEO 。&lt;/p&gt;
+&lt;p&gt;1）Follower故障：&lt;/p&gt;
+&lt;p&gt;（1） Followe</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Kafka" scheme="http://example.com/tags/Kafka/"/>
+    
+    <category term="Leader和Follower故障" scheme="http://example.com/tags/Leader%E5%92%8CFollower%E6%95%85%E9%9A%9C/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka Broker总体工作流程</title>
+    <link href="http://example.com/2022/03/12/Kafka-Broker%E6%80%BB%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B/"/>
+    <id>http://example.com/2022/03/12/Kafka-Broker%E6%80%BB%E4%BD%93%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B/</id>
+    <published>2022-03-12T03:00:00.000Z</published>
+    <updated>2022-03-12T03:00:21.303Z</updated>
+    
+    <content type="html"><![CDATA[<p> <img src="/images/pasted-149.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-149.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Kafka" scheme="http://example.com/tags/Kafka/"/>
+    
+    <category term="工作流程" scheme="http://example.com/tags/%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Zookeeper中存储的Kafka 信息</title>
+    <link href="http://example.com/2022/03/12/Zookeeper%E4%B8%AD%E5%AD%98%E5%82%A8%E7%9A%84Kafka-%E4%BF%A1%E6%81%AF/"/>
+    <id>http://example.com/2022/03/12/Zookeeper%E4%B8%AD%E5%AD%98%E5%82%A8%E7%9A%84Kafka-%E4%BF%A1%E6%81%AF/</id>
+    <published>2022-03-12T02:52:00.000Z</published>
+    <updated>2022-03-12T02:53:19.813Z</updated>
+    
+    <content type="html"><![CDATA[<p>在zookeeper的服务端存储的Kafka相关信息：</p><p>1）/kafka/brokers/ids [0,1,2] 记录有哪些服务器</p><p>2）/kafka/brokers/topics/first/partitions/0/state<br>{“leader”:1 ,”isr”:[1,0,2] } 记录谁是Leader，有哪些服务器可用</p><p>3）/kafka/controller<br>{“brokerid”:0}<br>辅助选举Leader</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在zookeeper的服务端存储的Kafka相关信息：&lt;/p&gt;
+&lt;p&gt;1）/kafka/brokers/ids [0,1,2] 记录有哪些服务器&lt;/p&gt;
+&lt;p&gt;2）/kafka/brokers/topics/first/partitions/0/state&lt;br&gt;{“lea</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    <category term="Zookeeper" scheme="http://example.com/categories/Kafka/Zookeeper/"/>
+    
+    
+    <category term="Zookeeper" scheme="http://example.com/tags/Zookeeper/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka数据乱序</title>
+    <link href="http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E4%B9%B1%E5%BA%8F/"/>
+    <id>http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E4%B9%B1%E5%BA%8F/</id>
+    <published>2022-03-12T02:47:00.000Z</published>
+    <updated>2022-03-12T02:50:26.550Z</updated>
+    
+    <content type="html"><![CDATA[<p>1）kafka在1.x版本之前保证数据单分区有序，条件如下：<br>max.in.flight.requests.per.connection=1（不需要考虑是否开启幂等性）。 </p><p>2）kafka在1.x及以后版本保证数据单分区有序，条件如下：</p><p>（1）未开启幂等性<br>max.in.flight.requests.per.connection需要设置为1。</p><p>（2）开启幂等性<br>max.in.flight.requests.per.connection需要设置小于等于5。 </p><p>原因说明：因为在kafka1.x以后，启用幂等后，kafka服务端会缓存producer发来的最近5个request的元数据，故无论如何，都可以保证最近5个request的数据都是有序的。</p><p> <img src="/images/pasted-148.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1）kafka在1.x版本之前保证数据单分区有序，条件如下：&lt;br&gt;max.in.flight.requests.per.connection=1（不需要考虑是否开启幂等性）。 &lt;/p&gt;
+&lt;p&gt;2）kafka在1.x及以后版本保证数据单分区有序，条件如下：&lt;/p&gt;
+&lt;p&gt;（</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Kafka" scheme="http://example.com/tags/Kafka/"/>
+    
+    <category term="数据有序" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E6%9C%89%E5%BA%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka的生产者事务原理</title>
+    <link href="http://example.com/2022/03/12/Kafka%E7%9A%84%E7%94%9F%E4%BA%A7%E8%80%85%E4%BA%8B%E5%8A%A1%E5%8E%9F%E7%90%86/"/>
+    <id>http://example.com/2022/03/12/Kafka%E7%9A%84%E7%94%9F%E4%BA%A7%E8%80%85%E4%BA%8B%E5%8A%A1%E5%8E%9F%E7%90%86/</id>
+    <published>2022-03-12T02:29:00.000Z</published>
+    <updated>2022-03-12T02:33:52.261Z</updated>
+    
+    <content type="html"><![CDATA[<p>注意：开启事务，必须要开启幂等性。另外Procuder在使用事务功能前，必须先自定义一个唯一的transaction.id。有了transaction.id，即使客户端挂掉了，它重启后也能继续处理未完成的事务。</p><p> <img src="/images/pasted-147.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;注意：开启事务，必须要开启幂等性。另外Procuder在使用事务功能前，必须先自定义一个唯一的transaction.id。有了transaction.id，即使客户端挂掉了，它重启后也能继续处理未完成的事务。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/paste</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    
+    <category term="Kafka" scheme="http://example.com/tags/Kafka/"/>
+    
+    <category term="事务" scheme="http://example.com/tags/%E4%BA%8B%E5%8A%A1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Kafka保证生产者生产的数据不重复：幂等性+至少一次</title>
+    <link href="http://example.com/2022/03/12/Kafka%E4%BF%9D%E8%AF%81%E7%94%9F%E4%BA%A7%E8%80%85%E7%94%9F%E4%BA%A7%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%8D%E9%87%8D%E5%A4%8D%EF%BC%9A%E5%B9%82%E7%AD%89%E6%80%A7-%E8%87%B3%E5%B0%91%E4%B8%80%E6%AC%A1/"/>
+    <id>http://example.com/2022/03/12/Kafka%E4%BF%9D%E8%AF%81%E7%94%9F%E4%BA%A7%E8%80%85%E7%94%9F%E4%BA%A7%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%8D%E9%87%8D%E5%A4%8D%EF%BC%9A%E5%B9%82%E7%AD%89%E6%80%A7-%E8%87%B3%E5%B0%91%E4%B8%80%E6%AC%A1/</id>
+    <published>2022-03-12T02:25:00.000Z</published>
+    <updated>2022-03-12T02:34:13.739Z</updated>
+    
+    <content type="html"><![CDATA[<p>至少一次：ack级别设置为-1+分区副本大于等于2+ISR里面的应答最小副本大于等于2（保证数据不会丢失）</p><p>幂等性：指Producer不论向Broker发送多少次重复数据，Broker端都只会持久化一条，保证了不重复。（重复数据的判断标准：具有&lt;PID, Partition, SeqNumber&gt;相同主键的消息提交时，Broker只会持久化一条。其 中PID是Kafka每次重启都会分配一个新的；Partition 表示分区号；Sequence Number是单调自增的。）</p><p>因此幂等性只能保证的是在单分区单会话内不重复。</p><p>如何使用幂等性：开启参数 enable.idempotence 默认为 true，false 关闭。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;至少一次：ack级别设置为-1+分区副本大于等于2+ISR里面的应答最小副本大于等于2（保证数据不会丢失）&lt;/p&gt;
+&lt;p&gt;幂等性：指Producer不论向Broker发送多少次重复数据，Broker端都只会持久化一条，保证了不重复。（重复数据的判断标准：具有&amp;lt;PID,</summary>
+      
+    
+    
+    
+    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
+    
+    <category term="消息队列" scheme="http://example.com/categories/Kafka/%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97/"/>
+    
+    
+    <category term="Kafka" scheme="http://example.com/tags/Kafka/"/>
+    
+    <category term="数据" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring Security认证过程</title>
@@ -152,393 +558,6 @@
     <category term="AOP" scheme="http://example.com/tags/AOP/"/>
     
     <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>说说@Import可以有几种用法？</title>
-    <link href="http://example.com/2022/03/09/%E8%AF%B4%E8%AF%B4-Import%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%87%A0%E7%A7%8D%E7%94%A8%E6%B3%95%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/%E8%AF%B4%E8%AF%B4-Import%E5%8F%AF%E4%BB%A5%E6%9C%89%E5%87%A0%E7%A7%8D%E7%94%A8%E6%B3%95%EF%BC%9F/</id>
-    <published>2022-03-09T10:41:00.000Z</published>
-    <updated>2022-03-09T10:43:33.973Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、 直接指定类 （如果配置类会按配置类正常解析、  如果是个普通类就会解析成Bean)</p><p>2、 通过ImportSelector 可以一次性注册多个，返回一个string[]  每一个值就是类的完整类路径</p><p>3、 通过DeferredImportSelector可以一次性注册多个，返回一个string[]  每一个值就是类的完整类路径</p><pre><code>区别：DeferredImportSelector 顺序靠后</code></pre><p>4、 通过ImportBeanDefinitionRegistrar 可以一次性注册多个，通过BeanDefinitionRegistry来动态注册BeanDefintion</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、 直接指定类 （如果配置类会按配置类正常解析、  如果是个普通类就会解析成Bean)&lt;/p&gt;
-&lt;p&gt;2、 通过ImportSelector 可以一次性注册多个，返回一个string[]  每一个值就是类的完整类路径&lt;/p&gt;
-&lt;p&gt;3、 通过DeferredImportS</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何让自动注入找到多个依赖Bean时不报错</title>
-    <link href="http://example.com/2022/03/09/%E5%A6%82%E4%BD%95%E8%AE%A9%E8%87%AA%E5%8A%A8%E6%B3%A8%E5%85%A5%E6%89%BE%E5%88%B0%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96Bean%E6%97%B6%E4%B8%8D%E6%8A%A5%E9%94%99/"/>
-    <id>http://example.com/2022/03/09/%E5%A6%82%E4%BD%95%E8%AE%A9%E8%87%AA%E5%8A%A8%E6%B3%A8%E5%85%A5%E6%89%BE%E5%88%B0%E5%A4%9A%E4%B8%AA%E4%BE%9D%E8%B5%96Bean%E6%97%B6%E4%B8%8D%E6%8A%A5%E9%94%99/</id>
-    <published>2022-03-09T10:36:00.000Z</published>
-    <updated>2022-03-09T10:39:06.070Z</updated>
-    
-    <content type="html"><![CDATA[<p>自动注入找到多个依赖Bean时，@primary可以指定注入哪一个。</p><p>@Primary：自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常</p><p>@Autowired 默认按类型装配，如果我们想使用按名称装配，可以结合@Qualifier注解一起使用</p><p>@Autowired @Qualifier(“personDaoBean”) 存在多个实例配合使用</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;自动注入找到多个依赖Bean时，@primary可以指定注入哪一个。&lt;/p&gt;
-&lt;p&gt;@Primary：自动装配时当出现多个Bean候选者时，被注解为@Primary的Bean将作为首选者，否则将抛出异常&lt;/p&gt;
-&lt;p&gt;@Autowired 默认按类型装配，如果我们想使用按名</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>说一说@Autowired和@Resource之间的区别</title>
-    <link href="http://example.com/2022/03/09/%E8%AF%B4%E4%B8%80%E8%AF%B4-Autowired%E5%92%8C-Resource%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB/"/>
-    <id>http://example.com/2022/03/09/%E8%AF%B4%E4%B8%80%E8%AF%B4-Autowired%E5%92%8C-Resource%E4%B9%8B%E9%97%B4%E7%9A%84%E5%8C%BA%E5%88%AB/</id>
-    <published>2022-03-09T10:31:00.000Z</published>
-    <updated>2022-03-09T10:35:41.053Z</updated>
-    
-    <content type="html"><![CDATA[<p>@Autowired可用于：构造函数、成员变量、Setter方法</p><p>@Autowired和@Resource之间的区别</p><p>@Autowired默认是按照类型装配注入的（按照名称匹配需要@Qualifier），默认情况下它要求依赖对象必须存在（可以设置它required属性为<br>false）。</p><p>@Resource默认是按照名称来装配注入的，只有当找不到与名称匹配的bean才会按照类型来装配注入。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;@Autowired可用于：构造函数、成员变量、Setter方法&lt;/p&gt;
-&lt;p&gt;@Autowired和@Resource之间的区别&lt;/p&gt;
-&lt;p&gt;@Autowired默认是按照类型装配注入的（按照名称匹配需要@Qualifier），默认情况下它要求依赖对象必须存在（可以设置</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>使用@Autowired注解自动装配的过程是怎样的？</title>
-    <link href="http://example.com/2022/03/09/%E4%BD%BF%E7%94%A8-Autowired%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%9A%84%E8%BF%87%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/%E4%BD%BF%E7%94%A8-Autowired%E6%B3%A8%E8%A7%A3%E8%87%AA%E5%8A%A8%E8%A3%85%E9%85%8D%E7%9A%84%E8%BF%87%E7%A8%8B%E6%98%AF%E6%80%8E%E6%A0%B7%E7%9A%84%EF%BC%9F/</id>
-    <published>2022-03-09T10:11:00.000Z</published>
-    <updated>2022-03-09T10:20:50.684Z</updated>
-    
-    <content type="html"><![CDATA[<p>记住：@Autowired 通过Bean的后置处理器进行解析的</p><p>1、 在创建一个Spring上下文的时候再构造函数中进行注册AutowiredAnnotationBeanPostProcessor</p><p>2、 在Bean的创建过程中进行解析</p><pre><code>2.1、 在实例化后预解析（解析@Autowired标注的属性、方法   比如：把属性的类型、名称、属性所在的类..... 元数据缓存起）2.2、 在属性注入真正的解析（拿到上一步缓存的元数据 去ioc容器帮进行查找，并且返回注入）</code></pre><p>a. 首先根据预解析的元数据拿到 类型去容器中进行查找 <br>（如果查询结果刚好为一个，就将该bean装配给@Autowired指定的数据；<br>如果查询的结果不止一个，那么@Autowired会根据名称来查找；<br>如果上述查找的结果为空，那么会抛出异常。解决方法时，使用required=false。）</p><p> <img src="/images/pasted-144.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;记住：@Autowired 通过Bean的后置处理器进行解析的&lt;/p&gt;
-&lt;p&gt;1、 在创建一个Spring上下文的时候再构造函数中进行注册AutowiredAnnotationBeanPostProcessor&lt;/p&gt;
-&lt;p&gt;2、 在Bean的创建过程中进行解析&lt;/p&gt;
-&lt;</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>配置类@Configuration的作用解析原理</title>
-    <link href="http://example.com/2022/03/09/%E9%85%8D%E7%BD%AE%E7%B1%BB-Configuration%E7%9A%84%E4%BD%9C%E7%94%A8%E8%A7%A3%E6%9E%90%E5%8E%9F%E7%90%86/"/>
-    <id>http://example.com/2022/03/09/%E9%85%8D%E7%BD%AE%E7%B1%BB-Configuration%E7%9A%84%E4%BD%9C%E7%94%A8%E8%A7%A3%E6%9E%90%E5%8E%9F%E7%90%86/</id>
-    <published>2022-03-09T09:00:00.000Z</published>
-    <updated>2022-03-09T10:09:42.110Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、@Configuration用来代替xml配置方式spring.xml配置文件 <bean></p><p>2、没有@Configuration也是可以配置@Bean</p><p>3、 加了@Configuration会为配置类创建cglib动态代理（保证配置类@Bean方法调用Bean的单例），@Bean方法的调用就会通过容器.getBean进行获取</p><p>原理：</p><p>1、创建Spring上下文的时候会注册一个解析配置的处理器ConfigurationClassPostProcessor（实现BeanFactoryPostProcessor和<br>BeanDefinitionRegistryPostProcessor)</p><p>2、在调用invokeBeanFactoryPostProcessor，就会去调用<br>ConfigurationClassPostProcessor.postProcessBeanDefinitionRegistry进行解析配置（解析配置类说白就是去解析各种注解<br>(@Bean @Configuration@Import @Component …  就是注册BeanDefinition)</p><p>3、ConfigurationClassPostProcessor.postProcessBeanFactory去创建cglib动态代理</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、@Configuration用来代替xml配置方式spring.xml配置文件 &lt;bean&gt;&lt;/p&gt;
-&lt;p&gt;2、没有@Configuration也是可以配置@Bean&lt;/p&gt;
-&lt;p&gt;3、 加了@Configuration会为配置类创建cglib动态代理（保证配置类@Be</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对于@Bean之间的方法调用是怎么保证单例的？</title>
-    <link href="http://example.com/2022/03/09/%E5%AF%B9%E4%BA%8E@Bean%E4%B9%8B%E9%97%B4%E7%9A%84%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E6%98%AF%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E5%8D%95%E4%BE%8B%E7%9A%84%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/%E5%AF%B9%E4%BA%8E@Bean%E4%B9%8B%E9%97%B4%E7%9A%84%E6%96%B9%E6%B3%95%E8%B0%83%E7%94%A8%E6%98%AF%E6%80%8E%E4%B9%88%E4%BF%9D%E8%AF%81%E5%8D%95%E4%BE%8B%E7%9A%84%EF%BC%9F/</id>
-    <published>2022-03-09T08:44:00.000Z</published>
-    <updated>2022-03-09T08:57:45.869Z</updated>
-    
-    <content type="html"><![CDATA[<p>如果希望@bean方法返回的对象是单例，需要在类上加上@Configuration注解。</p><p>原因：Spring会使用invokeBeanFactoryPostProcessor 在内置BeanFactoryPostProcessor中使用CGLib生成动态代理，当@Bean方法进行互调时， 则会通过CGLIB进行增强，通过调用的方法名作为bean的名称去ioc容器中获取，进而保证了@Bean方法的单例 。</p><p>换句话说：被@Configuration修饰的类，spring容器中会通过cglib给这个类创建一个代理，代理会拦截所有被@Bean 修饰的方法，默认情况（bean为单例）下确保这些方法只被调用一次，从而确保这些bean是同一个bean，即单例的<br>。@Configuration修饰的类有cglib代理效果，默认添加的bean都为单例</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;如果希望@bean方法返回的对象是单例，需要在类上加上@Configuration注解。&lt;/p&gt;
-&lt;p&gt;原因：Spring会使用invokeBeanFactoryPostProcessor 在内置BeanFactoryPostProcessor中使用CGLib生成动态代理，</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>要将一个第三方的类配成为Bean有哪些方式？</title>
-    <link href="http://example.com/2022/03/09/%E8%A6%81%E5%B0%86%E4%B8%80%E4%B8%AA%E7%AC%AC%E4%B8%89%E6%96%B9%E7%9A%84%E7%B1%BB%E9%85%8D%E6%88%90%E4%B8%BABean%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B9%E5%BC%8F%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/%E8%A6%81%E5%B0%86%E4%B8%80%E4%B8%AA%E7%AC%AC%E4%B8%89%E6%96%B9%E7%9A%84%E7%B1%BB%E9%85%8D%E6%88%90%E4%B8%BABean%E6%9C%89%E5%93%AA%E4%BA%9B%E6%96%B9%E5%BC%8F%EF%BC%9F/</id>
-    <published>2022-03-09T08:39:00.000Z</published>
-    <updated>2022-03-09T08:42:14.407Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、通过@bean注解（搭配@Configurtion）</p><p>2、通过@import注解</p><p>3、通过Spring的拓展接口BeanDefinitionRegistryPostProcessor</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、通过@bean注解（搭配@Configurtion）&lt;/p&gt;
-&lt;p&gt;2、通过@import注解&lt;/p&gt;
-&lt;p&gt;3、通过Spring的拓展接口BeanDefinitionRegistryPostProcessor&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为什么@ComponentScan 不设置basePackage也会扫描？</title>
-    <link href="http://example.com/2022/03/09/%E4%B8%BA%E4%BB%80%E4%B9%88-ComponentScan-%E4%B8%8D%E8%AE%BE%E7%BD%AEbasePackage%E4%B9%9F%E4%BC%9A%E6%89%AB%E6%8F%8F%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/%E4%B8%BA%E4%BB%80%E4%B9%88-ComponentScan-%E4%B8%8D%E8%AE%BE%E7%BD%AEbasePackage%E4%B9%9F%E4%BC%9A%E6%89%AB%E6%8F%8F%EF%BC%9F/</id>
-    <published>2022-03-09T08:36:00.000Z</published>
-    <updated>2022-03-09T08:38:51.082Z</updated>
-    
-    <content type="html"><![CDATA[<p>@componentScan注解不设置basePackage默认会将你的类所在的包的地址作为扫描包的地址</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;@componentScan注解不设置basePackage默认会将你的类所在的包的地址作为扫描包的地址&lt;/p&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="面试题" scheme="http://example.com/tags/%E9%9D%A2%E8%AF%95%E9%A2%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring是如何解决循环依赖问题的？</title>
-    <link href="http://example.com/2022/03/09/Spring%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%E7%9A%84%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/09/Spring%E6%98%AF%E5%A6%82%E4%BD%95%E8%A7%A3%E5%86%B3%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96%E9%97%AE%E9%A2%98%E7%9A%84%EF%BC%9F/</id>
-    <published>2022-03-09T02:54:00.000Z</published>
-    <updated>2022-03-09T03:11:12.718Z</updated>
-    
-    <content type="html"><![CDATA[<p>什么是循环依赖问题？</p><p>类与类之间的依赖关系形成了闭环，就会导致循环依赖问题的产生。（比如A类依赖了B类，B类依赖了C类，而最后C类又依赖了A类，这样就形成了循环依赖问题。）</p><p>循环依赖问题在Spring中主要有三种情况：</p><p>1、通过构造方法进行依赖注入时产生的循环依赖问题。</p><p>2、通过setter方法进行依赖注入且是在多例（原型）模式下产生的循环依赖问题。</p><p>3、通过setter方法进行依赖注入且是在单例模式下产生的循环依赖问题。</p><p>注意：在Spring中，只有【第三种方式】的循环依赖问题被解决了，其他两种方式在遇到循环依赖问题时都会产生异常。</p><p>因为第一种构造方法注入的情况下，在new对象的时候就会堵塞住了，其实也就是”先有鸡还是先有蛋“的历史难题。</p><p>第二种setter方法&amp;&amp;多例的情况下，每一次getBean()时，都会产生一个新的Bean，如此反复下去就会有无穷无尽的Bean产生了，最终就会导致OOM问题的出现。</p><p>如何解决循环依赖问题？</p><p> <img src="/images/pasted-138.png" alt="upload successful"></p><p> Spring中有三个缓存，用于存储单例的Bean实例，这三个缓存是彼此互斥的，不会针对同一个Bean的实例同时存储。</p><p> 如果调用getBean，则需要从三个缓存中依次获取指定的Bean实例。读取顺序依次是一级缓存–&gt;二级缓存–&gt;三级缓存</p><p> <img src="/images/pasted-139.png" alt="upload successful"></p><p> 一级缓存：Map&lt;String, Object&gt; singletonObjects<br>第一级缓存的作用？</p><p>用于存储单例模式下创建的Bean实例（已经创建完毕）。<br>该缓存是对外使用的，指的就是使用Spring框架的程序员。</p><p>存储什么数据？</p><p>K：bean的名称</p><p>V：bean的实例对象（有代理对象则指的是代理对象，已经创建完毕）</p><p>第二级缓存：Map&lt;String, Object&gt; earlySingletonObjects第二级缓存的作用？</p><p>用于存储单例模式下创建的Bean实例（该Bean被提前暴露的引用,该Bean还在创建中）。<br>该缓存是对内使用的，指的就是Spring框架内部逻辑使用该缓存。<br>为了解决第一个classA引用最终如何替换为代理对象的问题（如果有代理对象）</p><p>存储什么数据？</p><p>K：bean的名称</p><p>V：bean的实例对象（有代理对象则指的是代理对象，该Bean还在创建中）</p><p>第三级缓存：Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories第三级缓存的作用？</p><p>通过ObjectFactory对象来存储单例模式下提前暴露的Bean实例的引用（正在创建中）。<br>该缓存是对内使用的，指的就是Spring框架内部逻辑使用该缓存。<br>此缓存是解决循环依赖最大的功臣</p><p>存储什么数据？</p><p>K：bean的名称</p><p>V：ObjectFactory，该对象持有提前暴露的bean的引用</p><p> <img src="/images/pasted-140.png" alt="upload successful"></p><p>为什么第三级缓存要使用ObjectFactory？需要提前产生代理对象。</p><p> <img src="/images/pasted-141.png" alt="upload successful"><br>什么时候将Bean的引用提前暴露给第三级缓存的ObjectFactory持有？时机就是在第一步实例化之后，第二步依赖注入之前，完成此操作。</p><p> <img src="/images/pasted-142.png" alt="upload successful"></p><p>总结<br>以上就是Spring解决循环依赖的关键点！总结来说，就是要搞清楚以下几点：</p><p>搞清楚Spring三级缓存的作用？<br>搞清楚第三级缓存中ObjectFactory的作用？<br>搞清楚为什么需要第二级缓存？<br>搞清楚什么时候使用三级缓存（添加和查询操作）？<br>搞清楚什么时候使用二级缓存（添加和查询操作）？<br>当目标对象产生代理对象时，Spring容器中（第一级缓存）到底存储的是谁？</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;什么是循环依赖问题？&lt;/p&gt;
-&lt;p&gt;类与类之间的依赖关系形成了闭环，就会导致循环依赖问题的产生。（比如A类依赖了B类，B类依赖了C类，而最后C类又依赖了A类，这样就形成了循环依赖问题。）&lt;/p&gt;
-&lt;p&gt;循环依赖问题在Spring中主要有三种情况：&lt;/p&gt;
-&lt;p&gt;1、通过构造</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="循环依赖" scheme="http://example.com/tags/%E5%BE%AA%E7%8E%AF%E4%BE%9D%E8%B5%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring AOP实现机制的一个小小陷阱</title>
-    <link href="http://example.com/2022/03/08/Spring%20AOP%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E5%B0%8F%E9%99%B7%E9%98%B1/"/>
-    <id>http://example.com/2022/03/08/Spring%20AOP%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%B8%AA%E5%B0%8F%E5%B0%8F%E9%99%B7%E9%98%B1/</id>
-    <published>2022-03-08T12:36:00.000Z</published>
-    <updated>2022-03-08T12:48:29.130Z</updated>
-    
-    <content type="html"><![CDATA[<p>我们知道Spring AOP采用代理模式实现，具体的横切逻辑会被添加到动态生成的代理对象中，只要调用的是目标对象的代理对象上的方法就可以保证目标对象的方法执行可以被拦截。</p><p>不过遗憾的是，代理模式的实现机制在处理方法调用的时序方面会给使用这种机制实现的AOP产品造成一个缺憾。在处理对象方法中，不管你如何添加横切逻辑，也不管添加多少横切逻辑，有一点是确定的，你最终需要调用目标对象的同一方法来执行最初所应以的方法逻辑。如果目标对象中原始方法调用依赖于其他对象，那没问题。我们可以为目标对象注入所依赖对象的代理，并且可以保证相应的Joinpoint被拦截并且织入相应横切逻辑。但是如果目标对象中的原始方法调用直接调用自身方法时，会导致出现问题</p><p> <img src="/images/pasted-133.png" alt="upload successful"></p><p> 在代理对象的method1执行经历了层层拦截后，最终会将调用转向目标对象上的method1，之后调用流程全部在走targetobject之上，当method1调用method2时，它调用targetobject的method2，而不是代理对象的method2，而针对method2的横切逻辑是织入到代理对象上的，因此method1中调用的method2没有被成功拦截。</p><p> 好在Spring AOP提供了AopContent来公开当前目标对象的代理对象，我们只要在目标对象中使用AopContent.currentProxy()就可以获取当前目标对象所对应的代理对象。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;我们知道Spring AOP采用代理模式实现，具体的横切逻辑会被添加到动态生成的代理对象中，只要调用的是目标对象的代理对象上的方法就可以保证目标对象的方法执行可以被拦截。&lt;/p&gt;
-&lt;p&gt;不过遗憾的是，代理模式的实现机制在处理方法调用的时序方面会给使用这种机制实现的AOP产品</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>AOP的常见应用案例</title>
-    <link href="http://example.com/2022/03/08/AOP%E7%9A%84%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B/"/>
-    <id>http://example.com/2022/03/08/AOP%E7%9A%84%E5%BA%94%E7%94%A8%E6%A1%88%E4%BE%8B/</id>
-    <published>2022-03-08T11:26:00.000Z</published>
-    <updated>2022-03-08T12:33:39.435Z</updated>
-    
-    <content type="html"><![CDATA[<p>1、异常处理：</p><p>通常将Error和RuntimeException及其子类称作非受检异常。（编译器不会对这些类型的异常进行编译期检查），而其他的则为受检异常（编写程序期间就应进行处理）。Fault Barrier即为对非受检异常的处理。</p><p>对于这些非受检异常的处理可以归并于溢出进行处理，而不是让他们散落到系统的各处。介于此，我们可以通过实现一个Aspect来处理，让其对系统中所有可能的falut情况进行统一的处理。而这个专职于处理Falut的Aspect即为Falut Barrier。</p><p>2、安全检查：</p><p>Filter是Servlet规范为我们提供的一种AOP支持。通过它我们可以为基于servlet的web应用添加相应的资源访问控制等等。但是，基于filter的web应用的资源访问控制仅仅是特定领域安全检查需求。而通过AOP，我们可以为任何类型的应用添加安全支持。（Spring Security则是基于Spring的一款强大的安全框架）</p><p>3、缓存：</p><p>AOP应用的另一个主要场景则是为系统透明地添加缓存支持。缓存可以在很大程度上提升系统性能。为了避免需要添加的缓存实现逻辑影响业务逻辑的实现，我们可以让缓存的实现独立于业务对象的实现外，将系统中的缓存需求通过AOP的Aspect进行封装，只在系统中某个点确切需要缓存的情况下才进行织入。（现在已经有许多现成的Caching产品实现，入EhCache、Redis等）</p><p>Spring Modules项目提供了对现有Caching产品的集成，这样可以通过外部声明的方式为系统中的Joinpoint加Caching支持。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1、异常处理：&lt;/p&gt;
-&lt;p&gt;通常将Error和RuntimeException及其子类称作非受检异常。（编译器不会对这些类型的异常进行编译期检查），而其他的则为受检异常（编写程序期间就应进行处理）。Fault Barrier即为对非受检异常的处理。&lt;/p&gt;
-&lt;p&gt;对于这些</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
-    
-    <category term="应用" scheme="http://example.com/tags/%E5%BA%94%E7%94%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>C语言程序经过预处理、编译、汇编和链接等各个阶段的变化情况</title>
-    <link href="http://example.com/2022/03/08/C%E8%AF%AD%E8%A8%80%E7%A8%8B%E5%BA%8F%E7%BB%8F%E8%BF%87%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81%E7%BC%96%E8%AF%91%E3%80%81%E6%B1%87%E7%BC%96%E5%92%8C%E9%93%BE%E6%8E%A5%E7%AD%89%E5%90%84%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E5%8F%98%E5%8C%96%E6%83%85%E5%86%B5/"/>
-    <id>http://example.com/2022/03/08/C%E8%AF%AD%E8%A8%80%E7%A8%8B%E5%BA%8F%E7%BB%8F%E8%BF%87%E9%A2%84%E5%A4%84%E7%90%86%E3%80%81%E7%BC%96%E8%AF%91%E3%80%81%E6%B1%87%E7%BC%96%E5%92%8C%E9%93%BE%E6%8E%A5%E7%AD%89%E5%90%84%E4%B8%AA%E9%98%B6%E6%AE%B5%E7%9A%84%E5%8F%98%E5%8C%96%E6%83%85%E5%86%B5/</id>
-    <published>2022-03-08T07:59:00.000Z</published>
-    <updated>2022-03-08T11:26:01.536Z</updated>
-    
-    <content type="html"><![CDATA[<p>编译过程概述：通常编译程序的过程分为词法分析、语法分析、语义分析、目目标代码生成4个阶段（如果编译器支持优化，还可以有中间代码生成和代码优化两个阶段）。</p><p> <img src="/images/pasted-132.png" alt="upload successful"></p><p>1、词法分析</p><p>此阶段的任务是从左到右一个字符一个字符地读入源程序，对构成源程序的字符进行扫描和分解，从而识别出一个个单词（逻辑上紧密相连的一组有集体含义的字符）。</p><p>2、语法分析</p><p>此阶段的任务是在词法分析的基础上将单词序列分解成各类语法短语（也称语法单位）可表示成语法树。</p><p>注：词法分析和语法分析本质上都是对源程序的结构进行分析。</p><p>3、语义分析</p><p>语义分析是审查源程序有无语义错误，为代码生成阶段收集类型信息。</p><p>4、中间代码生成</p><p>“中间代码”是一种结构简单，含义明确的记号系统，这种记号系统可以设计为多种多样的形式，重要的设计原则为两点：一是容易生成；二是容易将它翻译成目标代码。很多编译程序采用了一种近似“三地址指令”的“四元式”中间代码。这种四元式的形式为：（运算符，运算对象1，运算对象2，结果）</p><p>5、代码优化</p><p>将中间代码进行变换或进行改造，目的：使生成的目标代码更为高效，即省时间和空间</p><p>6、目标代码生成</p><p>任务是把中间代码变换成特定机器上的绝对指令代码或可重定位的指令代码或汇编指令代码。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;编译过程概述：通常编译程序的过程分为词法分析、语法分析、语义分析、目目标代码生成4个阶段（如果编译器支持优化，还可以有中间代码生成和代码优化两个阶段）。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-132.png&quot; alt=&quot;upload succes</summary>
-      
-    
-    
-    
-    <category term="编译原理" scheme="http://example.com/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/"/>
-    
-    
-    <category term="基础概念" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring AOP 一世</title>
-    <link href="http://example.com/2022/03/07/Spring-AOP-%E4%B8%80%E4%B8%96/"/>
-    <id>http://example.com/2022/03/07/Spring-AOP-%E4%B8%80%E4%B8%96/</id>
-    <published>2022-03-07T12:03:00.000Z</published>
-    <updated>2022-03-07T13:01:58.232Z</updated>
-    
-    <content type="html"><![CDATA[<p>AOP的Joinpoint可以有许多类型，入构造方法调用、字段的设置及获取、方法调用等。但是在Spring AOP中，仅支持方法级别的Joinpoint。更确切的说，只支持方法执行类型的Joinpoint</p><p>Spring中以接口定义Pointcut作为其AOP框架中所有Pointcut的最顶级抽象，该接口定义了两个方法来捕获系统中相应的Joinpoint，并提供了一个TruePointcut类型实例。如果Pointcut类型为TruePointcut，默认会对系统中的所有对象，以及对象上所有被支持的Joinpoint进行匹配。</p><p> <img src="/images/pasted-129.png" alt="upload successful"></p><p> ClassFileter和MethodMatcher分别用于匹配将被执行织入操作的对象以及相应的方法。（重用不同级别的匹配定义，并且可以在不同或相同的级别上进行组合操作，或者强制让某个子类只覆写相应的方法）</p><p> <img src="/images/pasted-130.png" alt="upload successful"></p><p> Spring中各种advice实现全部遵循AOP ALLiance规定的接口。</p><p> <img src="/images/pasted-131.png" alt="upload successful"><br> advice实现了将被织入到Pointcut规定的Joinpoint处的横切逻辑。在Spring中，advice按照其自身实例能否在目标对象类的所有实例中共享这一标准，可以划分为两大类（per-class和per-instance）</p><p> per-class类型的advice：该类型可以在目标对象类的所有实例之间共享。这种类型的advice通常只提供方法拦截的功能。不会为目标对象类保存任何状态或添加新特性。除了上图没有列出的intriuduction类型的advice外，其余都属于pre-class。（如：BeforeAdvice、ThrowsAdvic、AfterReturningAdvice、AroundAdvice等）</p><p> per-instance类型的advice：introduction是唯一的一种per-instance型advice。其可以在不改目标类定义的情况下，为目标类添加新的属性和行为。</p><p> 当所有的Pointcut和advice准备好之后，就可以将其装入Aspect。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;AOP的Joinpoint可以有许多类型，入构造方法调用、字段的设置及获取、方法调用等。但是在Spring AOP中，仅支持方法级别的Joinpoint。更确切的说，只支持方法执行类型的Joinpoint&lt;/p&gt;
-&lt;p&gt;Spring中以接口定义Pointcut作为其AOP框</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Spring AOP的实现机制</title>
-    <link href="http://example.com/2022/03/07/Spring-AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/"/>
-    <id>http://example.com/2022/03/07/Spring-AOP%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%9C%BA%E5%88%B6/</id>
-    <published>2022-03-07T11:43:00.000Z</published>
-    <updated>2022-03-07T11:57:38.005Z</updated>
-    
-    <content type="html"><![CDATA[<p>Spring AOP采用动态代理机制（先尝试jdk动态代理，如果没有实现相应接口，则采用cglib字节码生成技术）和字节码生成技术实现（对目标对象进行继承拓展，为其生成相应的子类，子类通过重写来扩展父类的行为，只要将横切逻辑的实现放到子类中，然后让系统使用扩展后的子类即可）。与最初AspectJ采用编译器将横切逻辑织入到目标对象不同，动态代理和字节码生成都是在运行期间为目标对象生成一个代理对象，而将横切逻辑织入到这个代理对象中，系统最终使用的是织入横切逻辑的代理对象而不是真正的目标对象。</p><p> <img src="/images/pasted-128.png" alt="upload successful"><br>注意：动态代理需要实现统一接口，而cglib生成字节码需要方法可以重写</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Spring AOP采用动态代理机制（先尝试jdk动态代理，如果没有实现相应接口，则采用cglib字节码生成技术）和字节码生成技术实现（对目标对象进行继承拓展，为其生成相应的子类，子类通过重写来扩展父类的行为，只要将横切逻辑的实现放到子类中，然后让系统使用扩展后的子类即可）</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>AOP国家的公民</title>
-    <link href="http://example.com/2022/03/07/AOP%E5%9B%BD%E5%AE%B6%E7%9A%84%E5%85%AC%E6%B0%91/"/>
-    <id>http://example.com/2022/03/07/AOP%E5%9B%BD%E5%AE%B6%E7%9A%84%E5%85%AC%E6%B0%91/</id>
-    <published>2022-03-07T10:33:00.000Z</published>
-    <updated>2022-03-07T11:39:52.542Z</updated>
-    
-    <content type="html"><![CDATA[<p>Joinpoint：在系统运行前，AOP的功能模块都需要编织入OOP的功能模块中。所以，要进行这种编织，我们需要在哪些执行点进行。这些将要在其上执行编织操作的系统执行点即称之为Joinpoint。</p><p>Pointcut：Pointcut是Joinpoint的表达方式。将横切逻辑编织入当前系统的过程中，需要参考Pointcut规定的Joinpoint信息，才可以指定应该往系统的哪些Joinpoint上编织横切逻辑。即声明了一个Pointcut就指定了系统中符合条件的一组Joinpoint。</p><p>advice：advice是单一横切关注点逻辑的载体，它代表将会编织到Joinpoint的横切逻辑。如果将Aspect比作OOP中的class，那么advice就相当于class中的method。（常见的如before advice、after advice、after returning advice、after throwing advice，after advice、around advice等）</p><p>Aspect：Aspect是对系统中横切关注点进行模块化封装的AOP概念实体。通常情况下，Aspect可以含有多个Pointcut以及相关Advice定义。</p><p>织入和织入器：织入过程就是“飞架”AOP和OOP的那座桥，只有经过织入过程后，以Aspect模块化的横切关注点才会集成到OOP的现存系统中。而完成织入过程的那个人就是织入器。AspectJ有专门的编译器来完成织入操作，即ajc，所有ajc就是AspectJ完成织入的织入器；JBossAOP采用自定义的类加载器完成最终织入，那么这个类加载器就是他的织入器。SpringAOP使用一组自定义的类来完成最终的织入操作，proxyFactory类则是SpringAOP中最通用的织入器。</p><p>目标对象：符合Pointcut所指定的条件，将在织入过程中被织入横切逻辑的对象，称为目标对象。</p><p>当把所有这些概念组织到一个场景后，就有如下一副场景图：</p><p>   <img src="/images/pasted-127.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Joinpoint：在系统运行前，AOP的功能模块都需要编织入OOP的功能模块中。所以，要进行这种编织，我们需要在哪些执行点进行。这些将要在其上执行编织操作的系统执行点即称之为Joinpoint。&lt;/p&gt;
-&lt;p&gt;Pointcut：Pointcut是Joinpoint的表达方</summary>
-      
-    
-    
-    
-    <category term="Spring" scheme="http://example.com/categories/Spring/"/>
-    
-    
-    <category term="AOP" scheme="http://example.com/tags/AOP/"/>
     
   </entry>
   
