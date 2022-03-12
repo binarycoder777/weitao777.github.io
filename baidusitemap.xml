@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://example.com/2022/03/12/I-O-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E2%BD%A4%EF%BC%9Aselect-poll-epoll/</loc>
+    <lastmod>2022-03-12</lastmod>
+  </url>
+  <url>
     <loc>http://example.com/2022/03/12/Kafka-Kraft-%E6%A8%A1%E5%BC%8F/</loc>
     <lastmod>2022-03-12</lastmod>
   </url>
