@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-18T15:40:02.496Z</updated>
+  <updated>2022-03-19T12:12:59.659Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,266 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>G1中的String去重操作</title>
+    <link href="http://example.com/2022/03/19/G1%E4%B8%AD%E7%9A%84String%E5%8E%BB%E9%87%8D%E6%93%8D%E4%BD%9C/"/>
+    <id>http://example.com/2022/03/19/G1%E4%B8%AD%E7%9A%84String%E5%8E%BB%E9%87%8D%E6%93%8D%E4%BD%9C/</id>
+    <published>2022-03-19T12:04:00.000Z</published>
+    <updated>2022-03-19T12:12:59.659Z</updated>
+    
+    <content type="html"><![CDATA[<p>堆中存活数据String占了很大一部分，而里面很多可能都是重复的字符串对象。在G1垃圾回收器中，会实现自动持续对重复的string对象进行去重，避免内存浪费。</p><p>实现：</p><ul><li>当垃圾回收器工作时，会访问堆上存活的对象。对每一个对象的访问都会检查是否是候选的要去重的string对象</li><li>如果是，把这个对象的一个引用插入到队列中等待后续处理。一个去重的线程在后台运行，处理这个队列。处理一个元素意味着从队列删除这个元素，然后尝试去重它引用的string对象。</li><li>使用一个hashtable来记录所有被string对象使用的不重复的char数组，当去重时，会查这个hashtable，来看是否存在一个一样的char数组。</li><li>如果存在，string对象会被调整引用那个对象，释放对原数组的引用，原数组被垃圾回收。如果查找失败，则放入hashtable，就可以用于共享。</li></ul><p>开启去重，默认未开启<br>usestringDeduplication(bool)</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;堆中存活数据String占了很大一部分，而里面很多可能都是重复的字符串对象。在G1垃圾回收器中，会实现自动持续对重复的string对象进行去重，避免内存浪费。&lt;/p&gt;
+&lt;p&gt;实现：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;当垃圾回收器工作时，会访问堆上存活的对象。对每一个对象的访问都会检</summary>
+      
+    
+    
+    
+    <category term="String" scheme="http://example.com/categories/String/"/>
+    
+    
+    <category term="String" scheme="http://example.com/tags/String/"/>
+    
+    <category term="G1" scheme="http://example.com/tags/G1/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于String的intern方法</title>
+    <link href="http://example.com/2022/03/19/%E5%85%B3%E4%BA%8EString%E7%9A%84intern%E6%96%B9%E6%B3%95/"/>
+    <id>http://example.com/2022/03/19/%E5%85%B3%E4%BA%8EString%E7%9A%84intern%E6%96%B9%E6%B3%95/</id>
+    <published>2022-03-19T11:44:00.000Z</published>
+    <updated>2022-03-19T12:04:44.977Z</updated>
+    
+    <content type="html"><![CDATA[<p>首先需要说明的是</p><ul><li>常量与常量拼接结果是放在常量池（编译期优化）</li><li>常量池不会存放相同字符串（hashtable）</li><li>只要其中一个是变量，拼接的时候，结果就是在堆（使用了stringbuiler）</li><li>拼接结果调用intern，则主动将常量池还没有的字符串对象放入，并返回对象地址。</li></ul><p>intern是一个native方法，调用的是底层c的方法。</p><ul><li>jdk1.6，会将这个对象尝试放入串池，如果串池有，则直接返回串池中该对象的地址。如果没有，则将该对象复杂一份，放入串池，并返回串池对象的地址</li><li>jdk1.7起，变动在于，当串池没有该对象，会将对象的引用复制一份放入串池，返回串池的引用地址</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;首先需要说明的是&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;常量与常量拼接结果是放在常量池（编译期优化）&lt;/li&gt;
+&lt;li&gt;常量池不会存放相同字符串（hashtable）&lt;/li&gt;
+&lt;li&gt;只要其中一个是变量，拼接的时候，结果就是在堆（使用了stringbuiler）&lt;/li&gt;
+&lt;li&gt;拼</summary>
+      
+    
+    
+    
+    <category term="String" scheme="http://example.com/categories/String/"/>
+    
+    
+    <category term="String" scheme="http://example.com/tags/String/"/>
+    
+    <category term="intern" scheme="http://example.com/tags/intern/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为什么JDK9时String从char换为了byte？</title>
+    <link href="http://example.com/2022/03/19/%E4%B8%BA%E4%BB%80%E4%B9%88JDK9%E6%97%B6String%E4%BB%8Echar%E6%8D%A2%E4%B8%BA%E4%BA%86byte%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/19/%E4%B8%BA%E4%BB%80%E4%B9%88JDK9%E6%97%B6String%E4%BB%8Echar%E6%8D%A2%E4%B8%BA%E4%BA%86byte%EF%BC%9F/</id>
+    <published>2022-03-19T11:32:00.000Z</published>
+    <updated>2022-03-19T11:44:40.964Z</updated>
+    
+    <content type="html"><![CDATA[<p>jdk1.8及以前String的底层是用char数组构成，但在1.9变为了byte数组，为什么呢？</p><p>首先我们知道char字符占两个字节（16位），其次字符串是堆使用的重要部分，而且大多数字符串对象只包含拉丁字符（这些字符只需一个字节的存储空间），因此对于这些字符串对象的内部char数组可能会有半数以上的空间未使用，造成空间浪费。</p><p>因此将char转化为byte来应对这种情况。新的String类将根据字符串的内存存储编码为ISO或UTF的字符。</p><ul><li>注意：同String一样的Stringbuffer和Stringbuilder也同样做了修改</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;jdk1.8及以前String的底层是用char数组构成，但在1.9变为了byte数组，为什么呢？&lt;/p&gt;
+&lt;p&gt;首先我们知道char字符占两个字节（16位），其次字符串是堆使用的重要部分，而且大多数字符串对象只包含拉丁字符（这些字符只需一个字节的存储空间），因此对于这些字</summary>
+      
+    
+    
+    
+    <category term="String" scheme="http://example.com/categories/String/"/>
+    
+    <category term="字符串" scheme="http://example.com/categories/String/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
+    
+    
+    <category term="String" scheme="http://example.com/tags/String/"/>
+    
+    <category term="新特性" scheme="http://example.com/tags/%E6%96%B0%E7%89%B9%E6%80%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>HotSpot中JIT的分类</title>
+    <link href="http://example.com/2022/03/19/HotSpot%E4%B8%ADJIT%E7%9A%84%E5%88%86%E7%B1%BB/"/>
+    <id>http://example.com/2022/03/19/HotSpot%E4%B8%ADJIT%E7%9A%84%E5%88%86%E7%B1%BB/</id>
+    <published>2022-03-19T11:11:00.000Z</published>
+    <updated>2022-03-19T11:23:39.386Z</updated>
+    
+    <content type="html"><![CDATA[<p>JIT的编译器分了两种：C1和C2，在HotSpot下对应Client和Server两类。（-client和-servcer指定）</p><h2 id="C1和C2不同的优化策略"><a href="#C1和C2不同的优化策略" class="headerlink" title="C1和C2不同的优化策略"></a>C1和C2不同的优化策略</h2><p>C1：方法内联、去虚拟化、冗余消除</p><ul><li><p>方法内联：将引用的函数代码编译到引用点，尖山栈帧的生成，减少参数传递和跳转</p></li><li><p>去虚拟化：对唯一实现进行内联</p></li><li><p>冗余消除： 在运行期间把一些不会执行的代码折叠掉</p></li></ul><p>C2：逃逸分析</p><ul><li><p>标量替换：用标量值代替聚合对象的属性值</p></li><li><p>栈上分配：用于对未逃逸的对象分配对象在栈上，而不是堆</p></li><li><p>同步消除： 清楚同步操作，通常是指synchronized</p></li></ul><p>总结：</p><ul><li>JIT编译出来的机器码比解释器执行效率高，但启动速度要慢一点</li><li>C2比C1启动慢，但稳定下来后，C2速度远快于C1</li></ul><p>补充：AOT编译器（静态提前编译器），它可以将java类文件直接转化为机器码。</p><ul><li>好处：java虚拟机加载已经预编译好的二进制库，可以直接执行，不必等待及时编译器的预热</li><li>缺点：破坏了java一次编译到处运行。降低了java链接过程的动态性。还需要继续优化。</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;JIT的编译器分了两种：C1和C2，在HotSpot下对应Client和Server两类。（-client和-servcer指定）&lt;/p&gt;
+&lt;h2 id=&quot;C1和C2不同的优化策略&quot;&gt;&lt;a href=&quot;#C1和C2不同的优化策略&quot; class=&quot;headerlink&quot; ti</summary>
+      
+    
+    
+    
+    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
+    
+    
+    <category term="JIT" scheme="http://example.com/tags/JIT/"/>
+    
+    <category term="C1" scheme="http://example.com/tags/C1/"/>
+    
+    <category term="C2" scheme="http://example.com/tags/C2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>热点探测技术</title>
+    <link href="http://example.com/2022/03/19/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B%E6%8A%80%E6%9C%AF/"/>
+    <id>http://example.com/2022/03/19/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B%E6%8A%80%E6%9C%AF/</id>
+    <published>2022-03-19T10:59:00.000Z</published>
+    <updated>2022-03-19T11:11:09.698Z</updated>
+    
+    <content type="html"><![CDATA[<p>一个方法被调用多次，或者是一个方法内部多虚循环执行都可以被称作热点代码，因此都可以通过JIT编译器编译为本地机器指令。其过程发生在方法的执行过程中，因此被称为栈上替换，或简称OSR。其主要实现通过热点探测功能<br>。HostSpot采用的热点探测方法是基于计数器的热点探测。</p><ul><li>计数器的热点探测：HotSpot会为每一个方法建立2个不同类型的计数器，分别为方法调用计数器和回边计数器。</li><li>方法调用计数器统计方法调用次数，默认在Client下是1500，Server下是10000，超过则会触发即时编译。（-XX：complieThreshold）。如果不做任何设置，方法调用计数器统计的并不是方法被调用的绝对次数，而是一个相对的执行频率，即一段时间内方法的调用次数。当超过一定时间调用次数不足让他提交给即使编译器编译，那么这个方法调用的计数器就减少一般（热点衰减：其发生在垃圾回收时顺便进行的）</li></ul><ul><li>回边计数器统计循环体执行循环次数</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;一个方法被调用多次，或者是一个方法内部多虚循环执行都可以被称作热点代码，因此都可以通过JIT编译器编译为本地机器指令。其过程发生在方法的执行过程中，因此被称为栈上替换，或简称OSR。其主要实现通过热点探测功能&lt;br&gt;。HostSpot采用的热点探测方法是基于计数器的热点探测</summary>
+      
+    
+    
+    
+    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
+    
+    
+    <category term="热点探测" scheme="http://example.com/tags/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B/"/>
+    
+    <category term="即时编译" scheme="http://example.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91/"/>
+    
+    <category term="方法计数器" scheme="http://example.com/tags/%E6%96%B9%E6%B3%95%E8%AE%A1%E6%95%B0%E5%99%A8/"/>
+    
+    <category term="回边计数器" scheme="http://example.com/tags/%E5%9B%9E%E8%BE%B9%E8%AE%A1%E6%95%B0%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hot Spot JVM执行方式</title>
+    <link href="http://example.com/2022/03/19/Hot-Spot-JVM%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/"/>
+    <id>http://example.com/2022/03/19/Hot-Spot-JVM%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/</id>
+    <published>2022-03-19T10:52:00.000Z</published>
+    <updated>2022-03-19T10:57:38.235Z</updated>
+    
+    <content type="html"><![CDATA[<p>当虚拟机启动的时候，解释器可以先发挥作用，而不必等待及时编译器全部编译完在执行，可以节约不必要的编译时间，而在随着程序运行时间的推移。及时编译器会逐步发挥作用，根据热点探测技术，将有价值的字节码编译成本地的机器指令，换取更高效率的程序运行。</p><ul><li>机器在热机状态的负载要大于冷机状态。如果以热机状态进行流量切割，可能会使得处于冷机状态的服务器因无法承载流量而假死</li></ul><p> <img src="/images/pasted-165.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;当虚拟机启动的时候，解释器可以先发挥作用，而不必等待及时编译器全部编译完在执行，可以节约不必要的编译时间，而在随着程序运行时间的推移。及时编译器会逐步发挥作用，根据热点探测技术，将有价值的字节码编译成本地的机器指令，换取更高效率的程序运行。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;机器在</summary>
+      
+    
+    
+    
+    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
+    
+    
+    <category term="JVM" scheme="http://example.com/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>解释器的分类</title>
+    <link href="http://example.com/2022/03/19/%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB/"/>
+    <id>http://example.com/2022/03/19/%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB/</id>
+    <published>2022-03-19T10:38:00.000Z</published>
+    <updated>2022-03-19T10:42:48.741Z</updated>
+    
+    <content type="html"><![CDATA[<p>在java的发展历史上，一共有两套解释执行器，即古老的字节码解释器和现在普遍使用的模板解释器。</p><ul><li><p>字节码解释器在执行时通过纯软件代码模拟字节码的执行，效率低下</p></li><li><p>模板解释器将每一条字节码和一个模板函数相关联，模板函数中直接产生字节码执行时的机器码，从而提升解释器的性能</p></li></ul><p>在Hotspot JVM中，解释器主要由Interpreter模块和Code模块构成</p><ul><li><p>Interpreter：实现了解释器的核心功能</p></li><li><p>Code模块： 用于管理HostSpot JVM在运行时生成的本地机器指令</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在java的发展历史上，一共有两套解释执行器，即古老的字节码解释器和现在普遍使用的模板解释器。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;字节码解释器在执行时通过纯软件代码模拟字节码的执行，效率低下&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;模板解释器将每一条字节码和一个模板函数相关联，模板</summary>
+      
+    
+    
+    
+    <category term="解释器" scheme="http://example.com/categories/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
+    
+    <category term="JVM" scheme="http://example.com/categories/%E8%A7%A3%E9%87%8A%E5%99%A8/JVM/"/>
+    
+    
+    <category term="解释器分类" scheme="http://example.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8%E5%88%86%E7%B1%BB/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>直接内存Direct Memory</title>
+    <link href="http://example.com/2022/03/19/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98Direct-Memory/"/>
+    <id>http://example.com/2022/03/19/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98Direct-Memory/</id>
+    <published>2022-03-19T10:23:00.000Z</published>
+    <updated>2022-03-19T10:28:48.265Z</updated>
+    
+    <content type="html"><![CDATA[<p>直接内存Direct Memory不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域。直接内存时Java堆外的，直接向系统申请的内存区间。</p><p>直接内存的访问速度优于java堆。读写性能更高</p><p> <img src="/images/pasted-164.png" alt="upload successful"></p><p> 存在的问题：不受指定堆大学的限定，而是受系统内存的限制。而且不受jvm内存管理回收，因此回收成本较高。</p><p> MaxDirectMemorySize可以知道其大小，默认与xmx参数值一样</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;直接内存Direct Memory不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域。直接内存时Java堆外的，直接向系统申请的内存区间。&lt;/p&gt;
+&lt;p&gt;直接内存的访问速度优于java堆。读写性能更高&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pas</summary>
+      
+    
+    
+    
+    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
+    
+    
+    <category term="直接内存" scheme="http://example.com/tags/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>缓存和数据库的数据一致性问题</title>
+    <link href="http://example.com/2022/03/19/%E7%BC%93%E5%AD%98%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2022/03/19/%E7%BC%93%E5%AD%98%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/</id>
+    <published>2022-03-19T01:21:00.000Z</published>
+    <updated>2022-03-19T01:49:36.849Z</updated>
+    
+    <content type="html"><![CDATA[<p>缓存和数据库的数据一致性问题是一个老生常谈的问题了。在这里我记录几种方案及其可能出现的问题。</p><ol><li><p>先更新缓存，再更新数据库：此时线程A去先去更新缓存，然后更新数据库，但数据库更新时出现回滚，更新失败，数据库和缓存数据不一致。</p></li><li><p>先更新数据库，在更新缓存：线程A去更新数据库-&gt;线程B也去更新数据库-&gt;A更新数据库完毕-&gt;A去更新缓存-&gt;B更新数据库完毕-&gt;B更新缓存完毕-&gt;A更新缓存完毕，此时导致数据不一致</p></li><li><p>先删除缓存，在更新数据库：线程A删除缓存-&gt;线程B查询会去更新缓存-&gt;线程A更新数据库，数据不一致。（延迟双删，即在更新数据库后，延迟在去删除缓存，保证在此期间，其他线程读，导致数据不一致。注意：延迟双删不能绝对解决一致性问题，在更新完毕，延时删除之间，来了读线程，但因为网络等原因，更新缓存操作被延迟到了，延迟删除之后，也会导致数据不一致）</p></li><li><p>先更新数据库，在删除缓存：线程A更新数据库-&gt;线程A删除缓存-&gt;线程B查询-&gt;线程C更新数据库-&gt;线程C删除缓存-&gt;线程B更新缓存。数据不一致。</p></li><li><p>请求串行化：将访问操作串行化，先删缓存，将更新数据库的操作放进有序队列中从缓存查不到的查询操作，都进入有序队列。需要解决的问题：读请求积压，大量超时，导致数据库的压力：限流、熔断。如何避免大量请求积压：将队列水平拆分，提高并行度。保证相同请求路由正确。</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;缓存和数据库的数据一致性问题是一个老生常谈的问题了。在这里我记录几种方案及其可能出现的问题。&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;先更新缓存，再更新数据库：此时线程A去先去更新缓存，然后更新数据库，但数据库更新时出现回滚，更新失败，数据库和缓存数据不一致。&lt;/p&gt;
+&lt;/li&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+    <category term="数据一致性" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/"/>
+    
+  </entry>
   
   <entry>
     <title>对ThreadLocal的理解</title>
@@ -316,244 +576,6 @@
     <category term="I/O多路复用" scheme="http://example.com/tags/I-O%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/"/>
     
     <category term="select/epoll/poll" scheme="http://example.com/tags/select-epoll-poll/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka-Kraft 模式</title>
-    <link href="http://example.com/2022/03/12/Kafka-Kraft-%E6%A8%A1%E5%BC%8F/"/>
-    <id>http://example.com/2022/03/12/Kafka-Kraft-%E6%A8%A1%E5%BC%8F/</id>
-    <published>2022-03-12T05:30:00.000Z</published>
-    <updated>2022-03-12T05:32:23.547Z</updated>
-    
-    <content type="html"><![CDATA[<p> <img src="/images/pasted-154.png" alt="upload successful"></p><p> 左图为 Kafka 现有架构，元数据在 zookeeper 中，运行时动态选举 controller，由controller 进行 Kafka 集群管理。右图为 kraft 模式架构（实验性），不再依赖 zookeeper 集群，而是用三台 controller 节点代替 zookeeper，元数据保存在 controller 中，由 controller 直接进行 Kafka 集群管理。</p><p> 这样做的好处有以下几个：</p><p> ⚫ Kafka 不再依赖外部框架，而是能够独立运行； </p><p> ⚫ controller 管理集群时，不再需要从 zookeeper 中先读取数据，集群性能上升； </p><p> ⚫ 由于不依赖 zookeeper，集群扩展时不再受到 zookeeper 读写能力限制； </p><p> ⚫ controller 不再动态选举，而是由配置文件规定。这样我们可以有针对性的加强controller 节点的配置，而不是像以前一样对随机 controller 节点的高负载束手无策。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt; &lt;img src=&quot;/images/pasted-154.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
-&lt;p&gt; 左图为 Kafka 现有架构，元数据在 zookeeper 中，运行时动态选举 controller，由controller 进行 Kaf</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="Kraft模式" scheme="http://example.com/tags/Kraft%E6%A8%A1%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka数据积压（消费者如何提高吞吐量）</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%EF%BC%89/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%E5%A6%82%E4%BD%95%E6%8F%90%E9%AB%98%E5%90%9E%E5%90%90%E9%87%8F%EF%BC%89/</id>
-    <published>2022-03-12T05:28:00.000Z</published>
-    <updated>2022-03-12T05:29:37.815Z</updated>
-    
-    <content type="html"><![CDATA[<p>1）如果是Kafka消费能力不足，则可以考虑增 加Topic的分区数，并且同时提升消费组的消费者<br>数量，消费者数 = 分区数。（两者缺一不可）</p><p>2）如果是下游的数据处理不及时：提高每批次拉取的数<br>量。批次拉取数据过少（拉取数据/处理时间 &lt; 生产速度），<br>使处理的数据小于生产的数据，也会造成数据积压。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1）如果是Kafka消费能力不足，则可以考虑增 加Topic的分区数，并且同时提升消费组的消费者&lt;br&gt;数量，消费者数 = 分区数。（两者缺一不可）&lt;/p&gt;
-&lt;p&gt;2）如果是下游的数据处理不及时：提高每批次拉取的数&lt;br&gt;量。批次拉取数据过少（拉取数据/处理时间 &amp;lt; </summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="数据积压" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B/"/>
-    
-    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka消费者漏消费和重复消费问题</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%BC%8F%E6%B6%88%E8%B4%B9%E5%92%8C%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E6%BC%8F%E6%B6%88%E8%B4%B9%E5%92%8C%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E9%97%AE%E9%A2%98/</id>
-    <published>2022-03-12T05:12:00.000Z</published>
-    <updated>2022-03-12T05:27:39.970Z</updated>
-    
-    <content type="html"><![CDATA[<p>重复消费：已经消费了数据，但是 offset 没提交，下次还会消费到当前数据。</p><p>漏消费：先提交 offset 后消费，有可能会造成数据的漏消费。</p><p> <img src="/images/pasted-153.png" alt="upload successful"></p><p>如果想完成Consumer端的精准一次性消费（既不漏消费也不重复消费），那么需要Kafka消费端将消费过程和提交offset<br>过程做原子绑定。此时我们需要将Kafka的offset保存到支持事务的自定义介质（比 如MySQL）。</p><pre><code>参考：https://blog.csdn.net/qingqing7/article/details/80054281?spm=1001.2101.3001.6650.14&amp;utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14.pc_relevant_default&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14.pc_relevant_default&amp;utm_relevant_index=25</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;重复消费：已经消费了数据，但是 offset 没提交，下次还会消费到当前数据。&lt;/p&gt;
-&lt;p&gt;漏消费：先提交 offset 后消费，有可能会造成数据的漏消费。&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pasted-153.png&quot; alt=&quot;upload suc</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
-    
-    <category term="漏消费" scheme="http://example.com/tags/%E6%BC%8F%E6%B6%88%E8%B4%B9/"/>
-    
-    <category term="重复消费" scheme="http://example.com/tags/%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka消费者的offset提交</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E7%9A%84offset%E6%8F%90%E4%BA%A4/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E7%9A%84offset%E6%8F%90%E4%BA%A4/</id>
-    <published>2022-03-12T05:00:00.000Z</published>
-    <updated>2022-03-12T05:11:59.292Z</updated>
-    
-    <content type="html"><![CDATA[<p>offset偏移量表明了该消费者当前消费的数据到哪一步，其存储在系统主题_consumer_offset中（0.9版本之前是存在Zookeeper中），以key,value形式，每隔一段时间kafka都会对其Compact（即保留当前最新的数据）。</p><p>1、自动提交offset：为了能让我们专注于业务处理，Kafka提供了自动提交offset功能，通过参数</p><p>⚫ enable.auto.commit：是否开启自动提交offset功能，默认是true</p><p>⚫ auto.commit.interval.ms：自动提交offset的时间间隔，默认是5s</p><p>2、手动提交：自动提交固然遍历，但基于时间的提交，我们很难把握那个度，因此更多时候，我们可以选择手动提交。</p><p>1）同步提交：同步提交会阻塞当前线程，一直到成功为止，并且失败会自动重试</p><p>2）异步提交：异步提交则不会阻塞当前线程，且没有重试机制，可能提交失败。</p><p>两者都会将本次提交的一批数据最高偏移量提交。</p><p>指定offset消费：auto.offset.reset = earliest | latest | none 默认是 latest。</p><p>当kafka中没有初始偏移量（消费者组第一次消费）或服务器上不存在当前偏移量时（数据被删除）需要指定offset消费。</p><p>1）earliest：自动将偏移量重置为最早的偏移量，–from-beginning。</p><p>2）latest（默认值）：自动将偏移量重置为最新偏移量。</p><p>（3）none：如果未找到消费者组的先前偏移量，则向消费者抛出异常。</p><p>（4）任意指定 offset 位移开始消费</p><p>指定时间消费：在生产环境中，会遇到最近消费的几个小时数据异常，想重新按照时间消费。例如要求按照时间消费前一天的数据</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;offset偏移量表明了该消费者当前消费的数据到哪一步，其存储在系统主题_consumer_offset中（0.9版本之前是存在Zookeeper中），以key,value形式，每隔一段时间kafka都会对其Compact（即保留当前最新的数据）。&lt;/p&gt;
-&lt;p&gt;1、自动提</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
-    
-    <category term="offset" scheme="http://example.com/tags/offset/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka消费者分区的分配以及再平衡</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E5%88%86%E5%8C%BA%E7%9A%84%E5%88%86%E9%85%8D%E4%BB%A5%E5%8F%8A%E5%86%8D%E5%B9%B3%E8%A1%A1/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%B6%88%E8%B4%B9%E8%80%85%E5%88%86%E5%8C%BA%E7%9A%84%E5%88%86%E9%85%8D%E4%BB%A5%E5%8F%8A%E5%86%8D%E5%B9%B3%E8%A1%A1/</id>
-    <published>2022-03-12T04:47:00.000Z</published>
-    <updated>2022-03-12T04:53:38.116Z</updated>
-    
-    <content type="html"><![CDATA[<p>一个consumer group中有多个consumer组成，一个 topic有多个partition组成，现在的问题是，到底由哪个consumer来消费哪个partition的数据。 </p><p>2、Kafka有四种主流的分区分配策略：<br> Range、RoundRobin、Sticky、CooperativeSticky。<br>可以通过配置参数partition.assignment.strategy，修改分区的分配策略。默认策略是Range + CooperativeSticky。Kafka可以同时使用多个分区分配策略。</p><p>1）Range 是对每个 topic 而言的。</p><p>首先对同一个 topic 里面的分区按照序号进行排序，并对消费者按照字母顺序进行排序。</p><p>假如现在有 7 个分区，3 个消费者，排序后的分区将会是0,1,2,3,4,5,6；消费者排序完之后将会是C0,C1,C2。例如，7/3 = 2 余 1 ，除不尽，那么 消费者 C0 便会多消费 1 个分区。 8/3=2余2，除不尽，那么C0和C1分别多消费一个。</p><p>通过 partitions数/consumer数 来决定每个消费者应该消费几个分区。如果除不尽，那么前面几个消费者将会多<br>消费 1 个分区。</p><p>注意：如果只是针对 1 个 topic 而言，C0消费者多消费1个分区影响不是很大。但是如果有 N 多个 topic，那么针对个 topic，消费者 C0都将多消费 1 个分区，topic越多，C0消 费的分区会比其他消费者明显多消费 N 个分区。容易产生数据倾斜！</p><p>（注意：说明：某个消费者挂掉后，消费者组需要按照超时时间 45s 来判断它是否退出，所以需要等待，时间到了 45s 后，判断它真的退出就会把任务分配给其他 broker 执行。）</p><p>2）RoundRobin 分区策略原理：</p><p>RoundRobin 针对集群中所有Topic而言。<br>RoundRobin 轮询分区策略，是把所有的 partition 和所有的<br>consumer 都列出来，然后按照 hashcode 进行排序，最后<br>通过轮询算法来分配 partition 给到各个消费者。</p><p>3） Sticky 以及再平衡：</p><p>粘性分区定义：可以理解为分配的结果带有“粘性的”。即在执行一次新的分配之前，<br>考虑上一次分配的结果，尽量少的调整分配的变动，可以节省大量的开销。<br>粘性分区是 Kafka 从 0.11.x 版本开始引入这种分配策略，首先会尽量均衡的放置分区<br>到消费者上面，在出现同一消费者组内消费者出现问题的时候，会尽量保持原有分配的分<br>区不变化。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;一个consumer group中有多个consumer组成，一个 topic有多个partition组成，现在的问题是，到底由哪个consumer来消费哪个partition的数据。 &lt;/p&gt;
-&lt;p&gt;2、Kafka有四种主流的分区分配策略：&lt;br&gt; Range、Round</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="消费者" scheme="http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/"/>
-    
-    <category term="分区分配策略" scheme="http://example.com/tags/%E5%88%86%E5%8C%BA%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka高效读写数据</title>
-    <link href="http://example.com/2022/03/12/Kafka%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE/"/>
-    <id>http://example.com/2022/03/12/Kafka%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99%E6%95%B0%E6%8D%AE/</id>
-    <published>2022-03-12T03:23:00.000Z</published>
-    <updated>2022-03-12T03:24:21.616Z</updated>
-    
-    <content type="html"><![CDATA[<p>1）Kafka 本身是分布式集群，可以采用分区技术，并行度高</p><p>2）读数据采用稀疏索引，可以快速定位要消费的数据</p><p>3）顺序写磁盘（Kafka 的 producer 生产数据，要写入到 log 文件中，写的过程是一直追加到文件末端，为顺序写。官网有数据表明，同样的磁盘，顺序写能到 600M/s，而随机写只有 100K/s。这与磁盘的机械机构有关，顺序写之所以快，是因为其省去了大量磁头寻址的时间。）</p><p>4）页缓存 + 零拷贝技术</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;1）Kafka 本身是分布式集群，可以采用分区技术，并行度高&lt;/p&gt;
-&lt;p&gt;2）读数据采用稀疏索引，可以快速定位要消费的数据&lt;/p&gt;
-&lt;p&gt;3）顺序写磁盘（Kafka 的 producer 生产数据，要写入到 log 文件中，写的过程是一直追加到文件末端，为顺序写。官网有数</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="高效读写" scheme="http://example.com/tags/%E9%AB%98%E6%95%88%E8%AF%BB%E5%86%99/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka文件清理策略</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E6%B8%85%E7%90%86%E7%AD%96%E7%95%A5/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E6%B8%85%E7%90%86%E7%AD%96%E7%95%A5/</id>
-    <published>2022-03-12T03:19:00.000Z</published>
-    <updated>2022-03-12T03:23:07.944Z</updated>
-    
-    <content type="html"><![CDATA[<p>Kafka 中默认的日志保存时间为 7 天，可以通过调整如下参数修改保存时间。<br>⚫ log.retention.hours，最低优先级小时，默认 7 天。</p><p>⚫ log.retention.minutes，分钟。 </p><p>⚫ log.retention.ms，最高优先级毫秒。 </p><p>⚫log.retention.check.interval.ms，负责设置检查周期，默认 5 分钟。</p><p>对于超过设置事件的数据，有两种清楚策略，delete和Compact</p><p>1）delete 日志删除：将过期数据删除</p><p>⚫ log.cleanup.policy = delete 所有数据启用删除策略</p><p>（1）基于时间：默认打开。以 segment 中所有记录中的最大时间戳作为该文件时间戳。</p><p>（2）基于大小：默认关闭。超过设置的所有日志总大小，删除最早segment。log.retention.bytes，默认等于-1，表示无穷大。</p><p>2）compact 日志压缩</p><p>compact日志压缩：对于相同key的不同value值，只保留最后一个版本。</p><p>⚫ log.cleanup.policy = compact 所有数据启用压缩策略</p><p> <img src="/images/pasted-152.png" alt="upload successful"></p><p>压缩后的offset可能是不连续的，比如上图中没有6，当从这些offset消费消息时，将会拿到比这个offset大 的offset对应的消息，实际上会拿到offset为7的消息，并从这个位置开始消费。</p><p>这种策略只适合特殊场景，比如消息的key是用户ID，value是用户的资料，通过这种压缩策略，整个消息<br>集里就保存了所有用户最新的资料。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Kafka 中默认的日志保存时间为 7 天，可以通过调整如下参数修改保存时间。&lt;br&gt;⚫ log.retention.hours，最低优先级小时，默认 7 天。&lt;/p&gt;
-&lt;p&gt;⚫ log.retention.minutes，分钟。 &lt;/p&gt;
-&lt;p&gt;⚫ log.retenti</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="清楚策略" scheme="http://example.com/tags/%E6%B8%85%E6%A5%9A%E7%AD%96%E7%95%A5/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Kafka文件存储机制</title>
-    <link href="http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6/"/>
-    <id>http://example.com/2022/03/12/Kafka%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8%E6%9C%BA%E5%88%B6/</id>
-    <published>2022-03-12T03:16:00.000Z</published>
-    <updated>2022-03-12T03:19:20.616Z</updated>
-    
-    <content type="html"><![CDATA[<p>Topic是逻辑上的概念，而partition是物理上的概念，每个partition对应于一个log文件，该log文件中存储的就是Producer生产的数据。Producer生产的数据会被不断追加到该log文件末端，为防止log文件过大导致数据定位效率低下，Kafka采取了分片和索引机制， 将每个partition分为多个segment。每个segment包括：“.index”文件、“.log”文件和.timeindex等文件。这些文件位于一个文件夹下，该文件夹的命名规则为：topic名称+分区序号，例如：first-0。</p><p> <img src="/images/pasted-150.png" alt="upload successful"></p><p> Log文件和Index文件详解：</p><p> <img src="/images/pasted-151.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Topic是逻辑上的概念，而partition是物理上的概念，每个partition对应于一个log文件，该log文件中存储的就是Producer生产的数据。Producer生产的数据会被不断追加到该log文件末端，为防止log文件过大导致数据定位效率低下，Kafka采取了</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="文件存储" scheme="http://example.com/tags/%E6%96%87%E4%BB%B6%E5%AD%98%E5%82%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Leader Partition 负载平衡</title>
-    <link href="http://example.com/2022/03/12/Leader-Partition-%E8%B4%9F%E8%BD%BD%E5%B9%B3%E8%A1%A1/"/>
-    <id>http://example.com/2022/03/12/Leader-Partition-%E8%B4%9F%E8%BD%BD%E5%B9%B3%E8%A1%A1/</id>
-    <published>2022-03-12T03:11:00.000Z</published>
-    <updated>2022-03-12T03:15:02.258Z</updated>
-    
-    <content type="html"><![CDATA[<p>正常情况下，Kafka本身会自动把Leader Partition均匀分散在各个机器上，来保证每台机器的读写吞吐量都是均匀的。但是如果某些broker宕机，会导致Leader Partition过于集中在其他少部分几台broker上，这会导致少数几台broker的读写请求压力过高，其他宕机的broker重启之后都是follower partition，读写请求很低，造成集群负载不均衡。</p><p>策略：</p><p>1、auto.leader.rebalance.enable，默认是true。（自动Leader Partition 平衡）</p><p>2、leader.imbalance.per.broker.percentage，默认是10%。每个broker允许的不平衡的leader的比率。如果每个broker超过了这个值，控制器会触发leader的平衡。</p><p>3、leader.imbalance.check.interval.seconds，默认值300秒。检查leader负载是否平衡的间隔时间。</p><p>例如：针对broker0节点，分区2的AR优先副本是0节点，但是0节点却不是Leader节点，所以不平衡数加1，AR副本总数是4，所以broker0节点不平衡率为1/4&gt;10%，需要再平衡。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;正常情况下，Kafka本身会自动把Leader Partition均匀分散在各个机器上，来保证每台机器的读写吞吐量都是均匀的。但是如果某些broker宕机，会导致Leader Partition过于集中在其他少部分几台broker上，这会导致少数几台broker的读写请求压</summary>
-      
-    
-    
-    
-    <category term="Kafka" scheme="http://example.com/categories/Kafka/"/>
-    
-    
-    <category term="Leader" scheme="http://example.com/tags/Leader/"/>
-    
-    <category term="Partition" scheme="http://example.com/tags/Partition/"/>
     
   </entry>
   
