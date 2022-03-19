@@ -1456,13 +1456,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/HashMap/</loc>
-    <lastmod>2022-03-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/String/</loc>
     <lastmod>2022-03-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -1471,6 +1464,13 @@
   
   <url>
     <loc>http://example.com/tags/G1/</loc>
+    <lastmod>2022-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/HashMap/</loc>
     <lastmod>2022-03-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -1666,6 +1666,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/Leader%E5%92%8CFollower%E6%95%85%E9%9A%9C/</loc>
+    <lastmod>2022-03-19</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/Leader/</loc>
     <lastmod>2022-03-19</lastmod>
     <changefreq>weekly</changefreq>
@@ -1674,13 +1681,6 @@
   
   <url>
     <loc>http://example.com/tags/Partition/</loc>
-    <lastmod>2022-03-19</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/Leader%E5%92%8CFollower%E6%95%85%E9%9A%9C/</loc>
     <lastmod>2022-03-19</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
