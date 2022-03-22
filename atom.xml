@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-21T08:19:53.324Z</updated>
+  <updated>2022-03-22T12:37:08.225Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL中大多数情况查询缓存就是个鸡肋，为什么呢？</title>
+    <link href="http://example.com/2022/03/22/MySQL%E4%B8%AD%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98%E5%B0%B1%E6%98%AF%E4%B8%AA%E9%B8%A1%E8%82%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%91%A2%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/22/MySQL%E4%B8%AD%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98%E5%B0%B1%E6%98%AF%E4%B8%AA%E9%B8%A1%E8%82%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%91%A2%EF%BC%9F/</id>
+    <published>2022-03-22T12:34:00.000Z</published>
+    <updated>2022-03-22T12:37:08.225Z</updated>
+    
+    <content type="html"><![CDATA[<p>查询缓存是提前把查询结果缓存起来，这样下次不需要执行就可以直接拿到结果。需要说明的是，在MySQL 中的查询缓存，不是缓存查询计划，而是查询对应的结果。这就意味着查询匹配的鲁棒性大大降低 ，只有相同的查询操作才会命中查询缓存。两个查询请求在任何字符上的不同（例如：空格、注释、大小写），都会导致缓存不会命中。因此 MySQL的查询缓存命中率不高 。同时，如果查询请求中包含某些系统函数、用户自定义变量和函数、一些系统表，如 mysql 、 information_schema、 performance_schema 数据库中的表，那这个请求就不会被缓存。以某些系统函数举例，可能同样的函数的两次调用会产生不一样的结果，比如函数NOW ，每次调用都会产生最新的当前时间，如果在一个查询请求中调用了这个函数，那即使查询请求的文本信息都一样，那不同时间的两次查询也应该得到不同的结果，如果在第一次查询时就缓存了，那第二次查询的时候直接使用第一次查询的结果就是错误的！</p><p>此外，既然是缓存，那就有它缓存失效的时候 。MySQL的缓存系统会监测涉及到的每张表，只要该表的结构或者数据被修改，如对该表使用了INSERT 、 UPDATE 、 DELETE 、 TRUNCATE TABLE 、 ALTER TABLE 、 DROP TABLE 或 DROP DATABASE 语句，那使用该表的所有高速缓存查询都将变为无效并从高速缓存中删除！对于更新压力大的数据库 来说，查询缓存的命中率会非常低。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;查询缓存是提前把查询结果缓存起来，这样下次不需要执行就可以直接拿到结果。需要说明的是，在MySQL 中的查询缓存，不是缓存查询计划，而是查询对应的结果。这就意味着查询匹配的鲁棒性大大降低 ，只有相同的查询操作才会命中查询缓存。两个查询请求在任何字符上的不同（例如：空格、注释</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="缓存" scheme="http://example.com/tags/%E7%BC%93%E5%AD%98/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL两阶段提交</title>
@@ -443,9 +469,9 @@
     <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
     
     
-    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
-    
     <category term="Elasticsearch" scheme="http://example.com/tags/Elasticsearch/"/>
+    
+    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
     
   </entry>
   
@@ -472,9 +498,9 @@
     <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
     
     
-    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
-    
     <category term="Elasticsearch" scheme="http://example.com/tags/Elasticsearch/"/>
+    
+    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
     
   </entry>
   
@@ -555,32 +581,6 @@
     <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
     
     <category term="时间轮" scheme="http://example.com/tags/%E6%97%B6%E9%97%B4%E8%BD%AE/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>延迟队列 DelayQueue</title>
-    <link href="http://example.com/2022/03/13/%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97-DelayQueue/"/>
-    <id>http://example.com/2022/03/13/%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97-DelayQueue/</id>
-    <published>2022-03-13T05:05:00.000Z</published>
-    <updated>2022-03-13T05:07:25.947Z</updated>
-    
-    <content type="html"><![CDATA[<p>Java 中还有个延迟队列 DelayQueue，加入延迟队列的元素都必须实现 Delayed 接口。延迟队列内部是利用 PriorityQueue 实现的，所以还是利用优先队列！Delayed 接口继承了Comparable 因此优先队<br>列是通过 delay 来排序的。</p><p>延迟队列是利用优先队列实现的，元素通过实现 Delayed 接口来返回延迟的时间。不过延迟队列就是个容<br>器，需要其他线程来获取和执行任务。</p><p>对于 Timer 、ScheduledThreadPool 和 DelayQueue，总结的说下它们都是通过优先队列来获取最早需要执行的任务，因此插入和删除任务的时间复杂度都为O(logn)，并且 Timer 、<br>ScheduledThreadPool 的周期性任务是通过重置任务的下一次执行时间来完成的。</p><p>问题就出在时间复杂度上，插入删除时间复杂度是O(logn)，那么假设频繁插入删除次数为 m，总的时<br>间复杂度就是O(mlogn)，这种时间复杂度满足不了 Kafka 这类中间件对性能的要求，而时间轮算法的插入删除时间复杂度是O(1)。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Java 中还有个延迟队列 DelayQueue，加入延迟队列的元素都必须实现 Delayed 接口。延迟队列内部是利用 PriorityQueue 实现的，所以还是利用优先队列！Delayed 接口继承了Comparable 因此优先队&lt;br&gt;列是通过 delay 来排序</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="DelayQueue" scheme="http://example.com/tags/DelayQueue/"/>
-    
-    <category term="队列" scheme="http://example.com/tags/%E9%98%9F%E5%88%97/"/>
     
   </entry>
   
