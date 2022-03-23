@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-22T12:37:08.225Z</updated>
+  <updated>2022-03-23T04:09:30.098Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,363 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL其他一下查询优化策略</title>
+    <link href="http://example.com/2022/03/23/MySQL%E5%85%B6%E4%BB%96%E4%B8%80%E4%B8%8B%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5/"/>
+    <id>http://example.com/2022/03/23/MySQL%E5%85%B6%E4%BB%96%E4%B8%80%E4%B8%8B%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5/</id>
+    <published>2022-03-23T04:01:00.000Z</published>
+    <updated>2022-03-23T04:09:30.098Z</updated>
+    
+    <content type="html"><![CDATA[<p>1、 in 和 exists的区别: 如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in, 反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。其实我们区分in和exists主要是造成了驱动顺序的改变(这是性能变化的关键)，如果是exists，那么以外层表为驱动表，先被访问，如果是IN，那么先执行子查询，所以我们会以驱动表的快速返回为目标，那么就会考虑到索引及结果集的关系了 ，另外IN时不对NULL进行处理。</p><ul><li><p>in 是把外表和内表作hash 连接，而exists是对外表作loop循环，每次loop循环再对内表进行查询。一直以来认为exists比in效率高的说法是不准确的。</p></li><li><p>not in 和not exists：如果查询语句使用了not in 那么内外表都进行全表扫描，没有用到索引；而not extsts 的子查询依然能用到表上的索引。所以无论那个表大，用not exists都比not in要快。</p></li></ul><p>2、COUNT(*)与COUNT(具体字段)效率</p><ul><li>在表查询中，建议明确字段，不要使用 * 作为查询的字段列表，推荐使用SELECT &lt;字段列表&gt; 查询。原因：① MySQL 在解析的过程中，会通过 查询数据字典 将”*”按序转换成所有列名，这会大大的耗费资源和时间。② 无法使用 覆盖索引</li></ul><p>3、 LIMIT 1 对优化的影响</p><ul><li>针对的是会扫描全表的 SQL 语句，如果你可以确定结果集只有一条，那么加上 LIMIT 1 的时候，当找到一条结果的时候就不会继续扫描了，这样会加快查询速度。如果数据表已经对字段建立了唯一索引，那么可以通过索引进行查询，不会全表扫描的话，就不需要加上 LIMIT 1 了。</li></ul><p>4、多使用COMMIT</p><ul><li>只要有可能，在程序中尽量多使用 COMMIT，这样程序的性能得到提高，需求也会因为 COMMIT 所释放的资源而减少。COMMIT 所释放的资源：1、回滚段上用于恢复数据的信息2、被程序语句获得的锁 3、redo / undo log buffer 中的空间 4、管理上述 3 种资源中的内部花费</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;1、 in 和 exists的区别: 如果子查询得出的结果集记录较少，主查询中的表较大且又有索引时应该用in, 反之如果外层的主查询记录较少，子查询中的表大，又有索引时使用exists。其实我们区分in和exists主要是造成了驱动顺序的改变(这是性能变化的关键)，如果是e</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="其它" scheme="http://example.com/tags/%E5%85%B6%E5%AE%83/"/>
+    
+    <category term="SQL优化" scheme="http://example.com/tags/SQL%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>change buffer的使用场景</title>
+    <link href="http://example.com/2022/03/23/change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/"/>
+    <id>http://example.com/2022/03/23/change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/</id>
+    <published>2022-03-23T03:58:00.000Z</published>
+    <updated>2022-03-23T03:59:55.566Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li>普通索引和唯一索引应该怎么选择？其实，这两类索引在查询能力上是没差别的，主要考虑的是对 更新性能 的影响。所以，建议你 尽量选择普通索引 。 2. 在实际使用中会发现， 普通索引 和 change buffer 的配合使用，对于 数据量大 的表的更新优化还是很明显的。</li><li>如果所有的更新后面，都马上 伴随着对这个记录的查询 ，那么你应该 关闭change buffer 。而在其他情况下，change buffer都能提升更新性能。</li><li>由于唯一索引用不changebuffer的优化机制，因此如果 业务可以接受 ，从性能角度出发建议优先考虑非唯一索引。但是如果”业务可能无法确保”的情况下，怎么处理呢？</li></ol><p>首先， 业务正确性优先 。我们的前提是“业务代码已经保证不会写入重复数据”的情况下，讨论性能问题。如果业务不能保证，或者业务就是要求数据库来做约束，那么没得选，必须创建唯一索引。这种情况下，本节的意义在于，如果碰上了大量插入数据慢、内存命中率低的时候，给你多提供一个排查思路。</p><p>然后，在一些“ 归档库 ”的场景，你是可以考虑使用唯一索引的。比如，线上数据只需要保留半年，然后历史数据保存在归档库。这时候，归档数据已经是确保没有唯一键冲突了。要提高归档效率，可以考虑把表里面的唯一索引改成普通索引。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ol&gt;
+&lt;li&gt;普通索引和唯一索引应该怎么选择？其实，这两类索引在查询能力上是没差别的，主要考虑的是对 更新性能 的影响。所以，建议你 尽量选择普通索引 。 2. 在实际使用中会发现， 普通索引 和 change buffer 的配合使用，对于 数据量大 的表的更新优化还是很明</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="change buffer" scheme="http://example.com/tags/change-buffer/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>索引下推</title>
+    <link href="http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/"/>
+    <id>http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/</id>
+    <published>2022-03-23T03:50:00.000Z</published>
+    <updated>2022-03-23T03:55:43.730Z</updated>
+    
+    <content type="html"><![CDATA[<p>Index Condition Pushdown(ICP)是MySQL 5.6中新特性，是一种在存储引擎层使用索引过滤数据的一种优化方式。ICP可以减少存储引擎访问基表的次数以及MySQL服务器访问存储引擎的次数。</p><p>在不使用ICP索引扫描的过程：</p><ul><li>storage层：只将满足index key条件的索引记录对应的整行记录取出，返回给server层 </li><li>server 层：对返回的数据，使用后面的where条件过滤，直至返回最后一行。</li></ul><p> <img src="/images/pasted-171.png" alt="upload successful"></p><p> 使用ICP扫描的过程：</p><ul><li>storage层：首先将index key条件满足的索引记录区间确定，然后在索引上使用index filter进行过滤。将满足的index filter条件的索引记录才去回表取出整行记录返回server层。不满足index filter条件的索引记录丢弃，不回表、也不会返回server层。</li><li>server 层：对返回的数据，使用table filter条件做最后的过滤。</li></ul><p>使用前后的成本差别：使用前，存储层多返回了需要被index filter过滤掉的整行记录使用ICP后，直接就去掉了不满足index filter条件的记录，省去了他们回表和传递到server层的成本。ICP的 加速效果 取决于在存储引擎内通过 ICP筛选 掉的数据的比例。</p><p>ICP的使用条件：</p><p>① 只能用于二级索引(secondary index) </p><p>②explain显示的执行计划中type值（join 类型）为 range 、 ref 、 eq_ref 或者 ref_or_null 。 </p><p>③ 并非全部where条件都可以用ICP筛选，如果where条件的字段不在索引列中，还是要读取整表的记录<br>到server端做where过滤。</p><p>④ ICP可以用于MyISAM和InnnoDB存储引擎</p><p>⑤ MySQL 5.6版本的不支持分区表的ICP功能，5.7版本的开始支持。</p><p>⑥ 当SQL使用覆盖索引时，不支持ICP优化方法。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Index Condition Pushdown(ICP)是MySQL 5.6中新特性，是一种在存储引擎层使用索引过滤数据的一种优化方式。ICP可以减少存储引擎访问基表的次数以及MySQL服务器访问存储引擎的次数。&lt;/p&gt;
+&lt;p&gt;在不使用ICP索引扫描的过程：&lt;/p&gt;
+&lt;u</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="索引下推" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>优化分页查询</title>
+    <link href="http://example.com/2022/03/23/%E4%BC%98%E5%8C%96%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/"/>
+    <id>http://example.com/2022/03/23/%E4%BC%98%E5%8C%96%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/</id>
+    <published>2022-03-23T02:56:00.000Z</published>
+    <updated>2022-03-23T02:58:13.556Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>在索引上完成排序分页操作，最后根据主键关联回原表查询所需要的其他列内容。</p></li><li><p>该方案适用于主键自增的表，可以把Limit 查询转换成某个位置的查询 。</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在索引上完成排序分页操作，最后根据主键关联回原表查询所需要的其他列内容。&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;该方案适用于主键自增的表，可以把Limit 查询转换成某个位置的查询 。&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="分页查询" scheme="http://example.com/tags/%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>GROUP BY优化</title>
+    <link href="http://example.com/2022/03/23/GROUP-BY%E4%BC%98%E5%8C%96/"/>
+    <id>http://example.com/2022/03/23/GROUP-BY%E4%BC%98%E5%8C%96/</id>
+    <published>2022-03-23T02:55:00.000Z</published>
+    <updated>2022-03-23T02:56:43.112Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li>group by 使用索引的原则几乎跟order by一致 ，group by 即使没有过滤条件用到索引，也可以直接使用索引。</li><li>group by 先排序再分组，遵照索引建的最佳左前缀法则</li><li>当无法使用索引列，增大 max_length_for_sort_data 和 sort_buffer_size 参数的设置</li><li>where效率高于having，能写在where限定的条件就不要写在having中了</li><li>减少使用order by，和业务沟通能不排序就不排序，或将排序放到程序端去做。Order by、group by、distinct这些语句较为耗费CPU，数据库的CPU资源是极其宝贵的。</li><li>包含了order by、group by、distinct这些查询的语句，where条件过滤出来的结果集请保持在1000行以内，否则SQL会很慢。</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;group by 使用索引的原则几乎跟order by一致 ，group by 即使没有过滤条件用到索引，也可以直接使用索引。&lt;/li&gt;
+&lt;li&gt;group by 先排序再分组，遵照索引建的最佳左前缀法则&lt;/li&gt;
+&lt;li&gt;当无法使用索引列，增大 max_len</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="GROUP BY优化" scheme="http://example.com/tags/GROUP-BY%E4%BC%98%E5%8C%96/"/>
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>排序优化</title>
+    <link href="http://example.com/2022/03/23/%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96/"/>
+    <id>http://example.com/2022/03/23/%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96/</id>
+    <published>2022-03-23T02:47:00.000Z</published>
+    <updated>2022-03-23T02:54:53.268Z</updated>
+    
+    <content type="html"><![CDATA[<p>在 WHERE 条件字段上加索引，但是为什么在 ORDER BY 字段上还要加索引呢？</p><p>优化建议：</p><ol><li>SQL 中，可以在 WHERE 子句和 ORDER BY 子句中使用索引，目的是在 WHERE 子句中 避免全表扫 描 ，在 ORDER BY 子句 避免使用 FileSort 排序 。当然，某些情况下全表扫描，或者 FileSort 排序不一定比索引慢。但总的来说，我们还是要避免，以提高查询效率。</li><li>尽量使用 Index 完成 ORDER BY 排序。如果 WHERE 和 ORDER BY 后面是相同的列就使用单索引列；如果不同就使用联合索引。</li><li>无法使用 Index 时，需要对 FileSort 方式进行调优。</li></ol><p> <img src="/images/pasted-169.png" alt="upload successful"></p><p> <img src="/images/pasted-170.png" alt="upload successful"></p><ol><li>两个索引同时存在，mysql自动选择最优的方案。（对于这个例子，mysql选idx_age_stuno_name）。但是， 随着数据量的变化，选择的索引也会随之变化的 。 </li><li>当【范围条件】和【group by 或者 order by】的字段出现二选一时，优先观察条件字段的过滤数量，如果过滤的数据足够多，而需要排序的数据并不多时，优先把索引放在范围字段上。反之，亦然。</li></ol><p>filesort：双路排序和单路排序</p><p>双路排序 （慢）<br>MySQL 4.1之前是使用双路排序 ，字面意思就是两次扫描磁盘，最终得到数据， 读取行指针和<br>order by列 ，对他们进行排序，然后扫描已经排序好的列表，按照列表中的值重新从列表中读取<br>对应的数据输出<br>从磁盘取排序字段，在buffer进行排序，再从 磁盘取其他字段 。<br>取一批数据，要对磁盘进行两次扫描，众所周知，IO是很耗时的，所以在mysql4.1之后，出现了第二种<br>改进的算法，就是单路排序。</p><p>单路排序 （快）<br>从磁盘读取查询需要的 所有列 ，按照order by列在buffer对它们进行排序，然后扫描排序后的列表进行输<br>出， 它的效率更快一些，避免了第二次读取数据。并且把随机IO变成了顺序IO，但是它会使用更多的空<br>间， 因为它把每一行都保存在内存中了。</p><p>优化策略</p><ol><li>尝试提高 sort_buffer_size 2. 尝试提高 max_length_for_sort_data </li><li>Order by 时select * 是一个大忌。最好只Query需要的字段。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在 WHERE 条件字段上加索引，但是为什么在 ORDER BY 字段上还要加索引呢？&lt;/p&gt;
+&lt;p&gt;优化建议：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SQL 中，可以在 WHERE 子句和 ORDER BY 子句中使用索引，目的是在 WHERE 子句中 避免全表扫 描 ，在 ORDE</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="排序优化" scheme="http://example.com/tags/%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>子查询优化</title>
+    <link href="http://example.com/2022/03/23/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://example.com/2022/03/23/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
+    <published>2022-03-23T02:43:00.000Z</published>
+    <updated>2022-03-23T02:47:07.393Z</updated>
+    
+    <content type="html"><![CDATA[<p>使用子查询可以进行SELECT语句的嵌套查询，即一个SELECT查询的结果作为另一个SELECT语句的条件。 子查询可以一次性完成很多逻辑上需要多个步骤才能完成的SQL操作。</p><pre><code>但值得注意的是：子查询虽然可以帮助我们通过一个 SQL 语句实现比较复杂的查询。但是，子查询的执行效率不高。原因：① 执行子查询时，MySQL需要为内层查询语句的查询结果 建立一个临时表 ，然后外层查询语句从临时表中查询记录。查询完毕后，再撤销这些临时表 。这样会消耗过多的CPU和IO资源，产生大量的慢查询。② 子查询的结果集存储的临时表，不论是内存临时表还是磁盘临时表都 不会存在索引 ，所以查询性能会受到一定的影响。③ 对于返回结果集比较大的子查询，其对查询性能的影响也就越大。</code></pre><p>在MySQL中，可以使用连接（JOIN）查询来替代子查询。连接查询 不需要建立临时表 ，其速度比子查询要快 ，如果查询中使用索引的话，性能会更好。</p><p>因此：尽量不要使用NOT IN 或者 NOT EXISTS，用LEFT JOIN xxx ON xx WHERE xx IS NULL替代</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;使用子查询可以进行SELECT语句的嵌套查询，即一个SELECT查询的结果作为另一个SELECT语句的条件。 子查询可以一次性完成很多逻辑上需要多个步骤才能完成的SQL操作。&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;但值得注意的是：子查询虽然可以帮助我们通过一个 SQL 语句实现比较</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="子查询优化" scheme="http://example.com/tags/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关联查询优化</title>
+    <link href="http://example.com/2022/03/23/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
+    <id>http://example.com/2022/03/23/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
+    <published>2022-03-23T02:24:00.000Z</published>
+    <updated>2022-03-23T02:41:22.043Z</updated>
+    
+    <content type="html"><![CDATA[<p>采用左外连接</p><ul><li>被驱动的表简历索引，可以避免全表扫描（LEFT JOIN条件用于确定如何从右表搜索行，左边一定都有，所以 右边是我们的关键点,一定需要建立索引 。）</li></ul><p>采用内连接</p><ul><li>MySQL自动选择驱动表（小结果集），保证被驱动的表的JOIN字段已经建立了索引。</li></ul><p>小结：</p><ul><li>保证被驱动表的JOIN字段已经创建了索引</li><li>需要JOIN 的字段，数据类型保持绝对一致。</li><li>LEFT JOIN 时，选择小表作为驱动表， 大表作为被驱动表 。减少外层循环的次数。</li><li>INNER JOIN 时，MySQL会自动将 小结果集的表选为驱动表 。选择相信MySQL优化策略。</li><li>能够直接多表关联的尽量直接关联，不用子查询。(减少查询的趟数)</li><li>不建议使用子查询，建议将子查询SQL拆开结合程序多次查询，或使用 JOIN 来代替子查询。</li><li>衍生表建不了索引</li></ul><p>补充：</p><ul><li>什么叫作“小表”？在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是“小表”，应该作为驱动表。</li></ul><p> <img src="/images/pasted-168.png" alt="upload successful"></p><p>在这个流程里：</p><ol><li>对驱动表t1做了全表扫描，这个过程需要扫描100行；</li><li>而对于每一行R，根据a字段去表t2查找，走的是树搜索过程。由于我们构造的数据都是一一对应的，因此每次的搜索过程都只扫描一行，也是总共扫描100行；</li><li>所以，整个执行流程，总扫描行数是200。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;采用左外连接&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;被驱动的表简历索引，可以避免全表扫描（LEFT JOIN条件用于确定如何从右表搜索行，左边一定都有，所以 右边是我们的关键点,一定需要建立索引 。）&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;采用内连接&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;MySQL自动选择</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="关联查询" scheme="http://example.com/tags/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>索引失效案例</title>
+    <link href="http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%A1%88%E4%BE%8B/"/>
+    <id>http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%A1%88%E4%BE%8B/</id>
+    <published>2022-03-23T02:15:00.000Z</published>
+    <updated>2022-03-23T02:22:42.930Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li><p>没有遵守最左前缀法则（联合索引中，左边的值未确认，无法使用此索引）</p></li><li><p>SQL语句中使用计算、函数、类型转换等</p></li><li><p>SQL语句中索引条件在范围查询右边</p></li><li><p>使用！=或者&lt;&gt;也会令索引失效</p></li><li><p>is null 可以使用索引，而is not null无法使用索引</p></li><li><p>like以%开头，索引会失效（页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。）</p></li><li><p> OR 前后存在非索引的列，索引失效</p></li><li><p>数据库和表的字符集统一使用utf8mb4（统一使用utf8mb4( 5.5.3版本以上支持)兼容性更好，统一字符集可以避免由于字符集转换产生的乱码。不同的 字符集 进行比较前需要进行 转换 会造成索引失效。）</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;没有遵守最左前缀法则（联合索引中，左边的值未确认，无法使用此索引）&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SQL语句中使用计算、函数、类型转换等&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;SQL语句中索引条件在范围查询右边&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;使用！=或</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="索引失效" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>哪些情况下不适合建立索引？</title>
+    <link href="http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/</id>
+    <published>2022-03-23T01:29:00.000Z</published>
+    <updated>2022-03-23T01:30:24.048Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>在where中使用不到的字段，不要设置索引</p></li><li><p> 数据量小的表最好不要使用索引</p></li><li><p>有大量重复数据的列上不要建立索引</p></li><li><p>避免对经常更新的表创建过多的索引</p></li><li><p>不建议用无序的值作为索引</p></li><li><p> 删除不再使用或者很少使用的索引</p></li><li><p> 不要定义冗余或重复的索引</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在where中使用不到的字段，不要设置索引&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt; 数据量小的表最好不要使用索引&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;有大量重复数据的列上不要建立索引&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;避免对经常更新的表创建过多的索引&lt;/p&gt;
+&lt;</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+    <category term="设计原则" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>哪些情况下适合建立索引？</title>
+    <link href="http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/"/>
+    <id>http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/</id>
+    <published>2022-03-23T01:18:00.000Z</published>
+    <updated>2022-03-23T01:28:05.806Z</updated>
+    
+    <content type="html"><![CDATA[<ul><li><p>字段的数值有唯一性约束<br>（业务上具有唯一特性的字段，即使是组合字段，也必须建成唯一索引。（来源：Alibaba））</p></li><li><p>频繁作为where查询条件的字段<br>（某个字段在SELECT语句的 WHERE 条件中经常被使用到，那么就需要给这个字段创建索引了。尤其是在<br>数据量大的情况下，创建普通索引就可以大幅提升数据查询的效率。）</p></li><li><p>经常 GROUP BY 和 ORDER BY 的列<br>（索引就是让数据按照某种顺序进行存储或检索，因此当我们使用 GROUP BY 对数据进行分组查询，或者<br>使用 ORDER BY 对数据进行排序的时候，就需要 对分组或者排序的字段进行索引 。如果待排序的列有多<br>个，那么可以在这些列上建立 组合索引 。）</p></li><li><p> UPDATE、DELETE 的 WHERE 条件列<br>（对数据按照某个条件进行查询后再进行 UPDATE 或 DELETE 的操作，如果对 WHERE 字段创建了索引，就<br>能大幅提升效率。原理是因为我们需要先根据 WHERE 条件列检索出来这条记录，然后再对它进行更新或<br>删除。如果进行更新的时候，更新的字段是非索引字段，提升的效率会更明显，这是因为非索引字段更<br>新不需要对索引进行维护。）</p></li><li><p>DISTINCT 字段需要创建索引<br>（有时候我们需要对某个字段进行去重，使用 DISTINCT，那么对这个字段创建索引，也会提升查询效率。）</p></li><li><p>多表 JOIN 连接操作时，创建索引注意事项<br>（首先， 连接表的数量尽量不要超过 3 张 ，因为每增加一张表就相当于增加了一次嵌套的循环，数量级增<br>长会非常快，严重影响查询的效率。<br>其次， 对 WHERE 条件创建索引 ，因为 WHERE 才是对数据条件的过滤。如果在数据量非常大的情况下，<br>没有 WHERE 条件过滤是非常可怕的。<br>最后， 对用于连接的字段创建索引 ，并且该字段在多张表中的 类型必须一致 。比如 course_id 在 student_info 表和 course 表中都为 int(11) 类型，而不能一个为 int 另一个为 varchar 类型。）</p></li><li><p> 使用列的类型小的创建索引</p></li><li><p>使用字符串前缀创建索引<br>（例如创建一张商户表，因为地址字段比较长，可以在地址字段上建立前缀索引）</p><p>  注意：</p><p>  【 强制 】在 varchar 字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据实际文本区分度决定索引长度。</p><p>  说明：索引的长度与区分度是一对矛盾体，一般对字符串类型数据，长度为 20 的索引，区分度会 高达 90% 以上 ，可以使用 count(distinct left(列名, 索引长度))/count(*)的区分度来确定。</p></li><li><p> 区分度高(散列性高)的列适合作为索引</p></li><li><p> 使用最频繁的列放到联合索引的左侧</p></li><li><p>在多个字段都要创建索引的情况下，联合索引优于单值索引</p></li><li><p>限制索引的数目</p></li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;字段的数值有唯一性约束&lt;br&gt;（业务上具有唯一特性的字段，即使是组合字段，也必须建成唯一索引。（来源：Alibaba））&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;频繁作为where查询条件的字段&lt;br&gt;（某个字段在SELECT语句的 WHERE 条件中经常被使用</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
+    
+    <category term="原则" scheme="http://example.com/tags/%E5%8E%9F%E5%88%99/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL8.0索引新特性</title>
+    <link href="http://example.com/2022/03/23/MySQL8-0%E7%B4%A2%E5%BC%95%E6%96%B0%E7%89%B9%E6%80%A7/"/>
+    <id>http://example.com/2022/03/23/MySQL8-0%E7%B4%A2%E5%BC%95%E6%96%B0%E7%89%B9%E6%80%A7/</id>
+    <published>2022-03-23T01:12:00.000Z</published>
+    <updated>2022-03-23T01:18:15.471Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="支持降序索引"><a href="#支持降序索引" class="headerlink" title="支持降序索引"></a>支持降序索引</h1><p>分别在MySQL 5.7版本和MySQL 8.0版本中创建数据表ts1，结果如下：</p><pre><code>CREATE TABLE ts1(a int,b int,index idx_a_b(a,b desc));</code></pre><ul><li>5.7</li></ul><p> <img src="/images/pasted-166.png" alt="upload successful"></p><ul><li>8.0</li></ul><p> <img src="/images/pasted-167.png" alt="upload successful"></p><p>降序索引在特性降序查询效率比升序自然要好，具体根据情况而进行设定。</p><h1 id="隐藏索引"><a href="#隐藏索引" class="headerlink" title="隐藏索引"></a>隐藏索引</h1><ul><li><p>在MySQL 5.7版本及之前，只能通过显式的方式删除索引。此时，如果发现删除索引后出现错误，又只能通过显式创建索引的方式将删除的索引创建回来。如果数据表中的数据量非常大，或者数据表本身比较大，这种操作就会消耗系统过多的资源，操作成本非常高。</p></li><li><p>从MySQL 8.x开始支持 隐藏索引（invisible indexes） ，只需要将待删除的索引设置为隐藏索引，使查询优化器不再使用这个索引（即使使用force index（强制使用索引），优化器也不会使用该索引），确认将索引设置为隐藏索引后系统不受任何响应，就可以彻底删除索引。 这种通过先将索引设置为隐藏索引，再删除索引的方式就是软删除 。</p></li></ul><p>注意：注意 当索引被隐藏时，它的内容仍然是和正常索引一样实时更新的。如果一个索引需要长期被隐藏，那么可以将其删除，因为索引的存在会影响插入、更新和删除的性能。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;支持降序索引&quot;&gt;&lt;a href=&quot;#支持降序索引&quot; class=&quot;headerlink&quot; title=&quot;支持降序索引&quot;&gt;&lt;/a&gt;支持降序索引&lt;/h1&gt;&lt;p&gt;分别在MySQL 5.7版本和MySQL 8.0版本中创建数据表ts1，结果如下：&lt;/p&gt;
+&lt;pre&gt;&lt;co</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="新特性" scheme="http://example.com/tags/%E6%96%B0%E7%89%B9%E6%80%A7/"/>
+    
+    <category term="MySQL8.0" scheme="http://example.com/tags/MySQL8-0/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL中大多数情况查询缓存就是个鸡肋，为什么呢？</title>
@@ -243,344 +600,6 @@
     <category term="C1" scheme="http://example.com/tags/C1/"/>
     
     <category term="C2" scheme="http://example.com/tags/C2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>热点探测技术</title>
-    <link href="http://example.com/2022/03/19/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B%E6%8A%80%E6%9C%AF/"/>
-    <id>http://example.com/2022/03/19/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B%E6%8A%80%E6%9C%AF/</id>
-    <published>2022-03-19T10:59:00.000Z</published>
-    <updated>2022-03-19T11:11:09.698Z</updated>
-    
-    <content type="html"><![CDATA[<p>一个方法被调用多次，或者是一个方法内部多虚循环执行都可以被称作热点代码，因此都可以通过JIT编译器编译为本地机器指令。其过程发生在方法的执行过程中，因此被称为栈上替换，或简称OSR。其主要实现通过热点探测功能<br>。HostSpot采用的热点探测方法是基于计数器的热点探测。</p><ul><li>计数器的热点探测：HotSpot会为每一个方法建立2个不同类型的计数器，分别为方法调用计数器和回边计数器。</li><li>方法调用计数器统计方法调用次数，默认在Client下是1500，Server下是10000，超过则会触发即时编译。（-XX：complieThreshold）。如果不做任何设置，方法调用计数器统计的并不是方法被调用的绝对次数，而是一个相对的执行频率，即一段时间内方法的调用次数。当超过一定时间调用次数不足让他提交给即使编译器编译，那么这个方法调用的计数器就减少一般（热点衰减：其发生在垃圾回收时顺便进行的）</li></ul><ul><li>回边计数器统计循环体执行循环次数</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;一个方法被调用多次，或者是一个方法内部多虚循环执行都可以被称作热点代码，因此都可以通过JIT编译器编译为本地机器指令。其过程发生在方法的执行过程中，因此被称为栈上替换，或简称OSR。其主要实现通过热点探测功能&lt;br&gt;。HostSpot采用的热点探测方法是基于计数器的热点探测</summary>
-      
-    
-    
-    
-    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
-    
-    
-    <category term="热点探测" scheme="http://example.com/tags/%E7%83%AD%E7%82%B9%E6%8E%A2%E6%B5%8B/"/>
-    
-    <category term="即时编译" scheme="http://example.com/tags/%E5%8D%B3%E6%97%B6%E7%BC%96%E8%AF%91/"/>
-    
-    <category term="方法计数器" scheme="http://example.com/tags/%E6%96%B9%E6%B3%95%E8%AE%A1%E6%95%B0%E5%99%A8/"/>
-    
-    <category term="回边计数器" scheme="http://example.com/tags/%E5%9B%9E%E8%BE%B9%E8%AE%A1%E6%95%B0%E5%99%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Hot Spot JVM执行方式</title>
-    <link href="http://example.com/2022/03/19/Hot-Spot-JVM%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/"/>
-    <id>http://example.com/2022/03/19/Hot-Spot-JVM%E6%89%A7%E8%A1%8C%E6%96%B9%E5%BC%8F/</id>
-    <published>2022-03-19T10:52:00.000Z</published>
-    <updated>2022-03-19T10:57:38.235Z</updated>
-    
-    <content type="html"><![CDATA[<p>当虚拟机启动的时候，解释器可以先发挥作用，而不必等待及时编译器全部编译完在执行，可以节约不必要的编译时间，而在随着程序运行时间的推移。及时编译器会逐步发挥作用，根据热点探测技术，将有价值的字节码编译成本地的机器指令，换取更高效率的程序运行。</p><ul><li>机器在热机状态的负载要大于冷机状态。如果以热机状态进行流量切割，可能会使得处于冷机状态的服务器因无法承载流量而假死</li></ul><p> <img src="/images/pasted-165.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;当虚拟机启动的时候，解释器可以先发挥作用，而不必等待及时编译器全部编译完在执行，可以节约不必要的编译时间，而在随着程序运行时间的推移。及时编译器会逐步发挥作用，根据热点探测技术，将有价值的字节码编译成本地的机器指令，换取更高效率的程序运行。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;机器在</summary>
-      
-    
-    
-    
-    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
-    
-    
-    <category term="JVM" scheme="http://example.com/tags/JVM/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>解释器的分类</title>
-    <link href="http://example.com/2022/03/19/%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB/"/>
-    <id>http://example.com/2022/03/19/%E8%A7%A3%E9%87%8A%E5%99%A8%E7%9A%84%E5%88%86%E7%B1%BB/</id>
-    <published>2022-03-19T10:38:00.000Z</published>
-    <updated>2022-03-19T10:42:48.741Z</updated>
-    
-    <content type="html"><![CDATA[<p>在java的发展历史上，一共有两套解释执行器，即古老的字节码解释器和现在普遍使用的模板解释器。</p><ul><li><p>字节码解释器在执行时通过纯软件代码模拟字节码的执行，效率低下</p></li><li><p>模板解释器将每一条字节码和一个模板函数相关联，模板函数中直接产生字节码执行时的机器码，从而提升解释器的性能</p></li></ul><p>在Hotspot JVM中，解释器主要由Interpreter模块和Code模块构成</p><ul><li><p>Interpreter：实现了解释器的核心功能</p></li><li><p>Code模块： 用于管理HostSpot JVM在运行时生成的本地机器指令</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在java的发展历史上，一共有两套解释执行器，即古老的字节码解释器和现在普遍使用的模板解释器。&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;字节码解释器在执行时通过纯软件代码模拟字节码的执行，效率低下&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;模板解释器将每一条字节码和一个模板函数相关联，模板</summary>
-      
-    
-    
-    
-    <category term="解释器" scheme="http://example.com/categories/%E8%A7%A3%E9%87%8A%E5%99%A8/"/>
-    
-    <category term="JVM" scheme="http://example.com/categories/%E8%A7%A3%E9%87%8A%E5%99%A8/JVM/"/>
-    
-    
-    <category term="解释器分类" scheme="http://example.com/tags/%E8%A7%A3%E9%87%8A%E5%99%A8%E5%88%86%E7%B1%BB/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>直接内存Direct Memory</title>
-    <link href="http://example.com/2022/03/19/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98Direct-Memory/"/>
-    <id>http://example.com/2022/03/19/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98Direct-Memory/</id>
-    <published>2022-03-19T10:23:00.000Z</published>
-    <updated>2022-03-19T10:28:48.265Z</updated>
-    
-    <content type="html"><![CDATA[<p>直接内存Direct Memory不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域。直接内存时Java堆外的，直接向系统申请的内存区间。</p><p>直接内存的访问速度优于java堆。读写性能更高</p><p> <img src="/images/pasted-164.png" alt="upload successful"></p><p> 存在的问题：不受指定堆大学的限定，而是受系统内存的限制。而且不受jvm内存管理回收，因此回收成本较高。</p><p> MaxDirectMemorySize可以知道其大小，默认与xmx参数值一样</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;直接内存Direct Memory不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域。直接内存时Java堆外的，直接向系统申请的内存区间。&lt;/p&gt;
-&lt;p&gt;直接内存的访问速度优于java堆。读写性能更高&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/images/pas</summary>
-      
-    
-    
-    
-    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
-    
-    
-    <category term="直接内存" scheme="http://example.com/tags/%E7%9B%B4%E6%8E%A5%E5%86%85%E5%AD%98/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>缓存和数据库的数据一致性问题</title>
-    <link href="http://example.com/2022/03/19/%E7%BC%93%E5%AD%98%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2022/03/19/%E7%BC%93%E5%AD%98%E5%92%8C%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/</id>
-    <published>2022-03-19T01:21:00.000Z</published>
-    <updated>2022-03-19T01:49:36.849Z</updated>
-    
-    <content type="html"><![CDATA[<p>缓存和数据库的数据一致性问题是一个老生常谈的问题了。在这里我记录几种方案及其可能出现的问题。</p><ol><li><p>先更新缓存，再更新数据库：此时线程A去先去更新缓存，然后更新数据库，但数据库更新时出现回滚，更新失败，数据库和缓存数据不一致。</p></li><li><p>先更新数据库，在更新缓存：线程A去更新数据库-&gt;线程B也去更新数据库-&gt;A更新数据库完毕-&gt;A去更新缓存-&gt;B更新数据库完毕-&gt;B更新缓存完毕-&gt;A更新缓存完毕，此时导致数据不一致</p></li><li><p>先删除缓存，在更新数据库：线程A删除缓存-&gt;线程B查询会去更新缓存-&gt;线程A更新数据库，数据不一致。（延迟双删，即在更新数据库后，延迟在去删除缓存，保证在此期间，其他线程读，导致数据不一致。注意：延迟双删不能绝对解决一致性问题，在更新完毕，延时删除之间，来了读线程，但因为网络等原因，更新缓存操作被延迟到了，延迟删除之后，也会导致数据不一致）</p></li><li><p>先更新数据库，在删除缓存：线程A更新数据库-&gt;线程A删除缓存-&gt;线程B查询-&gt;线程C更新数据库-&gt;线程C删除缓存-&gt;线程B更新缓存。数据不一致。</p></li><li><p>请求串行化：将访问操作串行化，先删缓存，将更新数据库的操作放进有序队列中从缓存查不到的查询操作，都进入有序队列。需要解决的问题：读请求积压，大量超时，导致数据库的压力：限流、熔断。如何避免大量请求积压：将队列水平拆分，提高并行度。保证相同请求路由正确。</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;缓存和数据库的数据一致性问题是一个老生常谈的问题了。在这里我记录几种方案及其可能出现的问题。&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;先更新缓存，再更新数据库：此时线程A去先去更新缓存，然后更新数据库，但数据库更新时出现回滚，更新失败，数据库和缓存数据不一致。&lt;/p&gt;
-&lt;/li&gt;
-</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
-    
-    <category term="数据一致性" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>对ThreadLocal的理解</title>
-    <link href="http://example.com/2022/03/18/%E5%AF%B9ThreadLocal%E7%9A%84%E7%90%86%E8%A7%A3/"/>
-    <id>http://example.com/2022/03/18/%E5%AF%B9ThreadLocal%E7%9A%84%E7%90%86%E8%A7%A3/</id>
-    <published>2022-03-18T14:22:00.000Z</published>
-    <updated>2022-03-18T15:40:02.496Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="理解"><a href="#理解" class="headerlink" title="理解"></a>理解</h2><p>ThreadLocal是Java语言提供用于支持线程局部变量的标准实现类。</p><p>在我们编写的代码层面来讲，我们所编写的代码实际上是在管理系统中各个对象的相关状态。如果不能够对各个对象状态的访问进行合理的管理，对象的状态将被破坏，进而导致系统的不正常运行。特别是多线程环境下，多个线程可能同时对系统中的单一或多个对象状态进行访问，如果不能保证在此期间的线程安全，整个系统将会走向崩溃的方向。</p><p>当然，很容易想到的就是你可以使用synchronization的方式上锁来解决多线程下的线程安全问题，但是这种方式无疑是一个重量级的方式，上了synchronization锁，性能消耗很大。</p><p>那怎么解决呢？synchronization方式是避免了同一时刻多个线程对共享对象的访问，将之变为同步访问。而此时，其实也可以通过ThreadLocal避免对象共享，来达到线程安全。共享对象在个线程内都有一个副本，线程对副本进行操作，结束后再修改共享变量，达到线程安全。</p><p>因此从上面来看，其实synchronization和ThreadLocal在保证线程安全方式上，前者像是从纵向上的一种方式，而后者则是横向上的一种方式。</p><h2 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h2><p>虽然是通过ThreadLocal来设定于各个线程的数据资源，但ThreadLocal自身不会保存这些特定的资源数据的。因为数据资源位于对应的线程，由线程管理，而每个线程有一个ThreadLocal.ThreadLocalMap类型的名为ThreadLocal的实例变量，它就是保持那些通过ThreadL哦按差设置给这个资源的地方。当通过ThreadLocal的set方法设置数据的时候，Threadloacl会获取当前这个线程的引用，然后通过该引用获取当前线程的threadLocals，然后将当前线程当做key，将要设置的数据设置到当前线程<br> <img src="/images/pasted-163.png" alt="upload successful"><br>事实上，ThreadLocal就好像是一个窗口，通过这个窗口，我们可以将特定于线程的线程的数据资源绑定到当前线程，也可以通过这个窗口获取绑定的资源。在整个线程的生命周期，我们都可以通过ThreadLoacl这个窗口与当前线程打交道。</p><ul><li>类比城市的各个公交线，就好似系统中的个个线程，在各个公交线上，会有对应的公交车（ThreadLocal），用于运送特定线路的乘客（数据资源），乘客可以下车或上车（数据的装载和清除），在整条路线上都有各个乘车点（处理数据），最终达到终点（线程消亡）。</li></ul><h2 id="ThreadLocal的理解"><a href="#ThreadLocal的理解" class="headerlink" title="ThreadLocal的理解"></a>ThreadLocal的理解</h2><ul><li><p>管理应用程序实现中的线程安全。对于某些有状态的或者非状态的线程安全对象，可以在多线程为某个线程分配对应副本，而不是让多个线程共享该类型的某个对象，从而避免了需要多线程对这些对象进行访问的危险工作。（比如使用JDBC进行数据库访问的过程中，connection对象就属于那种有状态并且非线程安全的类，我们通过ThreadLocal为每个线程分配一个特有的connection保证数据访问安全）</p></li><li><p>我们也可以通过ThreadLocal来跟踪保存在线程内的日志序列，在程序执行的任何必要点将系统跟踪信息追加到ThreadLocal，然后在合适的时点取出分析。</p></li><li><p>我们还可以通过ThreadLocal来保存某个全局变量，在合适的时点取出做某些逻辑。采用ThreadLocal在当前执行的线程类执行数据流转，可以表面耦合性很强的参数传递。（这种处理方式有一种让数据随波逐流的意思，一旦处理不当，甚至会令系统出现差异） </p></li><li><p>某些情况下的性能优化（即以空间换取时间的方式）</p></li><li><p>per-thread Singleton，当某项资源的初始化代价很大，并且在执行中会多次创建，可以存入threadloca避免多次创建。</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;理解&quot;&gt;&lt;a href=&quot;#理解&quot; class=&quot;headerlink&quot; title=&quot;理解&quot;&gt;&lt;/a&gt;理解&lt;/h2&gt;&lt;p&gt;ThreadLocal是Java语言提供用于支持线程局部变量的标准实现类。&lt;/p&gt;
-&lt;p&gt;在我们编写的代码层面来讲，我们所编写的代码实际上是</summary>
-      
-    
-    
-    
-    <category term="多线程" scheme="http://example.com/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-    <category term="ThreadLocal" scheme="http://example.com/categories/%E5%A4%9A%E7%BA%BF%E7%A8%8B/ThreadLocal/"/>
-    
-    
-    <category term="ThreadLocal" scheme="http://example.com/tags/ThreadLocal/"/>
-    
-    <category term="多线程" scheme="http://example.com/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>JVM针对不同年龄段的 对象的分配策略</title>
-    <link href="http://example.com/2022/03/15/JVM%E9%92%88%E5%AF%B9%E4%B8%8D%E5%90%8C%E5%B9%B4%E9%BE%84%E6%AE%B5%E7%9A%84-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5/"/>
-    <id>http://example.com/2022/03/15/JVM%E9%92%88%E5%AF%B9%E4%B8%8D%E5%90%8C%E5%B9%B4%E9%BE%84%E6%AE%B5%E7%9A%84-%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%86%E9%85%8D%E7%AD%96%E7%95%A5/</id>
-    <published>2022-03-15T03:25:00.000Z</published>
-    <updated>2022-03-15T03:35:09.059Z</updated>
-    
-    <content type="html"><![CDATA[<ul><li><p>优先分配到eden区</p></li><li><p>对于大对象会直接分配到老年代（eden区young gc后还是无法分配足够内存给大对象，大对象会直接跃升到老年代或者在young gc后，幸存者区放不下跃升到幸存者区的大对象，也会直接跃升到老年代，如果老年代也不够分配，则进行major gc，如果仍然不够，则oom）</p></li><li><p>长期存活的对象分配到老年代（根据分代年龄晋升，默认15，每经历一次yonug gc存活下来，分代年龄+1）</p></li><li><p>动态对象年龄判断：如果幸存者区中相同年龄的所有对象大小的总和大于幸存者区空间的一半，年龄大于或等于该年龄的对象可以直接进入老年代，无需达到分代年龄要求</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;优先分配到eden区&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;对于大对象会直接分配到老年代（eden区young gc后还是无法分配足够内存给大对象，大对象会直接跃升到老年代或者在young gc后，幸存者区放不下跃升到幸存者区的大对象，也会直接跃升到老年代，如</summary>
-      
-    
-    
-    
-    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
-    
-    
-    <category term="JVM" scheme="http://example.com/tags/JVM/"/>
-    
-    <category term="堆" scheme="http://example.com/tags/%E5%A0%86/"/>
-    
-    <category term="对象内存分配" scheme="http://example.com/tags/%E5%AF%B9%E8%B1%A1%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Elasticsearch分片原理</title>
-    <link href="http://example.com/2022/03/14/Elasticsearch%E5%88%86%E7%89%87%E5%8E%9F%E7%90%86/"/>
-    <id>http://example.com/2022/03/14/Elasticsearch%E5%88%86%E7%89%87%E5%8E%9F%E7%90%86/</id>
-    <published>2022-03-14T07:09:00.000Z</published>
-    <updated>2022-03-14T08:17:41.076Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="倒排索引"><a href="#倒排索引" class="headerlink" title="倒排索引"></a>倒排索引</h2><p>分片是 Elasticsearch 最小的工作单元。一个分片是一个Lucene索引。</p><p>而索引采用的是一种称为倒排索引的结构，它适用于快速的全文搜索。</p><p>见其名，知其意，有倒排索引，肯定会对应有正向索引。正向索引（forward index），反向索引（inverted index）更熟悉的名字是倒排索引。</p><p>所谓的正向索引，就是搜索引擎会将待搜索的文件都对应一个文件 ID，搜索时将这个ID 和搜索关键字进行对应，形成 K-V 对，然后对关键字进行统计计数。</p><p>但是互联网上收录在搜索引擎中的文档的数目是个天文数字，这样的索引结构根本无法满足实时返回排名结果的要求。所以，搜索引擎会将正向索引重新构建为倒排索引，即把文件ID对应到关键词的映射转换为关键词到文件ID的映射，每个关键词都对应着一系列的文件，这些文件中都出现这个关键词。</p><p>一个倒排索引由文档中所有不重复词的列表构成，对于其中每个词，有一个包含它的文档列表。</p><p>例如，假设我们有两个文档，每个文档的 content 域包含如下内容：</p><p> The quick brown fox jumped over the lazy dog</p><p> Quick brown foxes leap over lazy dogs in summer</p><p>为了创建倒排索引，我们首先将每个文档的 content 域拆分成单独的词（我们称它为词条或 tokens ），创建一个包含所有不重复词条的排序列表，然后列出每个词条出现在哪个文档。</p><p> <img src="/images/pasted-160.png" alt="upload successful"></p><p> 现在，如果我们想搜索 quick brown ，我们只需要查找包含每个词条的文档：</p><p> <img src="/images/pasted-161.png" alt="upload successful"></p><p>两个文档都匹配，但是第一个文档比第二个匹配度更高。如果我们使用仅计算匹配词条数量的简单相似性算法，那么我们可以说，对于我们查询的相关性来讲，第一个文档比第二个文档更佳。</p><p>但是，我们目前的倒排索引有一些问题：</p><p> Quick 和 quick 以独立的词条出现，然而用户可能认为它们是相同的词。</p><p> fox 和 foxes 非常相似, 就像 dog 和 dogs ；他们有相同的词根。</p><p> jumped 和 leap, 尽管没有相同的词根，但他们的意思很相近。他们是同义词。</p><p>使用前面的索引搜索 +Quick +fox 不会得到任何匹配文档。（记住，+ 前缀表明这个词必须存在。）只有同时出现 Quick 和 fox 的文档才满足这个查询条件，但是第一个文档包含quick fox ，第二个文档包含 Quick foxes 。</p><p>我们的用户可以合理的期望两个文档与查询匹配。我们可以做的更好。如果我们将词条规范为标准模式，那么我们可以找到与用户搜索的词条不完全一致，但具有足够相关性的文档。</p><p>例如：</p><p> Quick 可以小写化为 quick 。 </p><p> foxes 可以 词干提取 –变为词根的格式– 为 fox 。类似的， dogs 可以为提取为 dog 。 </p><p> jumped 和 leap 是同义词，可以索引为相同的单词 jump 。</p><p> <img src="/images/pasted-162.png" alt="upload successful"></p><p> 这还远远不够。我们搜索 +Quick +fox 仍然 会失败，因为在我们的索引中，已经没有 Quick 了。但是，如果我们对搜索的字符串使用与 content 域相同的标准化规则，会变成查询<br>+quick +fox，这样两个文档都会匹配！分词和标准化的过程称为分析.</p><p>这非常重要。你只能搜索在索引中出现的词条，所以索引文本和查询字符串必须标准化为相同的格式。</p><h2 id="文档搜索"><a href="#文档搜索" class="headerlink" title="文档搜索"></a>文档搜索</h2><p>早期的全文检索会为整个文档集合建立一个很大的倒排索引并将其写入到磁盘。 一旦新的索引就绪，旧的就会被其替换，这样最近的变化便可以被检到。</p><p>倒排索引被写入磁盘后是 不可改变 的:它永远不会修改。</p><p>不变性有重要的价值：</p><ul><li><p>不需要锁。如果你从来不更新索引，你就不需要担心多进程同时修改数据的问题。</p></li><li><p>一旦索引被读入内核的文件系统缓存，便会留在哪里，由于其不变性。只要文件系统缓存中还有足够的空间，那么大部分读请求会直接请求内存，而不会命中磁盘。这提供了很大的性能提升。</p></li><li><p>其它缓存(像 filter 缓存)，在索引的生命周期内始终有效。它们不需要在每次数据改变时被重建，因为数据不会变化。</p></li><li><p>写入单个大的倒排索引允许数据被压缩，减少磁盘 I/O 和 需要被缓存到内存的索引的使用量。</p></li></ul><p>当然，一个不变的索引也有不好的地方。主要事实是它是不可变的! 你不能修改它。如果你需要让一个新的文档 可被搜索，你需要重建整个索引。这要么对一个索引所能包含的数据量造成了很大的限制，要么对索引可被更新的频率造成了很大的限制。</p><h2 id="动态更新索引"><a href="#动态更新索引" class="headerlink" title="动态更新索引"></a>动态更新索引</h2><p>如何在保留不变性的前提下实现倒排索引的更新？</p><ul><li>答案是: 用更多的索引。通过增加新的补充索引来反映新近的修改，而不是直接重写整个倒排索引。每一个倒排索引都会被轮流查询到，从最早的开始查询完后再对结果进行合并。</li></ul><p>Elasticsearch 基于 Lucene, 这个 java 库引入了按段搜索的概念。 每一段本身都是一个倒排索引， 但索引在 Lucene 中除表示所有段的集合外，还增加了提交点的概念 — 一个列出了所有已知段的文件。</p><p>按段搜索会以如下流程执行：</p><ol><li><p>新文档被收集到内存索引缓存</p></li><li><p>不时地, 缓存被提交</p><p> (1) 一个新的段—一个追加的倒排索引—被写入磁盘。</p><p> (2) 一个新的包含新段名字的 提交点 被写入磁盘</p><p> (3) 磁盘进行 同步 — 所有在文件系统缓存中等待的写入都刷新到磁盘，以确保它们被写入物理文件</p></li><li><p>新的段被开启，让它包含的文档可见以被搜索</p></li><li><p>内存缓存被清空，等待接收新的文档</p></li></ol><p>当一个查询被触发，所有已知的段按顺序被查询。词项统计会对所有段的结果进行聚合，以保证每个词和每个文档的关联都被准确计算。 这种方式可以用相对较低的成本将新文档添加到索引。</p><p>段是不可改变的，所以既不能从把文档从旧的段中移除，也不能修改旧的段来进行反映文档的更新。 取而代之的是，每个提交点会包含一个 .del 文件，文件中会列出这些被删除文档的段信息。</p><p>当一个文档被 “删除” 时，它实际上只是在 .del 文件中被 标记 删除。一个被标记删除的文档仍然可以被查询匹配到， 但它会在最终结果被返回前从结果集中移除。文档更新也是类似的操作方式：当一个文档被更新时，旧版本文档被标记删除，文档的新版本被索引到一个新的段中。 可能两个版本的文档都会被一个查询匹配到，但被删除的那个<br>旧版本文档在结果集返回前就已经被移除。</p><h2 id="近实时搜索"><a href="#近实时搜索" class="headerlink" title="近实时搜索"></a>近实时搜索</h2><p>随着按段（per-segment）搜索的发展，一个新的文档从索引到可被搜索的延迟显著降低了。新文档在几分钟之内即可被检索，但这样还是不够快。磁盘在这里成为了瓶颈。提（Commiting）一个新的段到磁盘需要一个 fsync 来确保段被物理性地写入磁盘，这样在断<br>电的时候就不会丢失数据。 但是 fsync 操作代价很大; 如果每次索引一个文档都去执行一次的话会造成很大的性能问题。</p><p>我们需要的是一个更轻量的方式来使一个文档可被搜索，这意味着 fsync 要从整个过程中被移除。在 Elasticsearch 和磁盘之间是文件系统缓存。 像之前描述的一样， 在内存索引缓冲区中的文档会被写入到一个新的段中。 但是这里新段会被先写入到文件系统缓存—这一步代价会比较低，稍后再被刷新到磁盘—这一步代价比较高。不过只要文件已经在缓存中，就可以像其它文件一样被打开和读取了。</p><p>Lucene 允许新段被写入和打开—使其包含的文档在未进行一次完整提交时便对搜索可见。这种方式比进行一次提交代价要小得多，并且在不影响性能的前提下可以被频繁地执行。</p><p>在 Elasticsearch 中，写入和打开一个新段的轻量的过程叫做 refresh 。 默认情况下每个分片会每秒自动刷新一次。这就是为什么我们说 Elasticsearch 是 近 实时搜索: 文档的变化并不是立即对搜索可见，但会在一秒之内变为可见。</p><p>这些行为可能会对新用户造成困惑: 他们索引了一个文档然后尝试搜索它，但却没有搜到。这个问题的解决办法是用 refresh API 执行一次手动刷新: /users/_refresh</p><ul><li>尽管刷新是比提交轻量很多的操作，它还是会有性能开销。当写测试的时候， 手动刷新很有用，但是不要在生产环境下每次索引一个文档都去手动刷新。 相反，你的应用需要意识到 Elasticsearch 的近实时的性质，并接受它的不足。</li></ul><p>并不是所有的情况都需要每秒刷新。可能你正在使用 Elasticsearch 索引大量的日志文件，你可能想优化索引速度而不是近实时搜索， 可以通过设置 refresh_interval ， 降低每个索<br>引的刷新频率</p><p>refresh_interval 可以在既存索引上进行动态更新。 在生产环境中，当你正在建立一个大的新索引时，可以先关闭自动刷新，待开始使用该索引时，再把它们调回来</p><h2 id="持久变更"><a href="#持久变更" class="headerlink" title="持久变更"></a>持久变更</h2><p>如果没有用 fsync 把数据从文件系统缓存刷（flush）到硬盘，我们不能保证数据在断电甚至是程序正常退出之后依然存在。为了保证 Elasticsearch 的可靠性，需要确保数据变化被持久化到磁盘。在 动态更新索引，我们说一次完整的提交会将段刷到磁盘，并写入一<br>个包含所有段列表的提交点。Elasticsearch 在启动或重新打开一个索引的过程中使用这个提交点来判断哪些段隶属于当前分片。</p><p>即使通过每秒刷新（refresh）实现了近实时搜索，我们仍然需要经常进行完整提交来确保能从失败中恢复。但在两次提交之间发生变化的文档怎么办？我们也不希望丢失掉这些数据。Elasticsearch 增加了一个 translog ，或者叫事务日志，在每一次对 Elasticsearch 进行操作时均进行了日志记录</p><ol><li><p>一个文档被索引之后，就会被添加到内存缓冲区，并且追加到了 translog</p></li><li><p>刷新（refresh）使分片每秒被刷新（refresh）一次：</p><ol><li>这些在内存缓冲区的文档被写入到一个新的段中，且没有进行 fsync 操作。</li><li>这个段被打开，使其可被搜索</li><li>内存缓冲区被清空</li></ol></li><li><p>这个进程继续工作，更多的文档被添加到内存缓冲区和追加到事务日志</p></li><li><p>每隔一段时间—例如 translog 变得越来越大—索引被刷新（flush）；一个新的 translog 被创建，并且一个全量提交被执行</p><ol><li><p>所有在内存缓冲区的文档都被写入一个新的段。</p></li><li><p>缓冲区被清空。</p></li><li><p>一个提交点被写入硬盘。</p></li><li><p>文件系统缓存通过 fsync 被刷新（flush）。</p></li><li><p>老的 translog 被删除。</p></li></ol></li></ol><p>translog 提供所有还没有被刷到磁盘的操作的一个持久化纪录。当 Elasticsearch 启动的时候， 它会从磁盘中使用最后一个提交点去恢复已知的段，并且会重放 translog 中所有在最后一次提交后发生的变更操作。</p><p>translog 也被用来提供实时 CRUD 。当你试着通过 ID 查询、更新、删除一个文档，它会在尝试从相应的段中检索之前， 首先检查 translog 任何最近的变更。这意味着它总是能够实时地获取到文档的最新版本。</p><p>执行一个提交并且截断 translog 的行为在 Elasticsearch 被称作一次 flush分片每 30 分钟被自动刷新（flush），或者在 translog 太大的时候也会刷新</p><p>你很少需要自己手动执行 flush 操作；通常情况下，自动刷新就足够了。这就是说，在重启节点或关闭索引之前执行 flush 有益于你的索引。当 Elasticsearch 尝试恢复或重新打<br>开一个索引， 它需要重放 translog 中所有的操作，所以如果日志越短，恢复越快。</p><p>translog 的目的是保证操作不会丢失，在文件被 fsync 到磁盘前，被写入的文件在重启之后就会丢失。默认 translog 是每 5 秒被 fsync 刷新到硬盘， 或者在每次写请求完成之<br>后执行(e.g. index, delete, update, bulk)。这个过程在主分片和复制分片都会发生。最终， 基本上，这意味着在整个请求被 fsync 到主分片和复制分片的 translog 之前，你的客户端不会得到一个 200 OK 响应。</p><p>在每次请求后都执行一个 fsync 会带来一些性能损失，尽管实践表明这种损失相对较小（特别是 bulk 导入，它在一次请求中平摊了大量文档的开销）。<br>但是对于一些大容量的偶尔丢失几秒数据问题也并不严重的集群，使用异步的 fsync 还是比较有益的。比如，写入的数据被缓存到内存中，再每 5 秒执行一次 fsync 。如果你决定使用异步 translog 的话，你需要 保证 在发生 crash 时，丢失掉 sync_interval 时间段的数据也无所谓。请在决定前知晓这个特性。如果你不确定这个行为的后果，最好是使用默认的参数（ “index.translog.durability”: “request” ）来避免数据丢失。</p><h2 id="段合并"><a href="#段合并" class="headerlink" title="段合并"></a>段合并</h2><p>由于自动刷新流程每秒会创建一个新的段 ，这样会导致短时间内的段数量暴增。而段<br>数目太多会带来较大的麻烦。 每一个段都会消耗文件句柄、内存和 cpu 运行周期。更重要<br>的是，每个搜索请求都必须轮流检查每个段；所以段越多，搜索也就越慢。<br>Elasticsearch 通过在后台进行段合并来解决这个问题。小的段被合并到大的段，然后这些大<br>的段再被合并到更大的段。<br>段合并的时候会将那些旧的已删除文档从文件系统中清除。被删除的文档（或被更新文档的<br>旧版本）不会被拷贝到新的大段中。<br>启动段合并不需要你做任何事。进行索引和搜索时会自动进行。</p><ol><li><p>当索引的时候，刷新（refresh）操作会创建新的段并将段打开以供搜索使用。</p></li><li><p>合并进程选择一小部分大小相似的段，并且在后台将它们合并到更大的段中。这并不会中断索引和搜索。</p></li><li><p>一旦合并结束，老的段被删除<br> 新的段被刷新（flush）到了磁盘。 ** 写入一个包含新段且排除旧的和较小的段<br>的新提交点。<br> 新的段被打开用来搜索。<br> 老的段被删除。</p></li></ol><p>  合并大的段需要消耗大量的 I/O 和 CPU 资源，如果任其发展会影响搜索性能。Elasticsearch<br>在默认情况下会对合并流程进行资源限制，所以搜索仍然 有足够的资源很好地执行。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;倒排索引&quot;&gt;&lt;a href=&quot;#倒排索引&quot; class=&quot;headerlink&quot; title=&quot;倒排索引&quot;&gt;&lt;/a&gt;倒排索引&lt;/h2&gt;&lt;p&gt;分片是 Elasticsearch 最小的工作单元。一个分片是一个Lucene索引。&lt;/p&gt;
-&lt;p&gt;而索引采用的是一种称为倒</summary>
-      
-    
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/tags/Elasticsearch/"/>
-    
-    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Elasticsearch分片控制</title>
-    <link href="http://example.com/2022/03/14/Elasticsearch%E5%88%86%E7%89%87%E6%8E%A7%E5%88%B6/"/>
-    <id>http://example.com/2022/03/14/Elasticsearch%E5%88%86%E7%89%87%E6%8E%A7%E5%88%B6/</id>
-    <published>2022-03-14T06:55:00.000Z</published>
-    <updated>2022-03-14T07:09:39.594Z</updated>
-    
-    <content type="html"><![CDATA[<p>每个节点都有能力处理任意请求。 每个节点都知道集群中任一文档位置，所以可以直接将请求转发到需要的节点上。</p><p>写流程：</p><p>新建、索引和删除 请求都是 写 操作， 必须在主分片上面完成之后才能被复制到相关的副本分片</p><p> <img src="/images/pasted-159.png" alt="upload successful"></p><p> 新建，索引和删除文档所需要的步骤顺序：</p><ol><li><p>客户端向 Node 1 发送新建、索引或者删除请求。</p></li><li><p>节点使用文档的 _id 确定文档属于分片 0 。请求会被转发到 Node 3，因为分片 0 的主分片目前被分配在 Node 3 上。</p></li><li><p>Node 3 在主分片上面执行请求。如果成功了，它将请求并行转发到 Node 1 和 Node 2 的副本分片上。一旦所有的副本分片都报告成功, Node 3 将向协调节点报告成功，协调节点向客户端报告成功。</p></li></ol><p>在客户端收到成功响应时，文档变更已经在主分片和所有副本分片执行完成，变更是安全的。有一些可选的请求参数允许您影响这个过程，可能以数据安全为代价提升性能。</p><p>读流程：我们可以从主分片或者从其它任意副本分片检索文档。</p><p>从主分片或者副本分片检索文档的步骤顺序：</p><ol><li><p>客户端向 Node 1 发送获取请求。</p></li><li><p>节点使用文档的 _id 来确定文档属于分片 0 。分片 0 的副本分片存在于所有的三个节点上。 在这种情况下，它将请求转发到 Node 2 。</p></li><li><p>Node 2 将文档返回给 Node 1 ，然后将文档返回给客户端。在处理读取请求时，协调结点在每次请求的时候都会通过轮询所有的副本分片来达到负载均衡。在文档被检索时，已经被索引的文档可能已经存在于主分片上但是还没有复制到副本分片。 在这种情况下，副本分片可能会报告文档不存在，但是主分片可能成功返回文档。 一旦索引请求成功返回给用户，文档在主分片和副本分片都是可用的。</p></li></ol><p>更新流程：</p><ol><li><p>客户端向 Node 1 发送更新请求。</p></li><li><p>它将请求转发到主分片所在的 Node 3 。</p></li><li><p>Node 3 从主分片检索文档，修改 _source 字段中的 JSON ，并且尝试重新索引主分片的文档。如果文档已经被另一个进程修改，它会重试步骤 3 ，超过 retry_on_conflict 次后放弃。</p></li><li><p>如果 Node 3 成功地更新文档，它将新版本的文档并行转发到 Node 1 和 Node 2 上的副本分片，重新建立索引。一旦所有副本分片都返回成功， Node 3 向协调节点也返回成功，协调节点向客户端返回成功。</p></li></ol><p>注意：当主分片把更改转发到副本分片时， 它不会转发更新请求。 相反，它转发完整文档的新版本。请记住，这些更改将会异步转发到副本分片，并且不能保证它们以发送它们相同的顺序到达。 如果 Elasticsearch 仅转发更改请求，则可能以错误的顺序应用改，导致得到损坏的文档。</p><p>多文档操作流程：mget 和 bulk API 的模式类似于单文档模式。区别在于协调节点知道每个文档存在于哪个分片中。它将整个多文档请求分解成每个分片的多文档请求，并且将这些请求并行转发到每个参与节点。协调节点一旦收到来自每个节点的应答，就将每个节点的响应收集整理成单个响应，返回给客户端。</p><p>用单个 mget 请求取回多个文档所需的步骤顺序:</p><ol><li><p>客户端向 Node 1 发送 mget 请求。</p></li><li><p>Node 1 为每个分片构建多文档获取请求，然后并行转发这些请求到托管在每个所需的主分片或者副本分片的节点上。一旦收到所有答复， Node 1 构建响应并将其返回给客户端</p></li></ol><p>bulk API 按如下步骤顺序执行：</p><ol><li><p>客户端向 Node 1 发送 bulk 请求。</p></li><li><p>Node 1 为每个节点创建一个批量请求，并将这些请求并行转发到每个包含主分片的节点主机。</p></li><li><p>主分片一个接一个按顺序执行每个操作。当每个操作成功时，主分片并行转发新文档（或删除）到副本分片，然后执行下一个操作。 一旦所有的副本分片报告所有操作成功，该节点将向协调节点报告成功，协调节点将这些响应收集整理并返回给客户端。</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;每个节点都有能力处理任意请求。 每个节点都知道集群中任一文档位置，所以可以直接将请求转发到需要的节点上。&lt;/p&gt;
-&lt;p&gt;写流程：&lt;/p&gt;
-&lt;p&gt;新建、索引和删除 请求都是 写 操作， 必须在主分片上面完成之后才能被复制到相关的副本分片&lt;/p&gt;
-&lt;p&gt; &lt;img src=&quot;/</summary>
-      
-    
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/tags/Elasticsearch/"/>
-    
-    <category term="分片" scheme="http://example.com/tags/%E5%88%86%E7%89%87/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Elasticsearch路由计算</title>
-    <link href="http://example.com/2022/03/14/Elasticsearch%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/"/>
-    <id>http://example.com/2022/03/14/Elasticsearch%E8%B7%AF%E7%94%B1%E8%AE%A1%E7%AE%97/</id>
-    <published>2022-03-14T06:53:00.000Z</published>
-    <updated>2022-03-14T06:55:12.233Z</updated>
-    
-    <content type="html"><![CDATA[<p>当索引一个文档的时候，文档会被存储到一个主分片中。 Elasticsearch 如何知道一个文档应该存放到哪个分片中呢？当我们创建文档时，它如何决定这个文档应当被存储在分片1 还是分片 2 中呢？首先这肯定不会是随机的，否则将来要获取文档的时候我们就不知道<br>从何处寻找了。实际上，这个过程是根据下面这个公式决定的：</p><p> <img src="/images/pasted-158.png" alt="upload successful"></p><p> routing 是一个可变值，默认是文档的 _id ，也可以设置成一个自定义的值。 routing 通过hash 函数生成一个数字，然后这个数字再除以 number_of_primary_shards （主分片的数量）后得到余数 。这个分布在 0 到number_of_primary_shards-1 之间的余数，就是我们所寻求的文档所在分片的位置。</p><p>这就解释了为什么我们要在创建索引的时候就确定好主分片的数量 并且永远不会改变这个数量：因为如果数量变化了，那么所有之前路由的值都会无效，文档也再也找不到了。所有的文档 API（ get 、 index 、 delete 、 bulk 、 update 以及 mget ）都接受一个叫做 routing 的路由参数 ，通过这个参数我们可以自定义文档到分片的映射。一个自定义的路由参数可以用来确保所有相关的文档——例如所有属于同一个用户的文档——都被存储到同一个分片中。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;当索引一个文档的时候，文档会被存储到一个主分片中。 Elasticsearch 如何知道一个文档应该存放到哪个分片中呢？当我们创建文档时，它如何决定这个文档应当被存储在分片1 还是分片 2 中呢？首先这肯定不会是随机的，否则将来要获取文档的时候我们就不知道&lt;br&gt;从何处寻找</summary>
-      
-    
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
-    
-    
-    <category term="routing" scheme="http://example.com/tags/routing/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Elasticsearch的基本概念</title>
-    <link href="http://example.com/2022/03/14/Elasticsearch%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/"/>
-    <id>http://example.com/2022/03/14/Elasticsearch%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</id>
-    <published>2022-03-14T06:09:00.000Z</published>
-    <updated>2022-03-14T06:23:48.299Z</updated>
-    
-    <content type="html"><![CDATA[<p>Elasticsearch 索引的精髓：一切设计都是为了提高搜索的性能。</p><p>Elasticsearch的索引就是一个拥有相似特征的文档的集合。一个索引由一个名字来标识（必须全是小写字母）。<br>当我们要对这个索引中的文档进行索引、搜索、更新和删除的时候，都要使用到这个名字。在一个集群中，可以定义任意多的索引。</p><p>在一个索引中，你可以定义一种或多种类型。这个类型是索引的一个逻辑分区/分类。但在7.x已经默认不再支持自定义索引类型。</p><p>文档（Document）：一个文档是一个可被索引的基础信息单元，也就是一条数据。</p><p>字段（Field）：相当于数据表的字段，对文档数据根据不同属性进行的分类标识。</p><p>映射（Mapping）：mapping 是处理数据的方式和规则方面做一些限制，如：某个字段的数据类型、默认值、<br>分析器、是否被索引等等。这些都是映射里面可以设置的，其它就是处理 ES 里面数据的一些使用规则设置也叫做映射，按着最优规则处理数据对性能提高很大，因此才需要建立映射，并且需要思考如何建立映射才能对性能更好。</p><p>分片（Shards）：一个索引可以存储超出单个节点硬件限制的大量数据。比如，一个具有 10 亿文档数据的索引占据 1TB 的磁盘空间，而任一节点都可能没有这样大的磁盘空间。或者单个节点处理搜索请求，响应太慢。为了解决这个问题，Elasticsearch 提供了将索引划分成多份的能力，每一份就称之为分片。当你创建一个索引的时候，你可以指定你想要的分片的数量。每个分<br>片本身也是一个功能完善并且独立的“索引”，这个“索引”可以被放置到集群中的任何节点上。</p><p>分片很重要，主要有两方面的原因：</p><p>1）允许你水平分割 / 扩展你的内容容量。</p><p>2）允许你在分片之上进行分布式的、并行的操作，进而提高性能/吞吐量。</p><p>至于一个分片怎样分布，它的文档怎样聚合和搜索请求，是完全由 Elasticsearch 管理的，对于作为用户的你来说，这些都是透明的，无需过分关心。</p><p>被混淆的概念是，一个 Lucene 索引 我们在 Elasticsearch 称作 分片 。 一个Elasticsearch 索引 是分片的集合。 当 Elasticsearch 在索引中搜索的时候， 他发送查询到每一个属于索引的分片(Lucene 索引)，然后合并每个分片的结果到一个全局的结果集。（即Elasticsearch 索引 是分片的集合，Lucene 索引在Elasticsearch 称作 分片）</p><p>副本（Replicas）：在一个网络 / 云的环境里，失败随时都可能发生，在某个分片/节点不知怎么的就处于离线状态，或者由于任何原因消失了，这种情况下，有一个故障转移机制是非常有用并且是强烈推荐的。为此目的，Elasticsearch 允许你创建分片的一份或多份拷贝，这些拷贝叫做复<br>制分片(副本)。</p><p>复制分片之所以重要，有两个主要原因：</p><p> 在分片/节点失败的情况下，提供了高可用性。因为这个原因，注意到复制分片从不与原/主要（original/primary）分片置于同一节点上是非常重要的。</p><p> 扩展你的搜索量/吞吐量，因为搜索可以在所有的副本上并行运行。</p><p>总之，每个索引可以被分成多个分片。一个索引也可以被复制 0 次（意思是没有复制）或多次。一旦复制了，每个索引就有了主分片（作为复制源的原来的分片）和复制分片（主分片的拷贝）之别。分片和复制的数量可以在索引创建的时候指定。在索引创建之后，你可<br>以在任何时候动态地改变复制的数量，但是你事后不能改变分片的数量。默认情况下，Elasticsearch 中的每个索引被分片 1 个主分片和 1 个复制，这意味着，如果你的集群中至少有两个节点，你的索引将会有 1 个主分片和另外 1 个复制分片（1 个完全拷贝），这样的话每个索引总共就有 2 个分片，我们需要根据索引需要确定分片个数。</p><p>分配（Allocation）：将分片分配给某个节点的过程，包括分配主分片或者副本。如果是副本，还包含从主分<br>片复制数据的过程。这个过程是由 master 节点完成的。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Elasticsearch 索引的精髓：一切设计都是为了提高搜索的性能。&lt;/p&gt;
-&lt;p&gt;Elasticsearch的索引就是一个拥有相似特征的文档的集合。一个索引由一个名字来标识（必须全是小写字母）。&lt;br&gt;当我们要对这个索引中的文档进行索引、搜索、更新和删除的时候，都要使</summary>
-      
-    
-    
-    
-    <category term="Elasticsearch" scheme="http://example.com/categories/Elasticsearch/"/>
-    
-    
-    <category term="基础概念" scheme="http://example.com/tags/%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/"/>
-    
-    <category term="Elasticsearch" scheme="http://example.com/tags/Elasticsearch/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>时间轮算法</title>
-    <link href="http://example.com/2022/03/13/%E6%97%B6%E9%97%B4%E8%BD%AE%E7%AE%97%E6%B3%95/"/>
-    <id>http://example.com/2022/03/13/%E6%97%B6%E9%97%B4%E8%BD%AE%E7%AE%97%E6%B3%95/</id>
-    <published>2022-03-13T05:08:00.000Z</published>
-    <updated>2022-03-13T05:18:08.769Z</updated>
-    
-    <content type="html"><![CDATA[<p>时间轮就是和手表时钟很相似的存在。时间轮用环形数组实现，数组的每个元素可以称为槽，和 HashMap一样称呼。</p><p>槽的内部用双向链表存着待执行的任务，添加和删除的链表操作时间复杂度都是 O(1)，槽位本身也指代时间精度，比如一秒扫一个槽，那么这个时间轮的最高精度就是 1 秒。</p><p>也就是说延迟 1.2 秒的任务和 1.5 秒的任务会被加入到同一个槽中，然后在 1 秒的时候遍历这个槽中的链表执行任务。</p><p> <img src="/images/pasted-157.png" alt="upload successful"></p><p>从图中可以看到此时指针指向的是第一个槽，一共有八个槽0~7，假设槽的时间单位为 1 秒，现在要加入一个延时 5 秒的任务，计算方式就是 5 % 8 + 1 = 6，即放在槽位为 6，下标为 5 的那个槽中。</p><p>更具体的就是拼到槽的双向链表的尾部。然后每秒指针顺时针移动一格，这样就扫到了下一格，遍历这格中的双向链表执行任务。然后再循环继续。</p><p>可以看到插入任务从计算槽位到插入链表，时间复杂度都是O(1)。那假设现在要加入一个50秒后执行的任务怎么办？这槽好像不够啊？难道要加槽嘛？和HashMap一样扩容？</p><p>不是的，常见有两种方式，一种是通过增加轮次的概念。50 % 8 + 1 = 3，即应该放在槽位是 3，下标是2 的位置。然后 (50 - 1) / 8 = 6，即轮数记为 6。也就是说当循环 6 轮之后扫到下标的 2 的这个槽位会触发这个任务。Netty中HashedWheelTimer 使用的就是这种方式。</p><p>还有一种是通过多层次的时间轮，这个和我们的手表就更像了，像我们秒针走一圈，分针走一格，分针走一圈，时针走一格。</p><p>多层次时间轮就是这样实现的。假设上图就是第一层，那么第一层走了一圈，第二层就走一格，可以得知第二层的一格就是8秒，假设第二层也是 8 个槽，那么第二层走一圈，第三层走一格，可以得知第三层一格就是 64 秒。那么一格三层，每层8个槽，一共 24 个槽时间轮就可以处理最多延迟 512 秒的任<br>务。</p><p>而多层次时间轮还会有降级的操作，假设一个任务延迟 500 秒执行，那么刚开始加进来肯定是放在第三层的，当时间过了 436 秒后，此时还需要 64 秒就会触发任务的执行，而此时相对而言它就是个延迟 64秒后的任务，因此它会被降低放在第二层中，第一层还放不下它。再过个 56 秒，相对而言它就是个延迟 8 秒后执行的任务，因此它会再被降级放在第一层中，等待执行。</p><p>降级是为了保证时间精度一致性Kafka内部用的就是多层次的时间轮算法。</p><p>Kafka 就利用了空间换时间的思想，通过 DelayQueue，来保存每个槽，通过每个槽的过期时间排序。这样拥有最早需要执行任务的槽会有优先获取。如果时候未到，那么 delayQueue.poll 就会阻塞着，这样就不会有空推进的情况发送。</p><p>总的来说Kafka用了多层次时间轮来实现，并且是按需创建时间轮，采用任务的绝对时间来判断延期，并且对于每个槽(槽内存放的也是任务的双向链表)都会维护一个过期时间，利用 DelayQueue 来对每个槽的过期<br>时间排序，来进行时间的推进，防止空推进的存在。</p><p>每次推进都会更新 currentTime 为当前时间戳，当然做了点微调使得 currentTime 是 tickMs 的整数<br>倍。并且每次推进都会把能降级的任务重新插入降级。</p><p>可以看到这里的 DelayQueue 的元素是每个槽，而不是任务，因此数量就少很多了，这应该是权衡了对于槽操作的延时队列的时间复杂度与空推进的影响。</p><p>总结：</p><p>Timer、DelayQueue 和 ScheduledThreadPool，它们都是基于优先队列实现的，O(logn)<br>的时间复杂度在任务数多的情况下频繁的入队出队对性能来说有损耗。因此适合于任务数不多的情况。</p><p>Timer 是单线程的会有阻塞的风险，并且对异常没有做处理，一个任务出错 Timer 就挂了。而<br>ScheduledThreadPool 相比于 Timer 首先可以多线程来执行任务，并且线程池对异常做了处理，使得任务之间不会有影响。</p><p>并且 Timer和ScheduledThreadPool 可以周期性执行任务。 而 DelayQueue 就是个具有优先级的阻塞队列。</p><p>对比而言时间轮更适合任务数很大的延时场景，它的任务插入和删除时间复杂度都为O(1)。对于延迟超过时间轮所能表示的范围有两种处理方式，一是通过增加一个字段-轮数，Netty 就是这样实现的。二是多层次时间轮，Kakfa 是这样实现的。</p><p>相比而言 Netty 的实现会有空推进的问题，而 Kafka 采用 DelayQueue 以槽为单位，利用空间换时间的思想解决了空推进的问题。</p><p>可以看出延迟任务的实现都不是很精确的，并且或多或少都会有阻塞的情况，即使你异步执行，线程不够的情况下还是会阻塞。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;时间轮就是和手表时钟很相似的存在。时间轮用环形数组实现，数组的每个元素可以称为槽，和 HashMap一样称呼。&lt;/p&gt;
-&lt;p&gt;槽的内部用双向链表存着待执行的任务，添加和删除的链表操作时间复杂度都是 O(1)，槽位本身也指代时间精度，比如一秒扫一个槽，那么这个时间轮的最高精度</summary>
-      
-    
-    
-    
-    <category term="算法" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/"/>
-    
-    <category term="Kafka" scheme="http://example.com/categories/%E7%AE%97%E6%B3%95/Kafka/"/>
-    
-    
-    <category term="算法" scheme="http://example.com/tags/%E7%AE%97%E6%B3%95/"/>
-    
-    <category term="时间轮" scheme="http://example.com/tags/%E6%97%B6%E9%97%B4%E8%BD%AE/"/>
     
   </entry>
   
