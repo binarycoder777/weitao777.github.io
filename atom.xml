@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-23T04:09:30.098Z</updated>
+  <updated>2022-03-23T13:15:05.799Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>内存模型之伪共享(False Sharing)</title>
+    <link href="http://example.com/2022/03/23/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B9%8B%E4%BC%AA%E5%85%B1%E4%BA%AB-False-Sharing/"/>
+    <id>http://example.com/2022/03/23/%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B%E4%B9%8B%E4%BC%AA%E5%85%B1%E4%BA%AB-False-Sharing/</id>
+    <published>2022-03-23T13:09:00.000Z</published>
+    <updated>2022-03-23T13:15:05.799Z</updated>
+    
+    <content type="html"><![CDATA[<p>在对称多处理器(SMP)系统中，每个处理器均有一个本地高速缓存。内存系统必须保证高速缓存的一致性。当不同处理器上的线程修改驻留在同一高速缓存行中的变量时就会发生假共享，结果导致高速缓存行无效，并强制执行更新，进而影响系统性能。</p><p> <img src="/images/pasted-172.png" alt="upload successful"><br>线程0和线程1会用到不同变量，它们在内存中彼此相邻，并驻留在同一高速缓存行。高速缓存行被加载到CPU0和CPU1的高速缓存中（灰色箭头）。<br>尽管这些线程修改的是不同变量（红色和蓝色箭头），高速缓存行仍会无效，并强制内存更新以维持高速缓存的一致性。</p><p>缓存系统中是以缓存行（cacheline）为单位存储的。缓存行是2的整数幂个连续字节，一般为32-256个字节。最常见的缓存行大小是64个字节。一个Java的long类型是8字节，因此在一个缓存行中可以存8个long类型的变量。所以，如果你访问一个long数组，当数组中的一个值被加载到缓存中，它会额外加载另外7个，这会带来一些优势。但是也有伪共享问题，比如两个线程，修改long数组的第一个与第七个，会频发发生缓存失效，影响性能。解决办法就是填充，在JDK8中提供了@sun.misc.Contended注解来避免伪共享，即通过padding填充，让数据占据不同的缓存行。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在对称多处理器(SMP)系统中，每个处理器均有一个本地高速缓存。内存系统必须保证高速缓存的一致性。当不同处理器上的线程修改驻留在同一高速缓存行中的变量时就会发生假共享，结果导致高速缓存行无效，并强制执行更新，进而影响系统性能。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/imag</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    <category term="JMM" scheme="http://example.com/categories/Java/JMM/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="JMM" scheme="http://example.com/tags/JMM/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL其他一下查询优化策略</title>
@@ -571,35 +600,6 @@
     <category term="String" scheme="http://example.com/tags/String/"/>
     
     <category term="新特性" scheme="http://example.com/tags/%E6%96%B0%E7%89%B9%E6%80%A7/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>HotSpot中JIT的分类</title>
-    <link href="http://example.com/2022/03/19/HotSpot%E4%B8%ADJIT%E7%9A%84%E5%88%86%E7%B1%BB/"/>
-    <id>http://example.com/2022/03/19/HotSpot%E4%B8%ADJIT%E7%9A%84%E5%88%86%E7%B1%BB/</id>
-    <published>2022-03-19T11:11:00.000Z</published>
-    <updated>2022-03-19T11:23:39.386Z</updated>
-    
-    <content type="html"><![CDATA[<p>JIT的编译器分了两种：C1和C2，在HotSpot下对应Client和Server两类。（-client和-servcer指定）</p><h2 id="C1和C2不同的优化策略"><a href="#C1和C2不同的优化策略" class="headerlink" title="C1和C2不同的优化策略"></a>C1和C2不同的优化策略</h2><p>C1：方法内联、去虚拟化、冗余消除</p><ul><li><p>方法内联：将引用的函数代码编译到引用点，尖山栈帧的生成，减少参数传递和跳转</p></li><li><p>去虚拟化：对唯一实现进行内联</p></li><li><p>冗余消除： 在运行期间把一些不会执行的代码折叠掉</p></li></ul><p>C2：逃逸分析</p><ul><li><p>标量替换：用标量值代替聚合对象的属性值</p></li><li><p>栈上分配：用于对未逃逸的对象分配对象在栈上，而不是堆</p></li><li><p>同步消除： 清楚同步操作，通常是指synchronized</p></li></ul><p>总结：</p><ul><li>JIT编译出来的机器码比解释器执行效率高，但启动速度要慢一点</li><li>C2比C1启动慢，但稳定下来后，C2速度远快于C1</li></ul><p>补充：AOT编译器（静态提前编译器），它可以将java类文件直接转化为机器码。</p><ul><li>好处：java虚拟机加载已经预编译好的二进制库，可以直接执行，不必等待及时编译器的预热</li><li>缺点：破坏了java一次编译到处运行。降低了java链接过程的动态性。还需要继续优化。</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;JIT的编译器分了两种：C1和C2，在HotSpot下对应Client和Server两类。（-client和-servcer指定）&lt;/p&gt;
-&lt;h2 id=&quot;C1和C2不同的优化策略&quot;&gt;&lt;a href=&quot;#C1和C2不同的优化策略&quot; class=&quot;headerlink&quot; ti</summary>
-      
-    
-    
-    
-    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
-    
-    
-    <category term="JIT" scheme="http://example.com/tags/JIT/"/>
-    
-    <category term="C1" scheme="http://example.com/tags/C1/"/>
-    
-    <category term="C2" scheme="http://example.com/tags/C2/"/>
     
   </entry>
   
