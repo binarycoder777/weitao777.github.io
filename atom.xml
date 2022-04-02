@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-03-23T13:15:05.799Z</updated>
+  <updated>2022-04-02T00:19:14.601Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,64 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于fail-safe</title>
+    <link href="http://example.com/2022/04/01/%E5%85%B3%E4%BA%8Efail-safe/"/>
+    <id>http://example.com/2022/04/01/%E5%85%B3%E4%BA%8Efail-safe/</id>
+    <published>2022-04-01T14:00:00.000Z</published>
+    <updated>2022-04-02T00:19:14.601Z</updated>
+    
+    <content type="html"><![CDATA[<p>Fail-Safe 迭代的出现，是为了解决fail-fast抛出异常处理不方便的情况。fail-safe是针对线程安全的集合类。</p><p>采⽤安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，⽽是先复制原有集合内容，在拷⻉的集合上进⾏遍历。所以，在遍历过程中对原集合所作的修改并不能被迭代器检测到，故不会抛ConcurrentModificationException 异常。</p><p>换句话说，并发容器的iterate方法返回的iterator对象，内部都是保存了该集合对象的一个快照副本，并且没有modCount等数值做检查。这也造成了并发容器的iterator读取的数据是某个时间点的快照版本。你可以并发读取，不会抛出异常，但是不保证你遍历读取的值和当前集合对象的状态是一致的！这就是安全失败的含义。</p><p>所以Fail-Safe 迭代的缺点是：首先是iterator不能保证返回集合更新后的数据，因为其工作在集合克隆上，而非集合本身。其次，创建集合拷贝需要相应的开销，包括时间和内存。</p><p>在java.util.concurrent 包中集合的迭代器，如 ConcurrentHashMap, CopyOnWriteArrayList等默认为都是Fail-Safe。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Fail-Safe 迭代的出现，是为了解决fail-fast抛出异常处理不方便的情况。fail-safe是针对线程安全的集合类。&lt;/p&gt;
+&lt;p&gt;采⽤安全失败机制的集合容器，在遍历时不是直接在集合内容上访问的，⽽是先复制原有集合内容，在拷⻉的集合上进⾏遍历。所以，在遍历过程中</summary>
+      
+    
+    
+    
+    <category term="集合" scheme="http://example.com/categories/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="Java" scheme="http://example.com/categories/%E9%9B%86%E5%90%88/Java/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="fail-safe" scheme="http://example.com/tags/fail-safe/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Arrays.asList()避坑</title>
+    <link href="http://example.com/2022/04/01/Arrays-asList-%E9%81%BF%E5%9D%91/"/>
+    <id>http://example.com/2022/04/01/Arrays-asList-%E9%81%BF%E5%9D%91/</id>
+    <published>2022-04-01T13:53:00.000Z</published>
+    <updated>2022-04-01T13:59:09.226Z</updated>
+    
+    <content type="html"><![CDATA[<p>Arrays.asList() 我们可以使⽤它将⼀个数组转换为⼀个List集合。</p><p>jdk对这个方法的说明：返回由指定数组⽀持的固定⼤⼩的列表。此⽅法作为基于数组和基于集合的API之间的桥梁，与 Collection.toArray()结合使⽤。返回的List是可序列化并实现RandomAccess接⼝。</p><p>《阿⾥巴巴 Java 开发⼿册》对其的描述：Arrays.asList() 将数组转换为集合后,底层其实还是数组。强制使用add/remove/clear等方法会抛出异常。asList返回的对象是一个Arrays内部类，并没有实现集合的修改方法。Arrays.asList（）体现的是适配器模式，只是接口转换，后台的数据仍是数组。</p><p>传递的数组必须是对象数组，⽽不是基本类型。Arrays.asList() 是泛型⽅法，传⼊的对象必须是对象数组。</p><p> <img src="/images/pasted-173.png" alt="upload successful"></p><p>当传⼊⼀个原⽣数据类型数组时， Arrays.asList() 的真正得到的参数就不是数组中的元素，⽽是<br>数组对象本身！此时 List 的唯⼀元素就是这个数组，这也就解释了上⾯的代码。我们使用包装类可以解决该问题，但调用add/remove/clear等方法仍是会报错。</p><p>Arrays.asList() ⽅法返回的并不是 java.util.ArrayList ，⽽是 java.util.Arrays 的⼀个内部类,这个内部类并没有实现集合的修改⽅法或者说并没有重写这些⽅法。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Arrays.asList() 我们可以使⽤它将⼀个数组转换为⼀个List集合。&lt;/p&gt;
+&lt;p&gt;jdk对这个方法的说明：返回由指定数组⽀持的固定⼤⼩的列表。此⽅法作为基于数组和基于集合的API之间的桥梁，与 Collection.toArray()结合使⽤。返回的List是</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    <category term="集合" scheme="http://example.com/categories/Java/%E9%9B%86%E5%90%88/"/>
+    
+    
+    <category term="集合" scheme="http://example.com/tags/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+  </entry>
   
   <entry>
     <title>内存模型之伪共享(False Sharing)</title>
@@ -540,66 +598,6 @@
     <category term="String" scheme="http://example.com/tags/String/"/>
     
     <category term="G1" scheme="http://example.com/tags/G1/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于String的intern方法</title>
-    <link href="http://example.com/2022/03/19/%E5%85%B3%E4%BA%8EString%E7%9A%84intern%E6%96%B9%E6%B3%95/"/>
-    <id>http://example.com/2022/03/19/%E5%85%B3%E4%BA%8EString%E7%9A%84intern%E6%96%B9%E6%B3%95/</id>
-    <published>2022-03-19T11:44:00.000Z</published>
-    <updated>2022-03-19T12:04:44.977Z</updated>
-    
-    <content type="html"><![CDATA[<p>首先需要说明的是</p><ul><li>常量与常量拼接结果是放在常量池（编译期优化）</li><li>常量池不会存放相同字符串（hashtable）</li><li>只要其中一个是变量，拼接的时候，结果就是在堆（使用了stringbuiler）</li><li>拼接结果调用intern，则主动将常量池还没有的字符串对象放入，并返回对象地址。</li></ul><p>intern是一个native方法，调用的是底层c的方法。</p><ul><li>jdk1.6，会将这个对象尝试放入串池，如果串池有，则直接返回串池中该对象的地址。如果没有，则将该对象复杂一份，放入串池，并返回串池对象的地址</li><li>jdk1.7起，变动在于，当串池没有该对象，会将对象的引用复制一份放入串池，返回串池的引用地址</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;首先需要说明的是&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;常量与常量拼接结果是放在常量池（编译期优化）&lt;/li&gt;
-&lt;li&gt;常量池不会存放相同字符串（hashtable）&lt;/li&gt;
-&lt;li&gt;只要其中一个是变量，拼接的时候，结果就是在堆（使用了stringbuiler）&lt;/li&gt;
-&lt;li&gt;拼</summary>
-      
-    
-    
-    
-    <category term="String" scheme="http://example.com/categories/String/"/>
-    
-    
-    <category term="String" scheme="http://example.com/tags/String/"/>
-    
-    <category term="intern" scheme="http://example.com/tags/intern/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>为什么JDK9时String从char换为了byte？</title>
-    <link href="http://example.com/2022/03/19/%E4%B8%BA%E4%BB%80%E4%B9%88JDK9%E6%97%B6String%E4%BB%8Echar%E6%8D%A2%E4%B8%BA%E4%BA%86byte%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/19/%E4%B8%BA%E4%BB%80%E4%B9%88JDK9%E6%97%B6String%E4%BB%8Echar%E6%8D%A2%E4%B8%BA%E4%BA%86byte%EF%BC%9F/</id>
-    <published>2022-03-19T11:32:00.000Z</published>
-    <updated>2022-03-19T11:44:40.964Z</updated>
-    
-    <content type="html"><![CDATA[<p>jdk1.8及以前String的底层是用char数组构成，但在1.9变为了byte数组，为什么呢？</p><p>首先我们知道char字符占两个字节（16位），其次字符串是堆使用的重要部分，而且大多数字符串对象只包含拉丁字符（这些字符只需一个字节的存储空间），因此对于这些字符串对象的内部char数组可能会有半数以上的空间未使用，造成空间浪费。</p><p>因此将char转化为byte来应对这种情况。新的String类将根据字符串的内存存储编码为ISO或UTF的字符。</p><ul><li>注意：同String一样的Stringbuffer和Stringbuilder也同样做了修改</li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;jdk1.8及以前String的底层是用char数组构成，但在1.9变为了byte数组，为什么呢？&lt;/p&gt;
-&lt;p&gt;首先我们知道char字符占两个字节（16位），其次字符串是堆使用的重要部分，而且大多数字符串对象只包含拉丁字符（这些字符只需一个字节的存储空间），因此对于这些字</summary>
-      
-    
-    
-    
-    <category term="String" scheme="http://example.com/categories/String/"/>
-    
-    <category term="字符串" scheme="http://example.com/categories/String/%E5%AD%97%E7%AC%A6%E4%B8%B2/"/>
-    
-    
-    <category term="String" scheme="http://example.com/tags/String/"/>
-    
-    <category term="新特性" scheme="http://example.com/tags/%E6%96%B0%E7%89%B9%E6%80%A7/"/>
     
   </entry>
   
