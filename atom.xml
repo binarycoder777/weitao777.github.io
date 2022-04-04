@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-03T11:42:52.074Z</updated>
+  <updated>2022-04-03T14:09:04.344Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis的通信协议RESP</title>
+    <link href="http://example.com/2022/04/03/Redis%E7%9A%84%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AERESP/"/>
+    <id>http://example.com/2022/04/03/Redis%E7%9A%84%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AERESP/</id>
+    <published>2022-04-03T14:00:00.000Z</published>
+    <updated>2022-04-03T14:09:04.344Z</updated>
+    
+    <content type="html"><![CDATA[<p>我们知道，Redis 客户端与服务端是通过命令的方式来完成交互过程的，主要分为两个部分：网络模型和序列化协议。前者讨论的是数据交互的组织方式，后者讨论的是数据如何序列化。</p><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis 的通信协议是 Redis Serialization Protocol，翻译为 Redis 序列化协议，简称 RESP。它具有如下特征：</p><ul><li>在 TCP 层</li><li>是二进制安全的</li><li>基于请求 - 响应模式</li><li>简单、易懂（人都可以看懂）</li><li>RESP 所描述的是 Redis 客户端 - 服务端的交互方式。</li></ul><h2 id="RESP描述"><a href="#RESP描述" class="headerlink" title="RESP描述"></a>RESP描述</h2><p>Redis 协议将传输的结构数据分为 5 种类型，单元结束时统一加上回车换行符号 \r\n。</p><ul><li>单行字符串，第一个字节为 +</li><li>错误消息，第一个字节为 -</li><li>整型数字，第一个字节为 :，后跟整数的字符串</li><li>多行字符串，第一个字节为 $，后跟字符串的长度</li><li>数组，第一个字节为 *，后跟跟着数组的长度</li></ul><h2 id="请求命令"><a href="#请求命令" class="headerlink" title="请求命令"></a>请求命令</h2><p>Redis 对每一条请求命令都做了统一规范，格式如下：</p><pre><code>        *&lt;number of arguments&gt; CR LF        $&lt;number of bytes of argument 1&gt; CR LF        &lt;argument data&gt; CR LF        ...        $&lt;number of bytes of argument N&gt; CR LF        &lt;argument data&gt; CR LF</code></pre><p>翻译如下：</p><ul><li><p>number of arguments ： 参数的数量</p></li><li><p>CR LF：\r\n</p></li><li><p>number of bytes of argument 1：参数 1 的字节数</p></li><li><p>number of bytes of argument N：参数 N 的字节数<br>以命令 set userName chenssy 为例，如下：</p><pre><code>  *3  $3  SET  $8  userName  $7  chenssy</code></pre><p>解释：</p><pre><code>  *3 数组，表明有三个参数 SET、userName、chenssy  $3 多行字符串，第一个参数 SET ，有 3 个字符  $8 多行字符串，第二个参数 userName，有 8 个字符  $7 多行字符串，第三个参数 chenssy，有 7 个字符</code></pre><p>上面只是格式化显示的结果，真正传输的结果如下：</p><pre><code>  *3\r\n$3\r\nSET\r\n$8\r\nuserName\r\n$7\r\nchenssy\r\n</code></pre><h2 id="回复命令"><a href="#回复命令" class="headerlink" title="回复命令"></a>回复命令</h2><p>Redis 服务端响应要支持多种数据格式，所以回复命令一般都会显得复杂些，但是无论如何它都逃脱不了上面 5 中类型及其组合。</p></li></ul><p>从上面我们可以看出 RESP 协议是非常简单直观的一种协议，我们肉眼都可以看懂，而且数据结构类型也只有少少的 5 中，所以实现起来就变得很简单了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我们知道，Redis 客户端与服务端是通过命令的方式来完成交互过程的，主要分为两个部分：网络模型和序列化协议。前者讨论的是数据交互的组织方式，后者讨论的是数据如何序列化。&lt;/p&gt;
+&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; ti</summary>
+      
+    
+    
+    
+    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
+    
+    
+    <category term="RESP" scheme="http://example.com/tags/RESP/"/>
+    
+    <category term="通信协议" scheme="http://example.com/tags/%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
   
   <entry>
     <title>Java中的Queue那些事</title>
@@ -568,37 +597,6 @@
     <category term="两阶段提交" scheme="http://example.com/tags/%E4%B8%A4%E9%98%B6%E6%AE%B5%E6%8F%90%E4%BA%A4/"/>
     
     <category term="Binlog" scheme="http://example.com/tags/Binlog/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>如何判断一个数据库是否出现了问题？</title>
-    <link href="http://example.com/2022/03/21/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%98%AF%E5%90%A6%E5%87%BA%E7%8E%B0%E4%BA%86%E9%97%AE%E9%A2%98%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/21/%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E4%B8%80%E4%B8%AA%E6%95%B0%E6%8D%AE%E5%BA%93%E6%98%AF%E5%90%A6%E5%87%BA%E7%8E%B0%E4%BA%86%E9%97%AE%E9%A2%98%EF%BC%9F/</id>
-    <published>2022-03-21T07:30:00.000Z</published>
-    <updated>2022-03-21T07:50:00.480Z</updated>
-    
-    <content type="html"><![CDATA[<p>在一主一备的双 M 架构里，主备切换只需要把客户端流量切到备库；而在一主多从架构里，主备切换除了要把客户端流量切到备库外，还需要把从库接到新主库上。</p><p>主备切换有两种场景，一种是主动切换，一种是被动切换。而其中被动切换，往往是因为主库出问题了，由 HA 系统发起的。</p><p>而怎么判断主库出现了问题则是一个重点。</p><h2 id="select-1判断"><a href="#select-1判断" class="headerlink" title="select 1判断"></a>select 1判断</h2><p>select 1 成功返回，只能说明这个库的进程还在，并不能说明主库没问题。</p><p>我们设置 innodb_thread_concurrency 参数为3控制InnoDB 的并发线程上限。也就是说，一旦并发线程数达到这个值，InnoDB 在接收到新请求的时候，就会进入等待状态，直到有线程退出。</p><p>此时执行三个select sleep(100) from t，然后执行 select 1会返回成功，但执行select * from t会阻塞。这select 1 成功返回，只能说明这个库的进程还在，并不能说明主库没问题。</p><p>在 InnoDB 中，innodb_thread_concurrency 这个参数的默认值是 0，表示不限制并发线程数量。但是，不限制并发线程数肯定是不行的。因为，一个机器的 CPU 核数有限，线程全冲进来，上下文切换的成本就会太高。</p><p>所以，通常情况下，我们建议把 innodb_thread_concurrency 设置为 64~128 之间的值。这时，你一定会有疑问，并发线程上限数设置为 128 够干啥，线上的并发连接数动不动就上千了。</p><p>并发连接和并发查询，并不是同一个概念。你在 show processlist 的结果里，看到的几千个连接，指的就是并发连接。而“当前正在执行”的语句，才是我们所说的并发查询。</p><p>并发连接数达到几千个影响并不大，就是多占一些内存而已。我们应该关注的是并发查询，因为并发查询太高才是 CPU 杀手。这也是为什么我们需要设置innodb_thread_concurrency 参数的原因。</p><h2 id="查表判断"><a href="#查表判断" class="headerlink" title="查表判断"></a>查表判断</h2><p>为了能够检测 InnoDB 并发线程数过多导致的系统不可用情况，我们需要找一个访问InnoDB 的场景。一般的做法是，在系统库（mysql 库）里创建一个表，比如命名为health_check，里面只放一行数据，然后定期执行。</p><p>使用这个方法，我们可以检测出由于并发线程过多导致的数据库不可用的情况。</p><p>但是，我们马上还会碰到下一个问题，即：空间满了以后，这种方法又会变得不好使。</p><p>我们知道，更新事务要写 binlog，而一旦 binlog 所在磁盘的空间占用率达到 100%，那么所有的更新语句和事务提交的 commit 语句就都会被堵住。但是，系统这时候还是可以正常读数据的。</p><h2 id="更新判断"><a href="#更新判断" class="headerlink" title="更新判断"></a>更新判断</h2><p>既然要更新，就要放个有意义的字段，常见做法是放一个 timestamp 字段，用来表示最后一次执行检测的时间。</p><p>节点可用性的检测都应该包含主库和备库。如果用更新来检测主库的话，那么备库也要进行更新检测。</p><p>但，备库的检测也是要写 binlog 的。由于我们一般会把数据库 A 和 B 的主备关系设计为双 M 结构，所以在备库 B 上执行的检测命令，也要发回给主库 A。</p><p>但是，如果主库 A 和备库 B 都用相同的更新命令，就可能出现行冲突，也就是可能会导致主备同步停止。所以，现在看来 mysql.health_check 这个表就不能只有一行数据了。</p><p>为了让主备之间的更新不产生冲突，我们可以在 mysql.health_check 表上存入多行数据，并用 A、B 的 server_id 做主键。</p><p>由于 MySQL 规定了主库和备库的 server_id 必须不同（否则创建主备关系的时候就会报错），这样就可以保证主、备库各自的检测命令不会发生冲突。</p><p>更新判断是一个相对比较常用的方案了，不过依然存在一些问题。其中，“判定慢”一直是让 DBA 头疼的问题。</p><p>其实，这里涉及到的是服务器 IO 资源分配的问题。</p><p>首先，所有的检测逻辑都需要一个超时时间 N。执行一条 update 语句，超过 N 秒后还不返回，就认为系统不可用。</p><p>你可以设想一个日志盘的 IO 利用率已经是 100% 的场景。这时候，整个系统响应非常慢，已经需要做主备切换了。</p><p>但是你要知道，IO 利用率 100% 表示系统的 IO 是在工作的，每个请求都有机会获得 IO资源，执行自己的任务。而我们的检测使用的 update 命令，需要的资源很少，所以可能在</p><p>拿到 IO 资源的时候就可以提交成功，并且在超时时间 N 秒未到达之前就返回给了检测系统。</p><p>检测系统一看，update 命令没有超时，于是就得到了“系统正常”的结论。</p><p>也就是说，这时候在业务系统上正常的 SQL 语句已经执行得很慢了，但是 DBA 上去一看，HA 系统还在正常工作，并且认为主库现在处于可用状态。</p><p>之所以会出现这个现象，根本原因是我们上面说的所有方法，都是基于外部检测的。外部检测天然有一个问题，就是随机性。</p><p>因为，外部检测都需要定时轮询，所以系统可能已经出问题了，但是却需要等到下一个检测发起执行语句的时候，我们才有可能发现问题。而且，如果你的运气不够好的话，可能第一次轮询还不能发现，这就会导致切换慢的问题。</p><h2 id="内部统计"><a href="#内部统计" class="headerlink" title="内部统计"></a>内部统计</h2><p>针对磁盘利用率这个问题，如果 MySQL 可以告诉我们，内部每一次 IO 请求的时间，那我们判断数据库是否出问题的方法就可靠得多了。</p><p>其实，MySQL 5.6 版本以后提供的 performance_schema 库，就在file_summary_by_event_name 表里统计了每次 IO 请求的时间。</p><p>因为我们每一次操作数据库，performance_schema 都需要额外地统计这些信息，所以我们打开这个统计功能是有性能损耗的。</p><p>假设，现在你已经开启了 redo log 和 binlog 这两个统计信息，那要怎么把这个信息用在实例状态诊断上呢？</p><p>很简单，你可以通过 MAX_TIMER 的值来判断数据库是否出问题了。比如，你可以设定阈值，单次 IO 请求时间超过 200 毫秒属于异常，然后使用类似下面这条语句作为检测逻辑。</p><pre><code>mysql&gt; select event_name,MAX_TIMER_WAIT  FROM performance_schema.file_summary_by_event_n</code></pre><p>发现异常后，取到你需要的信息，再通过下面这条语句：</p><pre><code>mysql&gt; truncate table performance_schema.file_summary_by_event_name;</code></pre><p>把之前的统计信息清空。这样如果后面的监控中，再次出现这个异常，就可以加入监控累积值了。</p><pre><code>转载：https://www.jianshu.com/p/a95064c25e45</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在一主一备的双 M 架构里，主备切换只需要把客户端流量切到备库；而在一主多从架构里，主备切换除了要把客户端流量切到备库外，还需要把从库接到新主库上。&lt;/p&gt;
-&lt;p&gt;主备切换有两种场景，一种是主动切换，一种是被动切换。而其中被动切换，往往是因为主库出问题了，由 HA 系统发起</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    <category term="主从复制" scheme="http://example.com/categories/MySQL/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="主从复制" scheme="http://example.com/tags/%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6/"/>
-    
-    <category term="故障" scheme="http://example.com/tags/%E6%95%85%E9%9A%9C/"/>
     
   </entry>
   
