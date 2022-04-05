@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-05T02:24:26.726Z</updated>
+  <updated>2022-04-05T10:24:43.455Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,60 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于next-key lock的加锁规则</title>
+    <link href="http://example.com/2022/04/05/%E5%85%B3%E4%BA%8Enext-key-lock%E7%9A%84%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/"/>
+    <id>http://example.com/2022/04/05/%E5%85%B3%E4%BA%8Enext-key-lock%E7%9A%84%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/</id>
+    <published>2022-04-05T08:29:00.000Z</published>
+    <updated>2022-04-05T10:24:43.455Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="next-key-lock的加锁规则"><a href="#next-key-lock的加锁规则" class="headerlink" title="next-key lock的加锁规则"></a>next-key lock的加锁规则</h1><p>总结的加锁规则里面，包含了两个 “ “ 原则 ” ” 、两个 “ “ 优化 ” ” 和一个 “bug” 。 </p><ol><li>原则 1 ：加锁的基本单位是 next-key lock 。 next-key lock 是前开后闭区间。</li><li>原则 2 ：查找过程中访问到的对象才会加锁。任何辅助索引上的锁，或者非索引列上的锁，最终都要回溯到主键上，在主键上也要加一把锁。</li><li>优化 1 ：索引上的等值查询，给唯一索引加锁的时候， next-key lock 退化为行锁。也就是说如果InnoDB扫描的是一个主键、或是一个唯一索引的话，那InnoDB只会采用行锁方式来加锁</li><li>优化 2 ：索引上（不一定是唯一索引）的等值查询，向右遍历时且最后一个值不满足等值条件的时候， next-keylock 退化为间隙锁。</li><li>一个 bug ：唯一索引上的范围查询会访问到不满足条件的第一个值为止。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;next-key-lock的加锁规则&quot;&gt;&lt;a href=&quot;#next-key-lock的加锁规则&quot; class=&quot;headerlink&quot; title=&quot;next-key lock的加锁规则&quot;&gt;&lt;/a&gt;next-key lock的加锁规则&lt;/h1&gt;&lt;p&gt;总结的加锁规</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="next-key lock" scheme="http://example.com/tags/next-key-lock/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>读已提交下，为什么建议binlog使用row格式</title>
+    <link href="http://example.com/2022/04/05/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4%E4%B8%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BB%BA%E8%AE%AEbinlog%E4%BD%BF%E7%94%A8row%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://example.com/2022/04/05/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4%E4%B8%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BB%BA%E8%AE%AEbinlog%E4%BD%BF%E7%94%A8row%E6%A0%BC%E5%BC%8F/</id>
+    <published>2022-04-05T05:16:00.000Z</published>
+    <updated>2022-04-05T08:29:04.394Z</updated>
+    
+    <content type="html"><![CDATA[<p>next-key lock 实际上是由间隙锁加行锁实现的。而间隙锁是在可重复读隔离级别下才会生效的。因此在读已提交这个隔离级别下，为了解决数据和日志的不一致问题，需要将binlog的格式改为row，而不是statement。（statement记录的是逻辑上的SQL，而row记录的是对应行的变化情况）</p><p>解释：</p><p>CREATE TABLE <code>t</code> (<br>  <code>id</code> int(11) NOT NULL,<br>  <code>c</code> int(11) DEFAULT NULL,<br>  <code>d</code> int(11) DEFAULT NULL,<br>  PRIMARY KEY (<code>id</code>),<br>  KEY <code>c</code> (<code>c</code>)<br>) ENGINE=InnoDB;</p><p>insert into t values(0,0,0),(5,5,5),<br>(10,10,10),(15,15,15),(20,20,20),(25,25,25);</p><p> <img src="/images/pasted-177.png" alt="upload successful"><br>建表执行过程如上所述，首先针对于T3和T5时session A查询会出现幻读问题（语义上，我们是要把d=5的所有数据锁住，而后续SessionB和C都能够操作d=5的数据），其次会出现数据和日志不一致的问题（binlog写入是根据commit提交决定的，因此SessionB会先写入，随后Session C，最后才是Session A，这样导致的结果就是，我们数据库的数据是：</p><ol><li>经过 T1 时刻，id=5 这一行变成 (5,5,100)，当然这个结果最终是在 T6 时刻正式提交的 ;</li><li>经过 T2 时刻，id=0 这一行变成 (0,5,5);</li><li>经过 T4 时刻，表里面多了一行 (1,5,5);</li><li>其他行跟这个执行序列无关，保持不变。</li></ol><p>而binlog日志里面记录的数据却是这样的：<br>update t set d=5 where id=0; /<em>(0,0,5)</em>/</p><p>update t set c=5 where id=0; /<em>(0,5,5)</em>/</p><p>insert into t values(1,1,5); /<em>(1,1,5)</em>/</p><p>update t set c=5 where id=1; /<em>(1,5,5)</em>/</p><p>update t set d=100 where d=5;/* 所有 d=5 的行，d 改成 100*/</p><p>这个语句序列，不论是拿到备库去执行，还是以后用 binlog 来克隆一个库，这三行的结果，都变成了 (0,5,100)、(1,5,100) 和 (5,5,100)。<br>也就是说，id=0 和 id=1 这两行，发生了数据不一致。<br>）</p><p>因此在读已提交下，使用Statement格式的binlog日志是不可取的。而如果你改用row格式，那么对于上面这种情况，记录的是对应行的修改，而不是逻辑上的SQL语句，能够避免这种问题。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;next-key lock 实际上是由间隙锁加行锁实现的。而间隙锁是在可重复读隔离级别下才会生效的。因此在读已提交这个隔离级别下，为了解决数据和日志的不一致问题，需要将binlog的格式改为row，而不是statement。（statement记录的是逻辑上的SQL，而ro</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="读已提交" scheme="http://example.com/tags/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4/"/>
+    
+    <category term="binlog" scheme="http://example.com/tags/binlog/"/>
+    
+  </entry>
   
   <entry>
     <title>MySQL中的自增长锁需要注意的点</title>
@@ -547,59 +601,6 @@
     <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
     
     <category term="原则" scheme="http://example.com/tags/%E5%8E%9F%E5%88%99/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL8.0索引新特性</title>
-    <link href="http://example.com/2022/03/23/MySQL8-0%E7%B4%A2%E5%BC%95%E6%96%B0%E7%89%B9%E6%80%A7/"/>
-    <id>http://example.com/2022/03/23/MySQL8-0%E7%B4%A2%E5%BC%95%E6%96%B0%E7%89%B9%E6%80%A7/</id>
-    <published>2022-03-23T01:12:00.000Z</published>
-    <updated>2022-03-23T01:18:15.471Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="支持降序索引"><a href="#支持降序索引" class="headerlink" title="支持降序索引"></a>支持降序索引</h1><p>分别在MySQL 5.7版本和MySQL 8.0版本中创建数据表ts1，结果如下：</p><pre><code>CREATE TABLE ts1(a int,b int,index idx_a_b(a,b desc));</code></pre><ul><li>5.7</li></ul><p> <img src="/images/pasted-166.png" alt="upload successful"></p><ul><li>8.0</li></ul><p> <img src="/images/pasted-167.png" alt="upload successful"></p><p>降序索引在特性降序查询效率比升序自然要好，具体根据情况而进行设定。</p><h1 id="隐藏索引"><a href="#隐藏索引" class="headerlink" title="隐藏索引"></a>隐藏索引</h1><ul><li><p>在MySQL 5.7版本及之前，只能通过显式的方式删除索引。此时，如果发现删除索引后出现错误，又只能通过显式创建索引的方式将删除的索引创建回来。如果数据表中的数据量非常大，或者数据表本身比较大，这种操作就会消耗系统过多的资源，操作成本非常高。</p></li><li><p>从MySQL 8.x开始支持 隐藏索引（invisible indexes） ，只需要将待删除的索引设置为隐藏索引，使查询优化器不再使用这个索引（即使使用force index（强制使用索引），优化器也不会使用该索引），确认将索引设置为隐藏索引后系统不受任何响应，就可以彻底删除索引。 这种通过先将索引设置为隐藏索引，再删除索引的方式就是软删除 。</p></li></ul><p>注意：注意 当索引被隐藏时，它的内容仍然是和正常索引一样实时更新的。如果一个索引需要长期被隐藏，那么可以将其删除，因为索引的存在会影响插入、更新和删除的性能。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h1 id=&quot;支持降序索引&quot;&gt;&lt;a href=&quot;#支持降序索引&quot; class=&quot;headerlink&quot; title=&quot;支持降序索引&quot;&gt;&lt;/a&gt;支持降序索引&lt;/h1&gt;&lt;p&gt;分别在MySQL 5.7版本和MySQL 8.0版本中创建数据表ts1，结果如下：&lt;/p&gt;
-&lt;pre&gt;&lt;co</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="新特性" scheme="http://example.com/tags/%E6%96%B0%E7%89%B9%E6%80%A7/"/>
-    
-    <category term="MySQL8.0" scheme="http://example.com/tags/MySQL8-0/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL中大多数情况查询缓存就是个鸡肋，为什么呢？</title>
-    <link href="http://example.com/2022/03/22/MySQL%E4%B8%AD%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98%E5%B0%B1%E6%98%AF%E4%B8%AA%E9%B8%A1%E8%82%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%91%A2%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/22/MySQL%E4%B8%AD%E5%A4%A7%E5%A4%9A%E6%95%B0%E6%83%85%E5%86%B5%E6%9F%A5%E8%AF%A2%E7%BC%93%E5%AD%98%E5%B0%B1%E6%98%AF%E4%B8%AA%E9%B8%A1%E8%82%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%91%A2%EF%BC%9F/</id>
-    <published>2022-03-22T12:34:00.000Z</published>
-    <updated>2022-03-22T12:37:08.225Z</updated>
-    
-    <content type="html"><![CDATA[<p>查询缓存是提前把查询结果缓存起来，这样下次不需要执行就可以直接拿到结果。需要说明的是，在MySQL 中的查询缓存，不是缓存查询计划，而是查询对应的结果。这就意味着查询匹配的鲁棒性大大降低 ，只有相同的查询操作才会命中查询缓存。两个查询请求在任何字符上的不同（例如：空格、注释、大小写），都会导致缓存不会命中。因此 MySQL的查询缓存命中率不高 。同时，如果查询请求中包含某些系统函数、用户自定义变量和函数、一些系统表，如 mysql 、 information_schema、 performance_schema 数据库中的表，那这个请求就不会被缓存。以某些系统函数举例，可能同样的函数的两次调用会产生不一样的结果，比如函数NOW ，每次调用都会产生最新的当前时间，如果在一个查询请求中调用了这个函数，那即使查询请求的文本信息都一样，那不同时间的两次查询也应该得到不同的结果，如果在第一次查询时就缓存了，那第二次查询的时候直接使用第一次查询的结果就是错误的！</p><p>此外，既然是缓存，那就有它缓存失效的时候 。MySQL的缓存系统会监测涉及到的每张表，只要该表的结构或者数据被修改，如对该表使用了INSERT 、 UPDATE 、 DELETE 、 TRUNCATE TABLE 、 ALTER TABLE 、 DROP TABLE 或 DROP DATABASE 语句，那使用该表的所有高速缓存查询都将变为无效并从高速缓存中删除！对于更新压力大的数据库 来说，查询缓存的命中率会非常低。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;查询缓存是提前把查询结果缓存起来，这样下次不需要执行就可以直接拿到结果。需要说明的是，在MySQL 中的查询缓存，不是缓存查询计划，而是查询对应的结果。这就意味着查询匹配的鲁棒性大大降低 ，只有相同的查询操作才会命中查询缓存。两个查询请求在任何字符上的不同（例如：空格、注释</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="缓存" scheme="http://example.com/tags/%E7%BC%93%E5%AD%98/"/>
     
   </entry>
   
