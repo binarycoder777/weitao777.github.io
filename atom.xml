@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-05T10:24:43.455Z</updated>
+  <updated>2022-04-09T08:39:23.181Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,61 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于Java SE 8 的流库</title>
+    <link href="http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava-SE-8-%E7%9A%84%E6%B5%81%E5%BA%93/"/>
+    <id>http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava-SE-8-%E7%9A%84%E6%B5%81%E5%BA%93/</id>
+    <published>2022-04-09T06:58:00.000Z</published>
+    <updated>2022-04-09T08:39:23.181Z</updated>
+    
+    <content type="html"><![CDATA[<p>流提供了一种让我们可以在比集合更高的概念级别上去指定计算的数据视图。通过使用流，我们可以说明想要完成什么任务，而不是说明如何去实现它。我们将操作的调度留给具体实现去解决。</p><h3 id="1-1-从迭代到流的操作"><a href="#1-1-从迭代到流的操作" class="headerlink" title="1.1 从迭代到流的操作"></a>1.1 从迭代到流的操作</h3><p>在处理集合时，我们通常会迭代遍历它的元素，并在每个元素上执行某项操作。</p><p> <img src="/images/pasted-178.png" alt="upload successful"></p><p> 而在使用流时，相同的操作是这样的</p><p> <img src="/images/pasted-179.png" alt="upload successful"></p><p>流的版本比循环版本更易于阅读。将stream修改为parallelstream就可以让流库以并行方式来执行过滤和计数。</p><p> <img src="/images/pasted-180.png" alt="upload successful"><br> 流遵循了“做什么,而非怎么做”的原则。在上述例子中，我们描述了需要做什么：获取单词长度，对其计数。我们没有指定该操作应该以什么顺序或者在哪个线程中执行。</p><p> 流表面上看起来和集合类似，但实际上期存在较大差异：</p><ol><li>流并不存储其元素。这些元素可能存储在底层的集合中，或者是按需生成的。</li><li>流的操作不会修改器数据源。</li><li>流的操作是尽可能的惰性执行。即直至需要结果时，操作才会执行。</li></ol><p> 还是以上述例子：stream会产生一个用于words的stream，filter会返回另一个流，其中只包含长度大于12的单词，count方法会将这个流简化为一个结果。即：</p><ol><li>创建一个流</li><li>指定将初始化流转化为其他流的中间操作，可能包含多个步骤</li><li>应用终止，产生结果</li></ol><p> <img src="/images/pasted-181.png" alt="upload successful"></p><h3 id="1-2-流的创建"><a href="#1-2-流的创建" class="headerlink" title="1.2 流的创建"></a>1.2 流的创建</h3><p> 可以用collection接口的stream方法将任何集合转换为一个流。如果你有一个数组，可以使用静态方法Stream.of方法进行流化。除此之外，也可以使用Array.stream(array,from,to)从数组from到to元素创建一个流。<br> 也可以使用stream.empty创建一个不包含任何元素的流。</p><p> stream接口有两个用于创建无限流的静态方法。</p><ol><li>generate方法会接收一个不包含任何引元的函数。无论何时，只需要一个流类型的值，该函数会被调用产生一个这样的值。我们可以像下面这样获得一个常量值的流：</li></ol><p> <img src="/images/pasted-182.png" alt="upload successful"></p><ol start="2"><li>iterate方法会接收一个“种子”值，以及一个函数，并且反复的将函数应用到之前的结果上，例如：</li></ol><p> <img src="/images/pasted-183.png" alt="upload successful"></p><p> java API中有大量方法可以产生流。</p><p> <img src="/images/pasted-184.png" alt="upload successful"></p><h3 id="1-3filter、map和flatMap方法"><a href="#1-3filter、map和flatMap方法" class="headerlink" title="1.3filter、map和flatMap方法"></a>1.3filter、map和flatMap方法</h3><p> 流的转换会产生一个新的流，它的元素派生自另一个流的元素。</p><p> filter的引元是Predicate<T>，即从T到boolean的函数。</p><p>  通常我们想要按照某种方法来转换流中的值，此时，可以使用map方法并传递执行该转换的函数。例如，我们可以用下面的方式，将单词转化为小写：</p><p> <img src="/images/pasted-185.png" alt="upload successful"><br> 这里，我们使用的是带有方法引用的map，但是，通常我们可以使用lambda表达式来代替：</p><p> <img src="/images/pasted-186.png" alt="upload successful"></p><p>在使用map时，会有一个函数应用到每个元素上，并且其结果是包含了应用函数后所产生的所有结果的流。</p><p> <img src="/images/pasted-187.png" alt="upload successful"></p><h3 id="1-4-抽取子流和连接流"><a href="#1-4-抽取子流和连接流" class="headerlink" title="1.4 抽取子流和连接流"></a>1.4 抽取子流和连接流</h3><p> stream.limit（n）会返回一个新的流，它在n个元素之后结束（如果原来的流更短，那么就会在流结束时结束）。这个方法对于剪裁无限流的尺寸会显得特别有用。</p><p><img src="/images/pasted-189.png" alt="upload successful"><br> 会产生包含100个随机数的流。</p><p> 调用strea.skip(n)则相反，会对其前n个元素。</p><h3 id="1-5-其他的流转换"><a href="#1-5-其他的流转换" class="headerlink" title="1.5 其他的流转换"></a>1.5 其他的流转换</h3><p> distinct方法会返回一个流，他的元素时从原有流产生的，即剔除掉重复元素的流。</p><p> 对于流的排序，有多种sorted方法的变体可用。其中一种用于操作comparable元素的流，而另一种则支持comparator。</p><p> 与所有流转换一样，sorted方法会产生一个新的流（按照规则已经排序）。</p><p> 最后，peek方法会产生另一个流，在每次获取元素时，都会调用一个函数，对于调式很有用。</p><h3 id="1-6-简单约简"><a href="#1-6-简单约简" class="headerlink" title="1.6 简单约简"></a>1.6 简单约简</h3><p>简单约简是一种终结操作，他们会将流约简为可以在程序中使用的非流值。</p><p>count就是其中一种（返回流中的元素）</p><p>其他的简单约简还有max和min之类。他们会返回最大值和最小值。而这里返回的值是一个类型Optional<T>的值，它要么在其中包装了答案，要么表示没有任何值（流碰巧为空）。所有Optional的引入是为了避免空指针异常这类问题的出现。</p><p>  如果只想知道是否匹配，那么可以使用angMatch、allMatch、nonMatch方法。</p><h3 id="1-7-收集结果"><a href="#1-7-收集结果" class="headerlink" title="1.7 收集结果"></a>1.7 收集结果</h3><p>当流处理完后，可以使用iterator方法查看结果，也可以使用forEach（在并行流中，调用forEach会以任意顺序遍历，可以使用forEachOrdered方法，当然该方法会丧失并行处理的优势）</p><p>如果想将结果收集到数据结构中，可以使用toArray函数。</p><p>如果是收集到另一个目标中，可以使用collect方法。</p><h3 id="1-8-收集到映射表中"><a href="#1-8-收集到映射表中" class="headerlink" title="1.8 收集到映射表中"></a>1.8 收集到映射表中</h3><p>Collectors.toMap方法有两个函数引元，他们用来产生映射表的键和值</p><p>如果有多个元素具体相同的键，则会存在冲突，收集器将会抛出一个Illeagel-StateException对象。可以通过第三个函数引元来覆盖这种行为。</p><p>未完，待续…</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;流提供了一种让我们可以在比集合更高的概念级别上去指定计算的数据视图。通过使用流，我们可以说明想要完成什么任务，而不是说明如何去实现它。我们将操作的调度留给具体实现去解决。&lt;/p&gt;
+&lt;h3 id=&quot;1-1-从迭代到流的操作&quot;&gt;&lt;a href=&quot;#1-1-从迭代到流的操作&quot; c</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="流" scheme="http://example.com/tags/%E6%B5%81/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于Java泛型</title>
+    <link href="http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava%E6%B3%9B%E5%9E%8B/"/>
+    <id>http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava%E6%B3%9B%E5%9E%8B/</id>
+    <published>2022-04-09T06:32:00.000Z</published>
+    <updated>2022-04-09T06:50:29.403Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="泛型的理解："><a href="#泛型的理解：" class="headerlink" title="泛型的理解："></a>泛型的理解：</h3><ol><li><p>泛型又称参数化类型，于jdk5.0提出的提特性，解决数据类型的安全性问题</p></li><li><p>在类声明或实例化时只要指定好需要的具体的类型即可</p></li><li><p>java的泛型可以保证如果程序在编译时没有发出警告，运行时就不会产生ClassCastException异常。同时，代码更加简介、健壮</p></li><li><p>泛型的作用是在类声明时通过一个标识表示类中某个属性类型，或者是某个方法返回值的类型，或者是参数类型</p></li></ol><h3 id="泛型的好处："><a href="#泛型的好处：" class="headerlink" title="泛型的好处："></a>泛型的好处：</h3><ol><li><p>编译时，检查添加元素的类型，提高了安全性</p></li><li><p>减少了类型转换的次数，提高了效率</p></li><li><p>不再提示编译警告</p></li></ol><h3 id="自定义泛型类："><a href="#自定义泛型类：" class="headerlink" title="自定义泛型类："></a>自定义泛型类：</h3><pre><code>public class Solution&lt;K,V&gt; &#123;    K k;    V v;    public K getK()&#123;        return null;    &#125;&#125;</code></pre><p>注意：</p><ol><li><p>普通成员可以使用泛型（属性、方法）</p></li><li><p>使用泛型的数组不能初始化</p></li><li><p>静态方法中不能使用类的泛型</p></li><li><p>泛型类的类型是在创建对象时确定的</p></li><li><p>如果在创建对象时没有指定类型，默认为object</p></li></ol><h3 id="自定义泛型接口"><a href="#自定义泛型接口" class="headerlink" title="自定义泛型接口"></a>自定义泛型接口</h3><pre><code>interface B&lt;T&gt;&#123;    T getInstance();&#125;</code></pre><p>注意：</p><ol><li><p>接口中，静态成员不能使用泛型</p></li><li><p>泛型接口的类型在继承接口或者实现接口时确定</p></li><li><p>没有指定类型，默认为Object</p></li></ol><h3 id="泛型的继承和通配符"><a href="#泛型的继承和通配符" class="headerlink" title="泛型的继承和通配符"></a>泛型的继承和通配符</h3><ol><li><p>泛型不具备继承性</p></li><li><?> :支持任意泛型类型</li><li><? extends A>: 支持A类以及A的子类，规定了泛型的上限</li><li><? super A>:支持A类以及A的父类，不限于直接父类，规避了泛型的下限</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;泛型的理解：&quot;&gt;&lt;a href=&quot;#泛型的理解：&quot; class=&quot;headerlink&quot; title=&quot;泛型的理解：&quot;&gt;&lt;/a&gt;泛型的理解：&lt;/h3&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;泛型又称参数化类型，于jdk5.0提出的提特性，解决数据类型的安全性问题&lt;/p&gt;
+&lt;/li</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="泛型" scheme="http://example.com/tags/%E6%B3%9B%E5%9E%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>关于next-key lock的加锁规则</title>
@@ -534,73 +589,6 @@
     <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
     <category term="索引失效" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>哪些情况下不适合建立索引？</title>
-    <link href="http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E4%B8%8D%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/</id>
-    <published>2022-03-23T01:29:00.000Z</published>
-    <updated>2022-03-23T01:30:24.048Z</updated>
-    
-    <content type="html"><![CDATA[<ul><li><p>在where中使用不到的字段，不要设置索引</p></li><li><p> 数据量小的表最好不要使用索引</p></li><li><p>有大量重复数据的列上不要建立索引</p></li><li><p>避免对经常更新的表创建过多的索引</p></li><li><p>不建议用无序的值作为索引</p></li><li><p> 删除不再使用或者很少使用的索引</p></li><li><p> 不要定义冗余或重复的索引</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;在where中使用不到的字段，不要设置索引&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt; 数据量小的表最好不要使用索引&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;有大量重复数据的列上不要建立索引&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;避免对经常更新的表创建过多的索引&lt;/p&gt;
-&lt;</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
-    
-    <category term="设计原则" scheme="http://example.com/tags/%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>哪些情况下适合建立索引？</title>
-    <link href="http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/"/>
-    <id>http://example.com/2022/03/23/%E5%93%AA%E4%BA%9B%E6%83%85%E5%86%B5%E4%B8%8B%E9%80%82%E5%90%88%E5%BB%BA%E7%AB%8B%E7%B4%A2%E5%BC%95%EF%BC%9F/</id>
-    <published>2022-03-23T01:18:00.000Z</published>
-    <updated>2022-03-23T01:28:05.806Z</updated>
-    
-    <content type="html"><![CDATA[<ul><li><p>字段的数值有唯一性约束<br>（业务上具有唯一特性的字段，即使是组合字段，也必须建成唯一索引。（来源：Alibaba））</p></li><li><p>频繁作为where查询条件的字段<br>（某个字段在SELECT语句的 WHERE 条件中经常被使用到，那么就需要给这个字段创建索引了。尤其是在<br>数据量大的情况下，创建普通索引就可以大幅提升数据查询的效率。）</p></li><li><p>经常 GROUP BY 和 ORDER BY 的列<br>（索引就是让数据按照某种顺序进行存储或检索，因此当我们使用 GROUP BY 对数据进行分组查询，或者<br>使用 ORDER BY 对数据进行排序的时候，就需要 对分组或者排序的字段进行索引 。如果待排序的列有多<br>个，那么可以在这些列上建立 组合索引 。）</p></li><li><p> UPDATE、DELETE 的 WHERE 条件列<br>（对数据按照某个条件进行查询后再进行 UPDATE 或 DELETE 的操作，如果对 WHERE 字段创建了索引，就<br>能大幅提升效率。原理是因为我们需要先根据 WHERE 条件列检索出来这条记录，然后再对它进行更新或<br>删除。如果进行更新的时候，更新的字段是非索引字段，提升的效率会更明显，这是因为非索引字段更<br>新不需要对索引进行维护。）</p></li><li><p>DISTINCT 字段需要创建索引<br>（有时候我们需要对某个字段进行去重，使用 DISTINCT，那么对这个字段创建索引，也会提升查询效率。）</p></li><li><p>多表 JOIN 连接操作时，创建索引注意事项<br>（首先， 连接表的数量尽量不要超过 3 张 ，因为每增加一张表就相当于增加了一次嵌套的循环，数量级增<br>长会非常快，严重影响查询的效率。<br>其次， 对 WHERE 条件创建索引 ，因为 WHERE 才是对数据条件的过滤。如果在数据量非常大的情况下，<br>没有 WHERE 条件过滤是非常可怕的。<br>最后， 对用于连接的字段创建索引 ，并且该字段在多张表中的 类型必须一致 。比如 course_id 在 student_info 表和 course 表中都为 int(11) 类型，而不能一个为 int 另一个为 varchar 类型。）</p></li><li><p> 使用列的类型小的创建索引</p></li><li><p>使用字符串前缀创建索引<br>（例如创建一张商户表，因为地址字段比较长，可以在地址字段上建立前缀索引）</p><p>  注意：</p><p>  【 强制 】在 varchar 字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据实际文本区分度决定索引长度。</p><p>  说明：索引的长度与区分度是一对矛盾体，一般对字符串类型数据，长度为 20 的索引，区分度会 高达 90% 以上 ，可以使用 count(distinct left(列名, 索引长度))/count(*)的区分度来确定。</p></li><li><p> 区分度高(散列性高)的列适合作为索引</p></li><li><p> 使用最频繁的列放到联合索引的左侧</p></li><li><p>在多个字段都要创建索引的情况下，联合索引优于单值索引</p></li><li><p>限制索引的数目</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;字段的数值有唯一性约束&lt;br&gt;（业务上具有唯一特性的字段，即使是组合字段，也必须建成唯一索引。（来源：Alibaba））&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;频繁作为where查询条件的字段&lt;br&gt;（某个字段在SELECT语句的 WHERE 条件中经常被使用</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="索引" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95/"/>
-    
-    <category term="原则" scheme="http://example.com/tags/%E5%8E%9F%E5%88%99/"/>
     
   </entry>
   

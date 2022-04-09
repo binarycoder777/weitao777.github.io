@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
+    <loc>http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava-SE-8-%E7%9A%84%E6%B5%81%E5%BA%93/</loc>
+    <lastmod>2022-04-09</lastmod>
+  </url>
+  <url>
+    <loc>http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava%E6%B3%9B%E5%9E%8B/</loc>
+    <lastmod>2022-04-09</lastmod>
+  </url>
+  <url>
     <loc>http://example.com/2022/04/05/%E5%85%B3%E4%BA%8Enext-key-lock%E7%9A%84%E5%8A%A0%E9%94%81%E8%A7%84%E5%88%99/</loc>
     <lastmod>2022-04-05</lastmod>
   </url>
