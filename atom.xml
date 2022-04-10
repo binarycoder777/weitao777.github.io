@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-09T08:39:23.181Z</updated>
+  <updated>2022-04-10T08:44:36.967Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,84 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>MySQL EXPLAIN 详解</title>
+    <link href="http://example.com/2022/04/10/MySQL-EXPLAIN-%E8%AF%A6%E8%A7%A3/"/>
+    <id>http://example.com/2022/04/10/MySQL-EXPLAIN-%E8%AF%A6%E8%A7%A3/</id>
+    <published>2022-04-10T08:23:00.000Z</published>
+    <updated>2022-04-10T08:44:36.967Z</updated>
+    
+    <content type="html"><![CDATA[<p>MySQL 提供了一个EXPALIN 命令，可以用于对SQL语句的执行计划进行分析，并详细的输出分析结果，供开发人员进行针对性的优化。</p><p>我们想要查询一条sql有没有用上索引，有没有全表查询，这些都可以通过explain这个命令来查看。</p><p>通过explain命令，我们可以深入了解到MySQL的基于开销的优化器，还可以获得很多被优化器考虑到的访问策略的细节以及运行sql语句时哪种策略预计会被优化器采用。</p><p>xplain的使用十分简单，通过在查询语句前面加一个explain关键字即可。</p><h2 id="参数说明"><a href="#参数说明" class="headerlink" title="参数说明"></a>参数说明</h2><p>explain 命令一共返回12列信息，分别是：</p><pre><code>id、select_type、table、partitions、type、possible_keys、key、key_len、ref、rows、filtered、Extra</code></pre><h3 id="id-列"><a href="#id-列" class="headerlink" title="id 列"></a>id 列</h3><ul><li>每个select语句都会自动分配的一个唯一标识符</li><li>表示查询中，操作表的顺序，有三种情况<pre><code>id相同，执行顺序从上到下id不同，如果是子查询，id号会自增，id越大，优先级越高id相同的不相同的同时存在</code></pre></li><li>id列为null表示为结果集，不需要使用这个语句来查询</li></ul><h3 id="select-type-列（很重要）"><a href="#select-type-列（很重要）" class="headerlink" title="select_type 列（很重要）"></a>select_type 列（很重要）</h3><p>查询类型，主要用于区别 普通查询、联合查询（union、union all）、子查询等复杂查询。</p><ul><li><p>simple：表示不需要union操作或者不包含子查询的简单select查询。有连接查询时，外层的查询为simple，且只有一个。</p></li><li><p>primary：一个需要使用union的操作或者含有子查询的select，位于最外层的单位查询的select_type即为primary。且只有一个</p></li><li><p>subquery:除了from子句中包含的子查询外，其它地方出现的子查询都可能时subquery</p></li><li><p>dependent subquery:子查询的结果受到外层的影响</p></li><li><p>union、union result:union 连接的多表查询，第一个查询primary，后面的是union, 结果集是 union result</p></li><li><p>dependent union:和union一样，出现在union或者union all中，但是这个查询要受到外部查询的影响</p></li><li><p>derived:在from子句后面的子查询，也叫派生表,注意，在MySql5.6 对于此查询没有优化，所以查询类型是derived.在mysql 5.7 使用了 Merge Derived table 优化，查询类型变为SIMPLE。通过控制参数: optimizer_switch=’derived=on|off’ 决定开始还是优化。默认开启。</p></li></ul><h2 id="table列"><a href="#table列" class="headerlink" title="table列"></a>table列</h2><ul><li><p>显示的查询表名，如果查询使用了别名，那么这里显示的就是别名</p></li><li><p>如果不涉及对数据表的操作，那么这里就是null</p></li><li><p>如果显示为尖括号括起来<derived N>就表示这是一个临时表，N就是执行计划的id，表示结果来自这个查询</p></li><li><p>如果显示为尖括号括起来的&lt;union n,m&gt;也表示一个临时表，表示来自union查询id为n、m的结果集</p></li></ul><h2 id="partitions-列"><a href="#partitions-列" class="headerlink" title="partitions 列"></a>partitions 列</h2><p>分区信息</p><h2 id="type-列-（重要）"><a href="#type-列-（重要）" class="headerlink" title="type 列 （重要）"></a>type 列 （重要）</h2><p>依次从好到差：</p><pre><code>system、const、eq_ref、ref、full_text、ref_or_null、unique_subquery、index_subquery、range、index_merge、index、all</code></pre><p>除了 All 以外，其它的类型都可以用到索引，除了index_merge可以使用多个索引之外，其它的类型最多只能使用到一个索引。</p><ul><li><p>system：表中只有一行数据或者是空表</p></li><li><p>const：使用唯一索引或者主键，返回记录一定是一条的等值where条件时，通常type是const。</p></li><li><p>eq_ref:连接字段为主键或者唯一索引，此类型通常出现于多表的join查询，表示对于前表的每一个结果，都对应后表的唯一一条结果。并且查询的比较是=操作，查询效率比较高。</p></li><li><p>ref:</p><ol><li>非主键或者唯一键的等值查询</li><li>join连接字段是非主键或者唯一键</li><li>最左前缀索引匹配</li></ol></li><li><p>fulltext:全文检索索引。</p></li><li><p>ref_or_null:和ref类似，增加了null值判断</p></li><li><p>unique_subquery、 index_subquery:都是子查询，前者返回唯一值，后者返回可能有重复。</p></li><li><p>range (重要):索引范围扫描，常用于 &gt;&lt;,is null,between,in,like等</p></li><li><p>index_merge(索引合并):表示查询使用了两个或者以上的索引数量，常见于and或者or查询匹配上了多个不同索引的字段</p></li><li><p>index(辅助索引):减少回表次数,因为要查询的索引都在一颗索引树上</p></li><li><p>all: 全表扫描</p></li></ul><h2 id="possible-keys-列"><a href="#possible-keys-列" class="headerlink" title="possible_keys 列"></a>possible_keys 列</h2><p>此次查询中，可能选用的索引</p><h2 id="key列"><a href="#key列" class="headerlink" title="key列"></a>key列</h2><p>查询实际使用的索引，select_type为index_merge时，key列可能有多个索引，其它时候这里只会有一个</p><h2 id="key-len-列"><a href="#key-len-列" class="headerlink" title="key_len 列"></a>key_len 列</h2><ul><li>用于处理查询的索引长度，如果是单列索引，那么整个索引长度都会计算进去，如果是多列索引，那么查询不一定能使用到所有的列，具体使用了多少个列的索引，这里就会计算进去，没有使用到的索引，这里不会计算进去。</li><li>留意一下这个长度，计算一下就知道这个索引使用了多少列</li><li>另外，key_len 只计算 where 条件使用到索引长度，而排序和分组就算用到了索引也不会计算key_len</li></ul><h2 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h2><ul><li>如果是使用的常数等值查询，这里会显示const</li><li>如果是连接查询，被驱动表的执行计划这里会显示驱动表的关联字段</li><li>如果是条件使用了表达式或者函数，或者条件列发生了内部隐式转换，这里可能会显示func</li></ul><h2 id="rows"><a href="#rows" class="headerlink" title="rows"></a>rows</h2><p>执行计划估算的扫描行数，不是精确值（innodb不是精确值，myisam是精确值，主要是因为innodb使用了mvcc）</p><h2 id="extra"><a href="#extra" class="headerlink" title="extra"></a>extra</h2><p>这个列包含很多不适合在其它列显示的重要信息，有很多种，常用的有：</p><ul><li><p>using temporary</p></li><li><p>表示使用了临时表存储中间结果   </p></li><li><p>MySQL在对 order by和group by 时使用临时表</p></li><li><p>临时表可以是内存临时表和磁盘临时表，执行计划中看不出来，需要查看status变量：used_tmp_table、used_tmp_disk_table才可以看出来</p></li><li><p>no table used</p></li><li><p>不带from字句的查询或者from dual查询（explain select 1;）</p></li></ul><p>使用 not in() 形式的子查询查询或者not exists运算符的连接查询，这种叫做反链接</p><pre><code>即：一般连接先查询内表再查询外表，反链接就是先查询外表再查询内表</code></pre><ul><li><p>using filesort</p></li><li><p>排序时无法使用到所以就会出现这个，常见于order by和group by</p></li><li><p>说明MySQL会使用一个外部的索引进行排序，而不是按照索引顺序进行读取</p></li><li><p>MySQL中无法利用索引完成的排序就叫“文件排序”</p></li><li><p>using index 查询时候不需要回表</p><ul><li>表示相应的select查询中使用到了覆盖索引(Covering index)，避免访问表的数据行</li><li>如果同时出现了using where，说明索引被用来执行查询键值如果没有using where，表示读取数据而不是执行查找操作</li></ul></li><li><p>using where</p><ul><li>表示存储引擎返回的记录并不都是符合条件的，需要在server层进行筛选过滤，性能很低</li></ul></li><li><p>using index condition</p><ul><li>索引下推，不需要再在server层进行过滤,5.6.x开始支持</li></ul></li><li><p>first match</p><ul><li>5.6.x 开始出现的优化子查询的新特性之一，常见于where字句含有in()类型的子查询，如果内表数据量过大，可能出现</li></ul></li><li><p>loosescan</p><ul><li>5.6.x 开始出现的优化子查询的新特性之一，常见于where字句含有in()类型的子查询，如果内表返回有重复值，可能出现</li></ul></li></ul><h2 id="filtered-列"><a href="#filtered-列" class="headerlink" title="filtered 列"></a>filtered 列</h2><p>5.7之后的版本默认就有这个字段，不需要使用explain extended了。这个字段表示存储引擎返回的数据在server层过滤后，剩下多少满足查询的记录数量的比例，注意是百分比，不是具体记录数。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;MySQL 提供了一个EXPALIN 命令，可以用于对SQL语句的执行计划进行分析，并详细的输出分析结果，供开发人员进行针对性的优化。&lt;/p&gt;
+&lt;p&gt;我们想要查询一条sql有没有用上索引，有没有全表查询，这些都可以通过explain这个命令来查看。&lt;/p&gt;
+&lt;p&gt;通过exp</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="Explain" scheme="http://example.com/tags/Explain/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MySQL日志和索引相关问题</title>
+    <link href="http://example.com/2022/04/10/MySQL%E6%97%A5%E5%BF%97%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2022/04/10/MySQL%E6%97%A5%E5%BF%97%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</id>
+    <published>2022-04-10T06:50:00.000Z</published>
+    <updated>2022-04-10T07:15:47.220Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="MySQL怎么知道binlog是完整的"><a href="#MySQL怎么知道binlog是完整的" class="headerlink" title="MySQL怎么知道binlog是完整的?"></a>MySQL怎么知道binlog是完整的?</h3><p>一个事务的binlog是有完整格式的：</p><ul><li>statement格式的binlog，最后会有COMMIT； </li><li>row格式的binlog，最后会有一个XID event。<br>另外，在MySQL 5.6.2版本以后，还引入了binlog-checksum参数，用来验证binlog内容的正确性。对于binlog日志由于磁盘原因，可能会在日志中间出错的情况，MySQL可以通过校验checksum的结果来发现。所以，MySQL还是有办法验证事务binlog的完整性的。</li></ul><h3 id="redo-log-和binlog是怎么关联起来的"><a href="#redo-log-和binlog是怎么关联起来的" class="headerlink" title="redo log 和binlog是怎么关联起来的?"></a>redo log 和binlog是怎么关联起来的?</h3><p>它们有一个共同的数据字段，叫XID。崩溃恢复的时候，会按顺序扫描redo log：</p><ul><li>如果碰到既有prepare、又有commit的redo log，就直接提交； </li><li>如果碰到只有parepare、而没有commit的redo log，就拿着XID去binlog找对应的事务。</li></ul><h3 id="为什么需要两阶段提交？先写redo-log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？"><a href="#为什么需要两阶段提交？先写redo-log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？" class="headerlink" title="为什么需要两阶段提交？先写redo log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？"></a>为什么需要两阶段提交？先写redo log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？</h3><p>回答：其实，两阶段提交是经典的分布式系统问题，并不是MySQL独有的。 如果必须要举一个场景，来说明这么做的必要性的话，那就是事务的持久性问题。 对于InnoDB引擎来说，如果redo log提交完成了，事务就不能回滚（如果这还允许回滚，就可能覆盖掉别的事务的更新）。而如果redo log直接提交，然后binlog写入的时候失败，InnoDB又回滚不了，数据和binlog日志又不一致了。 两阶段提交就是为了给所有人一个机会，当每个人都说“我ok”的时候，再一起提交。</p><h3 id="不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？"><a href="#不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？" class="headerlink" title="不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？"></a>不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？</h3><p>回答：</p><p>如果只从崩溃恢复的角度来讲是可以的。你可以把binlog关掉，这样就没有两阶段提交了，但系统依然是crash-safe的。 </p><p>但是，如果你了解一下业界各个公司的使用场景的话，就会发现在正式的生产库上，binlog都是开着的。因为binlog有着redo log无法替代的功能。 </p><p>一个是归档。redo log是循环写，写到末尾是要回到开头继续写的。这样历史日志没法保留，redo log也就起不到归档的作用。 </p><p>一个就是MySQL系统依赖于binlog。binlog作为MySQL一开始就有的功能，被用在了很多地方。 </p><p>其中，MySQL系统高可用的基础，就是binlog复制。 还有很多公司有异构系统（比如一些数据分析系统），这些系统就靠消费MySQL的binlog来更新 自己的数据。关掉binlog的话，这些下游系统就没法输入了。 总之，由于现在包括MySQL高可用在内的很多系统机制都依赖于binlog，所以“鸠占鹊巢”redo log还做不到。你看，发展生态是多么重要。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;MySQL怎么知道binlog是完整的&quot;&gt;&lt;a href=&quot;#MySQL怎么知道binlog是完整的&quot; class=&quot;headerlink&quot; title=&quot;MySQL怎么知道binlog是完整的?&quot;&gt;&lt;/a&gt;MySQL怎么知道binlog是完整的?&lt;/h3&gt;&lt;p&gt;</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>自增id用完了怎么办？</title>
+    <link href="http://example.com/2022/04/10/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/"/>
+    <id>http://example.com/2022/04/10/%E8%87%AA%E5%A2%9Eid%E7%94%A8%E5%AE%8C%E4%BA%86%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/</id>
+    <published>2022-04-10T05:40:00.000Z</published>
+    <updated>2022-04-10T06:29:48.479Z</updated>
+    
+    <content type="html"><![CDATA[<p>MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数 是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无 符号整型(unsigned int)是4个字节，上限就是2 -1。既然自增id有上限，就有可能被用完。但是，自增id用完了会怎么样呢？</p><h3 id="表定义自增id"><a href="#表定义自增id" class="headerlink" title="表定义自增id"></a>表定义自增id</h3><p>表定义的自增值达到上限后的逻辑是：再申请下一个id时，得到的值保持不变。即当自增id用完，在插入新数据会报错（主键冲突）</p><p>2^32 -1（4294967295）不是一个特别大的数，对于一个频繁插入删除数据的表来说，是可能会被 用完的。因此在建表的时候你需要考察你的表是否有可能达到这个上限，如果有可能，就应该创 建成8个字节的bigint unsigned。</p><h3 id="InnoDB系统自自增row-id"><a href="#InnoDB系统自自增row-id" class="headerlink" title="InnoDB系统自自增row__id"></a>InnoDB系统自自增row__id</h3><p>如果你创建的InnoDB表没有指定主键，那么InnoDB会给你创建一个不可见的，长度为6个字节 的row_id。InnoDB维护了一个全局的dict_sys.row_id值，所有无主键的InnoDB表，每插入一行 数据，都将当前的dict_sys.row_id值作为要插入数据的row_id，然后把dict_sys.row_id的值加1。</p><p>实际上，在代码实现时row_id是一个长度为8字节的无符号长整型(bigint unsigned)。但 是，InnoDB在设计时，给row_id留的只是6个字节的长度，这样写到数据表中时只放了最后6个 字节，所以row_id能写到数据表中的值，就有两个特征：</p><ol><li> row_id写入表中的值范围，是从0到2^48 -1；</li><li>当dict_sys.row_id=2 时，如果再有插入数据的行为要来申请row_id，拿到以后再取最后6个 字节的话就是0。</li></ol><p>也就是说，写入表的row_id是从0开始到2^48 -1。达到上限后，下一个值就是0，然后继续循环。 当然，2^48 -1这个值本身已经很大了，但是如果一个MySQL实例跑得足够久的话，还是可能达到这个上限的。在InnoDB逻辑里，申请到row_id=N后，就将这行数据写入表中；如果表中已经存在row_id=N的行，新写入的行就会覆盖原有的行。</p><pre><code>从这个角度看，我们还是应该在InnoDB表中主动创建自增主键。因为，表自增id到达上限后， 再插入数据时报主键冲突错误，是更能被接受的。 毕竟覆盖数据，就意味着数据丢失，影响的是数据可靠性；报主键冲突，是插入失败，影响的是 可用性。而一般情况下，可靠性优先于可用性。</code></pre><h3 id="Xid"><a href="#Xid" class="headerlink" title="Xid"></a>Xid</h3><p>MySQL内部维护了一个全局变量global_query_id，每次执行语句的时候将它赋值给Query_id， 然后给这个变量加1。如果当前语句是这个事务执行的第一条语句，那么MySQL还会同时把 Query_id赋值给这个事务的Xid。</p><p>而global_query_id是一个纯内存变量，重启之后就清零了。所以你就知道了，在同一个数据库实 例中，不同事务的Xid也是有可能相同的。</p><p>但是MySQL重启之后会重新生成新的binlog文件，这就保证了，同一个binlog文件里，Xid一定是 惟一的。</p><p>虽然MySQL重启不会导致同一个binlog里面出现两个相同的Xid，但是如果global_query_id达到 上限后，就会继续从0开始计数。从理论上讲，还是就会出现同一个binlog里面出现相同Xid的场景。</p><p>因为global_query_id定义的长度是8个字节，这个自增值的上限是2^64 -1。要出现这种情况，必须是下面这样的过程：</p><ol><li>执行一个事务，假设Xid是A；</li><li>接下来执行2 次查询语句，让global_query_id回到A； </li><li>再启动一个事务，这个事务的Xid也是A。<br>不过，2 这个值太大了，大到你可以认为这个可能性只会存在于理论上。</li></ol><h3 id="Innodb-trx-id"><a href="#Innodb-trx-id" class="headerlink" title="Innodb trx__id"></a>Innodb trx__id</h3><p>Xid和InnoDB的trx_id是两个容易混淆的概念。</p><p>Xid是由server层维护的。InnoDB内部使用Xid，就是为了能够在InnoDB事务和server之间做关 联。但是，InnoDB自己的trx_id，是另外维护的。</p><p>InnoDB内部维护了一个max_trx_id全局变量，每次需要申请一个新的trx_id时，就获得 max_trx_id的当前值，然后并将max_trx_id加1。</p><p>InnoDB数据可见性的核心思想是：每一行数据都记录了更新它的trx_id，当一个事务读到一行数据的时候，判断这个数据是否可见的方法，就是通过事务的一致性视图与这行数据的trx_id做对 比。</p><p>对于正在执行的事务，你可以从information_schema.innodb_trx表中看到事务的trx_id。</p><p>看下面这个例子：</p><p> <img src="/images/pasted-191.png" alt="upload successful"><br> session B里，我从innodb_trx表里查出的这两个字段，第二个字段trx_mysql_thread_id就是线程 id。显示线程id，是为了说明这两次查询看到的事务对应的线程id都是5，也就是session A所在的线程。</p><p> 可以看到，T2时刻显示的trx_id是一个很大的数；T4时刻显示的trx_id是1289，看上去是一个比 较正常的数字。这是什么原因呢？</p><p> 实际上，在T1时刻，session A还没有涉及到更新，是一个只读事务。而对于只读事务，InnoDB 并不会分配trx_id。也就是说：</p><ol><li>在T1时刻，trx_id的值其实就是0。而这个很大的数，只是显示用的。一会儿我会再和你说说这个数据的生成逻辑。 </li><li>直到session A 在T3时刻执行insert语句的时候，InnoDB才真正分配了trx_id。所以，T4时刻，session B查到的这个trx_id的值就是1289。</li></ol><p>需要注意的是，除了显而易见的修改类语句外，如果在select 语句后面加上for update，这个事 务也不是只读事务。</p><pre><code>另外注意：1. update 和 delete语句除了事务本身，还涉及到标记删除旧数据，也就是要把数据放到purge 队列里等待后续物理删除，这个操作也会把max_trx_id+1， 因此在一个事务中至少加2； 2. InnoDB的后台操作，比如表的索引信息统计这类操作，也是会启动内部事务的，因此你可能看到，trx_id值并不是按照加1递增的。</code></pre><p>那么，T2时刻查到的这个很大的数字是怎么来的呢？</p><p>其实，这个数字是每次查询的时候由系统临时计算出来的。它的算法是：把当前事务的trx变量的 指针地址转成整数，再加上2 。使用这个算法，就可以保证以下两点：</p><ol><li>因为同一个只读事务在执行期间，它的指针地址是不会变的，所以不论是在 innodb_trx还是 在innodb_locks表里，同一个只读事务查出来的trx_id就会是一样的。</li><li>如果有并行的多个只读事务，每个事务的trx变量的指针地址肯定不同。这样，不同的并发只读事务，查出来的trx_id就是不同的。<br>那么，为什么还要再加上2^48呢？<br>在显示值里面加上2 ，目的是要保证只读事务显示的trx_id值比较大，正常情况下就会区别于读 写事务的id。但是，trx_id跟row_id的逻辑类似，定义长度也是8个字节。因此，在理论上还是可 能出现一个读写事务与一个只读事务显示的trx_id相同的情况。不过这个概率很低，并且也没有 什么实质危害，可以不管它。</li></ol><p>另一个问题是，只读事务不分配trx__id，有什么好处呢？</p><ul><li>一个好处是，这样做可以减小事务视图里面活跃事务数组的大小。因为当前正在运行的只读事务，是不影响数据的可见性判断的。所以，在创建事务的一致性视图时，InnoDB就只需要拷贝读写事务的trx_id。 </li><li>另一个好处是，可以减少trx_id的申请次数。在InnoDB里，即使你只是执行一个普通的select语句，在执行过程中，也是要对应一个只读事务的。所以只读事务优化后，普通的查询语句 不需要申请trx_id，就大大减少了并发事务申请trx_id的锁冲突。</li></ul><p>由于只读事务不分配trx_id，一个自然而然的结果就是trx_id的增加速度变慢了。</p><p>但是，max_trx_id会持久化存储，重启也不会重置为0，那么从理论上讲，只要一个MySQL服务 跑得足够久，就可能出现max_trx_id达到2^48-1的上限，然后从0开始的情况。</p><p>当达到这个状态后，MySQL就会持续出现一个脏读的bug，我们来复现一下这个bug。</p><p>首先我们需要把当前的max_trx_id先修改成248-1。注意：这个case里使用的是可重复读隔离级 别。具体的操作流程如下：</p><p> <img src="/images/pasted-192.png" alt="upload successful"></p><p> 由于我们已经把系统的max_trx_id设置成了2^48-1，所以在session A启动的事务TA的低水位就是2^48-1</p><p> 在T2时刻，session B执行第一条update语句的事务id就是2 -1，而第二条update语句的事务id 就是0了，这条update语句执行后生成的数据版本上的trx_id就是0。</p><p> 在T3时刻，session A执行select语句的时候，判断可见性发现，c=3这个数据版本的trx_id，小于 事务TA的低水位，因此认为这个数据可见。</p><p> 但，这个是脏读。</p><p> 由于低水位值会持续增加，而事务id从0开始计数，就导致了系统在这个时刻之后，所有的查询 都会出现脏读的。</p><p>并且，MySQL重启时max_trx_id也不会清0，也就是说重启MySQL，这个bug仍然存在。 那么，这个bug也是只存在于理论上吗？</p><p>假设一个MySQL实例的TPS是每秒50万，持续这个压力的话，在17.8年后，就会出现这个情 况。如果TPS更高，这个年限自然也就更短了。但是，从MySQL的真正开始流行到现在，恐怕 都还没有实例跑到过这个上限。不过，这个bug是只要MySQL实例服务时间够长，就会必然出现的。</p><h3 id="thread-id"><a href="#thread-id" class="headerlink" title="thread_id"></a>thread_id</h3><p>接下来，我们再看看线程id（thread_id）。其实，线程id才是MySQL中最常见的一种自增id。平 时我们在查各种现场的时候，showprocesslist里面的第一列，就是thread_id。</p><p>thread_id的逻辑很好理解：系统保存了一个全局变量thread_id_counter，每新建一个连接，就 将thread_id_counter赋值给这个新连接的线程变量。</p><p>thread_id_counter定义的大小是4个字节，因此达到2 -1后，它就会重置为0，然后继续增加。 但是，你不会在showprocesslist里看到两个相同的thread_id。</p><p>这，是因为MySQL设计了一个唯一数组的逻辑，给新线程分配thread_id的时候，逻辑代码是这样的：</p><p> <img src="/images/pasted-193.png" alt="upload successful"></p><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><p>MySQL不同的自增id达到上限以后的行为。数据库系统作为一个可能需要7*24小时全年无休的服务，考虑这些边界是非常有必要的。</p><p>每种自增id有各自的应用场景，在达到上限后的表现也不同：</p><ol><li>表的自增id达到上限后，再申请时它的值就不会改变，进而导致继续插入数据时报主键冲突 的错误。 </li><li>row_id达到上限后，则会归0再重新递增，如果出现相同的row_id，后写的数据会覆盖之前 的数据。 </li><li>Xid只需要不在同一个binlog文件中出现重复值即可。虽然理论上会出现重复值，但是概率极 小，可以忽略不计。 </li><li>InnoDB的max_trx_id 递增值每次MySQL重启都会被保存起来，所以我们文章中提到的脏读 的例子就是一个必现的bug，好在留给我们的时间还很充裕。 </li><li>thread_id是我们使用中最常见的，而且也是处理得最好的一个自增id逻辑了。</li></ol><p>不同的自增id有不同的上限值，上限值的大小取决于声明的类型长度。</p><pre><code>注：学习自MYSQL45讲</code></pre>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;MySQL里有很多自增的id，每个自增id都是定义了初始值，然后不停地往上加步长。虽然自然数 是没有上限的，但是在计算机里，只要定义了表示这个数的字节长度，那它就有上限。比如，无 符号整型(unsigned int)是4个字节，上限就是2 -1。既然自增id有上限，就有可能</summary>
+      
+    
+    
+    
+    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+    <category term="自增id" scheme="http://example.com/tags/%E8%87%AA%E5%A2%9Eid/"/>
+    
+  </entry>
   
   <entry>
     <title>关于Java SE 8 的流库</title>
@@ -497,98 +575,6 @@
     <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
     <category term="排序优化" scheme="http://example.com/tags/%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>子查询优化</title>
-    <link href="http://example.com/2022/03/23/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://example.com/2022/03/23/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-03-23T02:43:00.000Z</published>
-    <updated>2022-03-23T02:47:07.393Z</updated>
-    
-    <content type="html"><![CDATA[<p>使用子查询可以进行SELECT语句的嵌套查询，即一个SELECT查询的结果作为另一个SELECT语句的条件。 子查询可以一次性完成很多逻辑上需要多个步骤才能完成的SQL操作。</p><pre><code>但值得注意的是：子查询虽然可以帮助我们通过一个 SQL 语句实现比较复杂的查询。但是，子查询的执行效率不高。原因：① 执行子查询时，MySQL需要为内层查询语句的查询结果 建立一个临时表 ，然后外层查询语句从临时表中查询记录。查询完毕后，再撤销这些临时表 。这样会消耗过多的CPU和IO资源，产生大量的慢查询。② 子查询的结果集存储的临时表，不论是内存临时表还是磁盘临时表都 不会存在索引 ，所以查询性能会受到一定的影响。③ 对于返回结果集比较大的子查询，其对查询性能的影响也就越大。</code></pre><p>在MySQL中，可以使用连接（JOIN）查询来替代子查询。连接查询 不需要建立临时表 ，其速度比子查询要快 ，如果查询中使用索引的话，性能会更好。</p><p>因此：尽量不要使用NOT IN 或者 NOT EXISTS，用LEFT JOIN xxx ON xx WHERE xx IS NULL替代</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;使用子查询可以进行SELECT语句的嵌套查询，即一个SELECT查询的结果作为另一个SELECT语句的条件。 子查询可以一次性完成很多逻辑上需要多个步骤才能完成的SQL操作。&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;但值得注意的是：子查询虽然可以帮助我们通过一个 SQL 语句实现比较</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="子查询优化" scheme="http://example.com/tags/%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关联查询优化</title>
-    <link href="http://example.com/2022/03/23/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/"/>
-    <id>http://example.com/2022/03/23/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96/</id>
-    <published>2022-03-23T02:24:00.000Z</published>
-    <updated>2022-03-23T02:41:22.043Z</updated>
-    
-    <content type="html"><![CDATA[<p>采用左外连接</p><ul><li>被驱动的表简历索引，可以避免全表扫描（LEFT JOIN条件用于确定如何从右表搜索行，左边一定都有，所以 右边是我们的关键点,一定需要建立索引 。）</li></ul><p>采用内连接</p><ul><li>MySQL自动选择驱动表（小结果集），保证被驱动的表的JOIN字段已经建立了索引。</li></ul><p>小结：</p><ul><li>保证被驱动表的JOIN字段已经创建了索引</li><li>需要JOIN 的字段，数据类型保持绝对一致。</li><li>LEFT JOIN 时，选择小表作为驱动表， 大表作为被驱动表 。减少外层循环的次数。</li><li>INNER JOIN 时，MySQL会自动将 小结果集的表选为驱动表 。选择相信MySQL优化策略。</li><li>能够直接多表关联的尽量直接关联，不用子查询。(减少查询的趟数)</li><li>不建议使用子查询，建议将子查询SQL拆开结合程序多次查询，或使用 JOIN 来代替子查询。</li><li>衍生表建不了索引</li></ul><p>补充：</p><ul><li>什么叫作“小表”？在决定哪个表做驱动表的时候，应该是两个表按照各自的条件过滤，过滤完成之后，计算参与join的各个字段的总数据量，数据量小的那个表，就是“小表”，应该作为驱动表。</li></ul><p> <img src="/images/pasted-168.png" alt="upload successful"></p><p>在这个流程里：</p><ol><li>对驱动表t1做了全表扫描，这个过程需要扫描100行；</li><li>而对于每一行R，根据a字段去表t2查找，走的是树搜索过程。由于我们构造的数据都是一一对应的，因此每次的搜索过程都只扫描一行，也是总共扫描100行；</li><li>所以，整个执行流程，总扫描行数是200。</li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;采用左外连接&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;被驱动的表简历索引，可以避免全表扫描（LEFT JOIN条件用于确定如何从右表搜索行，左边一定都有，所以 右边是我们的关键点,一定需要建立索引 。）&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;采用内连接&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;MySQL自动选择</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="关联查询" scheme="http://example.com/tags/%E5%85%B3%E8%81%94%E6%9F%A5%E8%AF%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>索引失效案例</title>
-    <link href="http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%A1%88%E4%BE%8B/"/>
-    <id>http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%A1%88%E4%BE%8B/</id>
-    <published>2022-03-23T02:15:00.000Z</published>
-    <updated>2022-03-23T02:22:42.930Z</updated>
-    
-    <content type="html"><![CDATA[<ol><li><p>没有遵守最左前缀法则（联合索引中，左边的值未确认，无法使用此索引）</p></li><li><p>SQL语句中使用计算、函数、类型转换等</p></li><li><p>SQL语句中索引条件在范围查询右边</p></li><li><p>使用！=或者&lt;&gt;也会令索引失效</p></li><li><p>is null 可以使用索引，而is not null无法使用索引</p></li><li><p>like以%开头，索引会失效（页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。）</p></li><li><p> OR 前后存在非索引的列，索引失效</p></li><li><p>数据库和表的字符集统一使用utf8mb4（统一使用utf8mb4( 5.5.3版本以上支持)兼容性更好，统一字符集可以避免由于字符集转换产生的乱码。不同的 字符集 进行比较前需要进行 转换 会造成索引失效。）</p></li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;没有遵守最左前缀法则（联合索引中，左边的值未确认，无法使用此索引）&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SQL语句中使用计算、函数、类型转换等&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;SQL语句中索引条件在范围查询右边&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;使用！=或</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="索引失效" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/"/>
     
   </entry>
   
