@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-14T11:11:37.751Z</updated>
+  <updated>2022-04-17T02:13:06.463Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,63 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>重排序</title>
+    <link href="http://example.com/2022/04/17/%E9%87%8D%E6%8E%92%E5%BA%8F/"/>
+    <id>http://example.com/2022/04/17/%E9%87%8D%E6%8E%92%E5%BA%8F/</id>
+    <published>2022-04-17T02:01:00.000Z</published>
+    <updated>2022-04-17T02:13:06.463Z</updated>
+    
+    <content type="html"><![CDATA[<p>重排序是指编译器和处理器为了优化程序性能而对指令序列进行重新排序的一种手段。</p><h3 id="数据依赖性"><a href="#数据依赖性" class="headerlink" title="数据依赖性"></a>数据依赖性</h3><p>如果两个操作访问同一个变量，且这两个操作中有一个为写操作，此时这两个操作之间 就存在数据依赖性。数据依赖分为下列3种类型</p><p> <img src="/images/pasted-203.png" alt="upload successful"></p><p> 上面3种情况，只要重排序两个操作的执行顺序，程序的执行结果就会被改变。 而编译器和处理器可能会对操作做重排序。编译器和处理器在重排序时，会遵守数据依赖性，编译器和处理器不会改变存在数据依赖关系的两个操作的执行顺序。 这里所说的数据依赖性仅针对单个处理器中执行的指令序列和单个线程中执行的操作， 不同处理器之间和不同线程之间的数据依赖性不被编译器和处理器考虑。</p><h3 id="as-if-serial语义"><a href="#as-if-serial语义" class="headerlink" title="as-if-serial语义"></a>as-if-serial语义</h3><p> as-if-serial语义的意思是：不管怎么重排序（编译器和处理器为了提高并行度），（单线程） 程序的执行结果不能被改变。编译器、runtime和处理器都必须遵守as-if-serial语义。</p><p> 为了遵守as-if-serial语义，编译器和处理器不会对存在数据依赖关系的操作做重排序，因 为这种重排序会改变执行结果。但是，如果操作之间不存在数据依赖关系，这些操作就可能被 编译器和处理器重排序。</p><p> as-if-serial语义把单线程程序保护了起来，遵守as-if-serial语义的编译器、runtime和处理器 共同为编写单线程程序的程序员创建了一个幻觉：单线程程序是按程序的顺序来执行的。as- if-serial语义使单线程程序员无需担心重排序会干扰他们，也无需担心内存可见性问题。</p><h3 id="程序顺序规则"><a href="#程序顺序规则" class="headerlink" title="程序顺序规则"></a>程序顺序规则</h3><p> 1）A happens-before B。 </p><p> 2）B happens-before C。 </p><p> 3）A happens-before C。</p><p> 这里的第3个happens-before关系，是根据happens-before的传递性推导出来的。 这里A happens-before B，但实际执行时B却可以排在A之前执行（看上面的重排序后的执 行顺序）。如果A happens-before B，JMM并不要求A一定要在B之前执行。JMM仅仅要求前一个 操作（执行的结果）对后一个操作可见，且前一个操作按顺序排在第二个操作之前。这里操作A 的执行结果不需要对操作B可见；而且重排序操作A和操作B后的执行结果，与操作A和操作B 按happens-before顺序执行的结果一致。在这种情况下，JMM会认为这种重排序并不非法（not illegal），JMM允许这种重排序。</p><p> 在计算机中，软件技术和硬件技术有一个共同的目标：在不改变程序执行结果的前提下， 尽可能提高并行度。编译器和处理器遵从这一目标，从happens-before的定义我们可以看出， JMM同样遵从这一目标。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;重排序是指编译器和处理器为了优化程序性能而对指令序列进行重新排序的一种手段。&lt;/p&gt;
+&lt;h3 id=&quot;数据依赖性&quot;&gt;&lt;a href=&quot;#数据依赖性&quot; class=&quot;headerlink&quot; title=&quot;数据依赖性&quot;&gt;&lt;/a&gt;数据依赖性&lt;/h3&gt;&lt;p&gt;如果两个操作访问同一个变</summary>
+      
+    
+    
+    
+    <category term="并发编程" scheme="http://example.com/categories/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+    
+    <category term="JMM" scheme="http://example.com/tags/JMM/"/>
+    
+    <category term="并发编程" scheme="http://example.com/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+    <category term="重排序" scheme="http://example.com/tags/%E9%87%8D%E6%8E%92%E5%BA%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java内存模式的基础</title>
+    <link href="http://example.com/2022/04/17/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9F%BA%E7%A1%80/"/>
+    <id>http://example.com/2022/04/17/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9F%BA%E7%A1%80/</id>
+    <published>2022-04-17T01:11:00.000Z</published>
+    <updated>2022-04-17T01:52:43.054Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="并发编程模型的两个关键问题"><a href="#并发编程模型的两个关键问题" class="headerlink" title="并发编程模型的两个关键问题"></a>并发编程模型的两个关键问题</h3><p>在并发编程中，需要处理两个关键问题：线程之间如何通信及线程之间如何同步（这里的线程是指并发执行的活动实体）。</p><p>通信是指线程之间以何种机制来交换信息。在命令式编程中，线程之间的通信机制有两种：共享内存和消息传递。</p><ul><li>在共享内存的并发模型里，线程之间共享程序的公共状态，通过写-读内存中的公共状态 进行隐式通信。</li><li>在消息传递的并发模型里，线程之间没有公共状态，线程之间必须通过发送消 息来显式进行通信。</li></ul><p>同步是指程序中用于控制不同线程间操作发生相对顺序的机制。</p><ul><li>在共享内存并发模型里，同步是显式进行的。程序员必须显式指定某个方法或某段代码需要在线程之间互斥执行。 </li><li>在消息传递的并发模型里，由于消息的发送必须在消息的接收之前，因此同步是隐式进行的。</li></ul><p>Java的并发采用的是共享内存模型，Java线程之间的通信总是隐式进行，整个通信过程对 程序员完全透明。如果编写多线程程序的Java程序员不理解隐式进行的线程之间通信的工作 机制，很可能会遇到各种奇怪的内存可见性问题。</p><h3 id="Java内存模型的抽象结构"><a href="#Java内存模型的抽象结构" class="headerlink" title="Java内存模型的抽象结构"></a>Java内存模型的抽象结构</h3><p>在Java中，所有实例域、静态域和数组元素都存储在堆内存中，堆内存在线程之间共享 （本章用“共享变量”这个术语代指实例域，静态域和数组元素）。局部变量（Local Variables），方 法定义参数（Java语言规范称之为Formal Method Parameters）和异常处理器参数（Exception Handler Parameters）不会在线程之间共享，它们不会有内存可见性问题，也不受内存模型的影 响。</p><p>Java线程之间的通信由Java内存模型（本文简称为JMM）控制，JMM决定一个线程对共享 变量的写入何时对另一个线程可见。从抽象的角度来看，JMM定义了线程和主内存之间的抽 象关系：线程之间的共享变量存储在主内存（Main Memory）中，每个线程都有一个私有的本地 内存（Local Memory），本地内存中存储了该线程以读/写共享变量的副本。本地内存是JMM的 一个抽象概念，并不真实存在。它涵盖了缓存、写缓冲区、寄存器以及其他的硬件和编译器优化。</p><h3 id="从源代码到指令序列的重排序"><a href="#从源代码到指令序列的重排序" class="headerlink" title="从源代码到指令序列的重排序"></a>从源代码到指令序列的重排序</h3><p>在执行程序时，为了提高性能，编译器和处理器常常会对指令做重排序。重排序分3种类型。</p><ol><li>编译器优化的重排序。编译器在不改变单线程程序语义的前提下，可以重新安排语句 的执行顺序。 </li><li>指令级并行的重排序。现代处理器采用了指令级并行技术（Instruction-Level Parallelism，ILP）来将多条指令重叠执行。如果不存在数据依赖性，处理器可以改变语句对应 机器指令的执行顺序。 </li><li>内存系统的重排序。由于处理器使用缓存和读/写缓冲区，这使得加载和存储操作看上 去可能是在乱序执行。</li></ol><p>这些重排序可能会导致多线程程序 出现内存可见性问题。对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排 序（不是所有的编译器重排序都要禁止）。对于处理器重排序，JMM的处理器重排序规则会要 求Java编译器在生成指令序列时，插入特定类型的内存屏障（Memory Barriers，Intel称之为 Memory Fence）指令，通过内存屏障指令来禁止特定类型的处理器重排序。</p><p>JMM属于语言级的内存模型，它确保在不同的编译器和不同的处理器平台之上，通过禁止特定类型的编译器重排序和处理器重排序，为程序员提供一致的内存可见性保证。</p><h3 id="并发编程模型的分类"><a href="#并发编程模型的分类" class="headerlink" title="并发编程模型的分类"></a>并发编程模型的分类</h3><p>现代的处理器使用写缓冲区临时保存向内存写入的数据。写缓冲区可以保证指令流水线 持续运行，它可以避免由于处理器停顿下来等待向内存写入数据而产生的延迟。同时，通过以 批处理的方式刷新写缓冲区，以及合并写缓冲区中对同一内存地址的多次写，减少对内存总 线的占用。虽然写缓冲区有这么多好处，但每个处理器上的写缓冲区，仅仅对它所在的处理器 可见。这个特性会对内存操作的执行顺序产生重要的影响：处理器对内存的读/写操作的执行 顺序，不一定与内存实际发生的读/写操作顺序一致！</p><p> <img src="/images/pasted-200.png" alt="upload successful"><br> 这里处理器A和处理器B可以同时把共享变量写入自己的写缓冲区（A1，B1），然后从内存 中读取另一个共享变量（A2，B2），最后才把自己写缓存区中保存的脏数据刷新到内存中（A3， B3）。当以这种时序执行时，程序就可以得到x=y=0的结果。 从内存操作实际发生的顺序来看，直到处理器A执行A3来刷新自己的写缓存区，写操作 A1才算真正执行了。虽然处理器A执行内存操作的顺序为：A1→A2，但内存操作实际发生的顺 序却是A2→A1。此时，处理器A的内存操作顺序被重排序了（处理器B的情况和处理器A一样， 这里就不赘述了）。</p><p>这里的关键是，由于写缓冲区仅对自己的处理器可见，它会导致处理器执行内存操作的 顺序可能会与内存实际的操作执行顺序不一致。由于现代的处理器都会使用写缓冲区，因此现代的处理器都会允许对写-读操作进行重排序。</p><pre><code>常见的处理器都允许Store-Load重排序；常见的处理器都不允许对 存在数据依赖的操作做重排序。sparc-TSO和X86拥有相对较强的处理器内存模型，它们仅允 许对写-读操作做重排序（因为它们都使用了写缓冲区）。</code></pre><p>为了保证内存可见性，Java编译器在生成指令序列的适当位置会插入内存屏障指令来禁 止特定类型的处理器重排序。JMM把内存屏障指令分为4类</p><p> <img src="/images/pasted-201.png" alt="upload successful"><br> StoreLoad Barriers是一个“全能型”的屏障，它同时具有其他3个屏障的效果。现代的多处 理器大多支持该屏障（其他类型的屏障不一定被所有处理器支持）。执行该屏障开销会很昂 贵，因为当前处理器通常要把写缓冲区中的数据全部刷新到内存中（Buffer Fully Flush）。</p><h3 id="happens-before简介"><a href="#happens-before简介" class="headerlink" title="happens-before简介"></a>happens-before简介</h3><p> 从JDK 5开始，Java使用新的JSR-133内存模型（除非特别说明，本文针对的都是JSR-133内 存模型）。JSR-133使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一 个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关 系。这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。</p><p>与程序员密切相关的happens-before规则如下。 </p><ul><li><p>程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。  </p></li><li><p>监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。 </p></li><li><p>volatile变量规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。 </p></li><li><p>传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。</p><pre><code>  注意：两个操作之间具有happens-before关系，并不意味着前一个操作必须要在后一个 操作之前执行！happens-before仅仅要求前一个操作（执行的结果）对后一个操作可见，且前一 个操作按顺序排在第二个操作之前</code></pre></li></ul><p> <img src="/images/pasted-202.png" alt="upload successful"></p><p>一个happens-before规则对应于一个或多个编译器和处理器重排序规则。对 于Java程序员来说，happens-before规则简单易懂，它避免Java程序员为了理解JMM提供的内存 可见性保证而去学习复杂的重排序规则以及这些规则的具体实现方法。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;并发编程模型的两个关键问题&quot;&gt;&lt;a href=&quot;#并发编程模型的两个关键问题&quot; class=&quot;headerlink&quot; title=&quot;并发编程模型的两个关键问题&quot;&gt;&lt;/a&gt;并发编程模型的两个关键问题&lt;/h3&gt;&lt;p&gt;在并发编程中，需要处理两个关键问题：线程之间如何通信</summary>
+      
+    
+    
+    
+    <category term="JMM" scheme="http://example.com/categories/JMM/"/>
+    
+    <category term="并发编程" scheme="http://example.com/categories/JMM/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+    
+    <category term="JMM" scheme="http://example.com/tags/JMM/"/>
+    
+    <category term="并发编程" scheme="http://example.com/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
+    
+  </entry>
   
   <entry>
     <title>First集和Follow集的构造</title>
@@ -510,66 +567,6 @@
     
     
     <category term="change buffer" scheme="http://example.com/tags/change-buffer/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>索引下推</title>
-    <link href="http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/"/>
-    <id>http://example.com/2022/03/23/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/</id>
-    <published>2022-03-23T03:50:00.000Z</published>
-    <updated>2022-03-23T03:55:43.730Z</updated>
-    
-    <content type="html"><![CDATA[<p>Index Condition Pushdown(ICP)是MySQL 5.6中新特性，是一种在存储引擎层使用索引过滤数据的一种优化方式。ICP可以减少存储引擎访问基表的次数以及MySQL服务器访问存储引擎的次数。</p><p>在不使用ICP索引扫描的过程：</p><ul><li>storage层：只将满足index key条件的索引记录对应的整行记录取出，返回给server层 </li><li>server 层：对返回的数据，使用后面的where条件过滤，直至返回最后一行。</li></ul><p> <img src="/images/pasted-171.png" alt="upload successful"></p><p> 使用ICP扫描的过程：</p><ul><li>storage层：首先将index key条件满足的索引记录区间确定，然后在索引上使用index filter进行过滤。将满足的index filter条件的索引记录才去回表取出整行记录返回server层。不满足index filter条件的索引记录丢弃，不回表、也不会返回server层。</li><li>server 层：对返回的数据，使用table filter条件做最后的过滤。</li></ul><p>使用前后的成本差别：使用前，存储层多返回了需要被index filter过滤掉的整行记录使用ICP后，直接就去掉了不满足index filter条件的记录，省去了他们回表和传递到server层的成本。ICP的 加速效果 取决于在存储引擎内通过 ICP筛选 掉的数据的比例。</p><p>ICP的使用条件：</p><p>① 只能用于二级索引(secondary index) </p><p>②explain显示的执行计划中type值（join 类型）为 range 、 ref 、 eq_ref 或者 ref_or_null 。 </p><p>③ 并非全部where条件都可以用ICP筛选，如果where条件的字段不在索引列中，还是要读取整表的记录<br>到server端做where过滤。</p><p>④ ICP可以用于MyISAM和InnnoDB存储引擎</p><p>⑤ MySQL 5.6版本的不支持分区表的ICP功能，5.7版本的开始支持。</p><p>⑥ 当SQL使用覆盖索引时，不支持ICP优化方法。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;Index Condition Pushdown(ICP)是MySQL 5.6中新特性，是一种在存储引擎层使用索引过滤数据的一种优化方式。ICP可以减少存储引擎访问基表的次数以及MySQL服务器访问存储引擎的次数。&lt;/p&gt;
-&lt;p&gt;在不使用ICP索引扫描的过程：&lt;/p&gt;
-&lt;u</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="索引下推" scheme="http://example.com/tags/%E7%B4%A2%E5%BC%95%E4%B8%8B%E6%8E%A8/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>优化分页查询</title>
-    <link href="http://example.com/2022/03/23/%E4%BC%98%E5%8C%96%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/"/>
-    <id>http://example.com/2022/03/23/%E4%BC%98%E5%8C%96%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/</id>
-    <published>2022-03-23T02:56:00.000Z</published>
-    <updated>2022-03-23T02:58:13.556Z</updated>
-    
-    <content type="html"><![CDATA[<ul><li><p>在索引上完成排序分页操作，最后根据主键关联回原表查询所需要的其他列内容。</p></li><li><p>该方案适用于主键自增的表，可以把Limit 查询转换成某个位置的查询 。</p></li></ul>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;在索引上完成排序分页操作，最后根据主键关联回原表查询所需要的其他列内容。&lt;/p&gt;
-&lt;/li&gt;
-&lt;li&gt;&lt;p&gt;该方案适用于主键自增的表，可以把Limit 查询转换成某个位置的查询 。&lt;/p&gt;
-&lt;/li&gt;
-&lt;/ul&gt;
-</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="分页查询" scheme="http://example.com/tags/%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2/"/>
     
   </entry>
   
