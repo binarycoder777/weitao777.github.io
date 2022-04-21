@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-04-17T02:13:06.463Z</updated>
+  <updated>2022-04-21T13:43:12.434Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>记一次安装Zookeeper启动失败的坑</title>
+    <link href="http://example.com/2022/04/21/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E8%A3%85Zookeeper%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%9D%91/"/>
+    <id>http://example.com/2022/04/21/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E8%A3%85Zookeeper%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%9D%91/</id>
+    <published>2022-04-21T13:36:00.000Z</published>
+    <updated>2022-04-21T13:43:12.434Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天在阿里云上安装ZooKeeper，然后启动时一直报: Starting zookeeper … FAILED TO START。折腾了一会，经查阅资料发现，原来和版本有莫大关系…</p><h3 id="1-下载的版本问题（-gt-3-5-5）"><a href="#1-下载的版本问题（-gt-3-5-5）" class="headerlink" title="1. 下载的版本问题（&gt;= 3.5.5）"></a>1. 下载的版本问题（&gt;= 3.5.5）</h3><p>实际上只要 &gt;= 3.5.5 版本都会出现这种问题。</p><p>问题原因：下载了错误的版本文件，Zookeeper 从3.5.5后开始拆分为两个版本，而且他们的结构还很类似。</p><ul><li>标准版本（Apache ZooKeeper x.y.z ），下载的文件名为：apache-zookeeper-x.y.z-bin.tar.gz</li><li>另一个是源码版本（Apache ZooKeeper x.y.z Source Release），下载的文件名为：apache-zookeeper-x.y.z.tar.gz</li></ul><p> <img src="/images/pasted-204.png" alt="upload successful"></p><p> <img src="/images/pasted-205.png" alt="upload successful"><br> 所以下载 Zookeeper 的时候要注意，应该下载第一个(本人头铁，下载了第二个)。</p><h3 id="2-端口冲突问题（-gt-3-5-0）"><a href="#2-端口冲突问题（-gt-3-5-0）" class="headerlink" title="2. 端口冲突问题（&gt;=3.5.0）"></a>2. 端口冲突问题（&gt;=3.5.0）</h3><p> 在3.5.5版本及以上，Zookeeper 提供了一个内嵌的Jetty容器来运行 AdminServer，默认占用的是 8080端口，AdminServer 主要是来查看 Zookeeper 的一些状态，如果机器上有其他程序（比如：Tomcat）占用了 8080 端口，也会导致 Starting zookeeper … FAILED TO START 的问题。</p><p>可以通过以下几种方式去解决：</p><ul><li><p>禁用 AdminServer 服务</p><pre><code>  admin.enableServer=false</code></pre></li><li><p>修改器端口号：</p><pre><code>  admin.serverPort=9000</code></pre></li></ul><p>转载自：<a href="https://blog.csdn.net/peng2hui1314/article/details/107255142">https://blog.csdn.net/peng2hui1314/article/details/107255142</a></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;今天在阿里云上安装ZooKeeper，然后启动时一直报: Starting zookeeper … FAILED TO START。折腾了一会，经查阅资料发现，原来和版本有莫大关系…&lt;/p&gt;
+&lt;h3 id=&quot;1-下载的版本问题（-gt-3-5-5）&quot;&gt;&lt;a href=&quot;#1</summary>
+      
+    
+    
+    
+    <category term="Zookeeper" scheme="http://example.com/categories/Zookeeper/"/>
+    
+    
+    <category term="Zookeeper" scheme="http://example.com/tags/Zookeeper/"/>
+    
+  </entry>
   
   <entry>
     <title>重排序</title>
@@ -393,9 +418,9 @@
     <category term="集合" scheme="http://example.com/categories/Java/%E9%9B%86%E5%90%88/"/>
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
     <category term="集合" scheme="http://example.com/tags/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
     
     <category term="Queue" scheme="http://example.com/tags/Queue/"/>
     
@@ -424,9 +449,9 @@
     <category term="集合" scheme="http://example.com/categories/Java/%E9%9B%86%E5%90%88/"/>
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
     <category term="集合" scheme="http://example.com/tags/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
     
   </entry>
   
@@ -482,9 +507,9 @@
     <category term="集合" scheme="http://example.com/categories/Java/%E9%9B%86%E5%90%88/"/>
     
     
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
     <category term="集合" scheme="http://example.com/tags/%E9%9B%86%E5%90%88/"/>
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
     
   </entry>
   
@@ -542,31 +567,6 @@
     <category term="其它" scheme="http://example.com/tags/%E5%85%B6%E5%AE%83/"/>
     
     <category term="SQL优化" scheme="http://example.com/tags/SQL%E4%BC%98%E5%8C%96/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>change buffer的使用场景</title>
-    <link href="http://example.com/2022/03/23/change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/"/>
-    <id>http://example.com/2022/03/23/change-buffer%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/</id>
-    <published>2022-03-23T03:58:00.000Z</published>
-    <updated>2022-03-23T03:59:55.566Z</updated>
-    
-    <content type="html"><![CDATA[<ol><li>普通索引和唯一索引应该怎么选择？其实，这两类索引在查询能力上是没差别的，主要考虑的是对 更新性能 的影响。所以，建议你 尽量选择普通索引 。 2. 在实际使用中会发现， 普通索引 和 change buffer 的配合使用，对于 数据量大 的表的更新优化还是很明显的。</li><li>如果所有的更新后面，都马上 伴随着对这个记录的查询 ，那么你应该 关闭change buffer 。而在其他情况下，change buffer都能提升更新性能。</li><li>由于唯一索引用不changebuffer的优化机制，因此如果 业务可以接受 ，从性能角度出发建议优先考虑非唯一索引。但是如果”业务可能无法确保”的情况下，怎么处理呢？</li></ol><p>首先， 业务正确性优先 。我们的前提是“业务代码已经保证不会写入重复数据”的情况下，讨论性能问题。如果业务不能保证，或者业务就是要求数据库来做约束，那么没得选，必须创建唯一索引。这种情况下，本节的意义在于，如果碰上了大量插入数据慢、内存命中率低的时候，给你多提供一个排查思路。</p><p>然后，在一些“ 归档库 ”的场景，你是可以考虑使用唯一索引的。比如，线上数据只需要保留半年，然后历史数据保存在归档库。这时候，归档数据已经是确保没有唯一键冲突了。要提高归档效率，可以考虑把表里面的唯一索引改成普通索引。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;ol&gt;
-&lt;li&gt;普通索引和唯一索引应该怎么选择？其实，这两类索引在查询能力上是没差别的，主要考虑的是对 更新性能 的影响。所以，建议你 尽量选择普通索引 。 2. 在实际使用中会发现， 普通索引 和 change buffer 的配合使用，对于 数据量大 的表的更新优化还是很明</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="change buffer" scheme="http://example.com/tags/change-buffer/"/>
     
   </entry>
   
