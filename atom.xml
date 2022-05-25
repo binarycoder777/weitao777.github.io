@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-05-25T12:40:27.471Z</updated>
+  <updated>2022-05-25T14:19:02.540Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,59 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于ZAB协议</title>
+    <link href="http://example.com/2022/05/25/%E5%85%B3%E4%BA%8EZAB%E5%8D%8F%E8%AE%AE/"/>
+    <id>http://example.com/2022/05/25/%E5%85%B3%E4%BA%8EZAB%E5%8D%8F%E8%AE%AE/</id>
+    <published>2022-05-25T14:02:00.000Z</published>
+    <updated>2022-05-25T14:19:02.540Z</updated>
+    
+    <content type="html"><![CDATA[<p>Zab 借鉴了 Paxos 算法，是特别为 Zookeeper 设计的支持崩溃恢复的原子广播协议。基于该协议，Zookeeper 设计为只有一台客户端（Leader）负责处理外部的写事务请求，然后Leader 客户端将数据同步到其他 Follower 节点。Zookeeper 只有一个 Leader 可以发起提案</p><p>Zab协议包括两种基本的模式：消息广播、崩溃恢复。</p><h3 id="消息广播"><a href="#消息广播" class="headerlink" title="消息广播"></a>消息广播</h3><p>ZAB协议针对事务请求的处理过程类似于一个两阶段提交过程</p><p>（1）广播事务阶段</p><p>（2）广播提交操作<br>这两阶段提交模型如下，有可能因为Leader宕机带来数据不一致，比如</p><p>（1） Leader 发 起 一 个 事 务Proposal1 后 就 宕 机 ， Follower 都 没有Proposal1 </p><p>（2）Leader收到半数ACK宕 机，没来得及向Follower发送Commit<br>怎么解决呢？ZAB引入了崩溃恢复模式。</p><p> <img src="/images/pasted-231.png" alt="upload successful"></p><p>（1）客户端发起一个写操作请求。 </p><p>（2）Leader服务器将客户端的请求转化为事务Proposal 提案，同时为每个Proposal 分配一个全局的ID，即zxid。 </p><p>（3）Leader服务器为每个Follower服务器分配一个单独的队列，然后将需要广播的 Proposal依次放到队列中去，并且根据FIFO策略进行消息发送。 </p><p>（4）Follower接收到Proposal后，会首先将其以事务日志的方式写入本地磁盘中，写入成功后向Leader反馈一个Ack响应消息。 </p><p>（5）Leader接收到超过半数以上Follower的Ack响应消息后，即认为消息发送成功，可以发送commit消息。 </p><p>（6）Leader向所有Follower广播commit消息，同时自身也会完成事务提交。Follower 接收到commit消息后，会将上一条事务提交。 </p><p>（7）Zookeeper采用Zab协议的核心，就是只要有一台服务器提交了Proposal，就要确保所有的服务器最终都能正确提交Proposal。</p><h3 id="崩溃恢复——异常假设"><a href="#崩溃恢复——异常假设" class="headerlink" title="崩溃恢复——异常假设"></a>崩溃恢复——异常假设</h3><p> 一旦Leader服务器出现崩溃或者由于网络原因导致Leader服务器失去了与过半 Follower的联系，那么就会进入崩溃恢复模式。</p><p> <img src="/images/pasted-232.png" alt="upload successful"></p><p> 假设两种服务器异常情况</p><ol><li>假设一个事务在Leader提出之后，Leader挂了</li><li>一个事务在Leader上提交了，并且过半的Follower都响应ACK了，但是Leader在Commit消息发出之前挂了。</li></ol><p> Zab协议崩溃恢复要满足以下两个要求</p><p> 1、 确保已经被Leader提交的提案Proposal，必须最终被所有的Follower服务器提交。 （已经产生的提案，Follower必须执行） </p><p> 2、 确保丢弃已经被Leader提出的，但是没有被提交的Proposal。（丢弃胎死腹中的提案）</p><p> 崩溃恢复主要包括两部分：Leader选举和数据恢复。</p><h3 id="崩溃恢复—Leader选举"><a href="#崩溃恢复—Leader选举" class="headerlink" title="崩溃恢复—Leader选举"></a>崩溃恢复—Leader选举</h3><p> <img src="/images/pasted-233.png" alt="upload successful"></p><p>Leader选举：根据上述要求，Zab协议需要保证选举出来的Leader需要满足以下条件：</p><p>（1）新选举出来的Leader不能包含未提交的Proposal。即新Leader必须都是已经提交了Proposal的Follower服务器节点。</p><p>（2）新选举的Leader节点中含有最大的zxid。这样做的好处是可以避免Leader服务器检查Proposal的提交和丢弃工作。</p><h3 id="崩溃恢复——数据恢复"><a href="#崩溃恢复——数据恢复" class="headerlink" title="崩溃恢复——数据恢复"></a>崩溃恢复——数据恢复</h3><p>Zab如何数据同步： </p><p>（1）完成Leader选举后，在正式开始工作之前（接收事务请求，然后提出新的Proposal），Leader服务器会首先确认事务日志中的所有的Proposal 是否已经被集群中过半的服务器Commit。</p><p>（2）Leader服务器需要确保所有的Follower服务器能够接收到每一条事务的Proposal，并且能将所有已经提交的事务Proposal应用到内存数据中。等到Follower将所有尚未同步的事务Proposal都从Leader服务器上同步过，并且应用到内存数据中以后，<br>Leader才会把该Follower加入到真正可用的Follower列表中。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Zab 借鉴了 Paxos 算法，是特别为 Zookeeper 设计的支持崩溃恢复的原子广播协议。基于该协议，Zookeeper 设计为只有一台客户端（Leader）负责处理外部的写事务请求，然后Leader 客户端将数据同步到其他 Follower 节点。Zookeepe</summary>
+      
+    
+    
+    
+    <category term="分布式" scheme="http://example.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+    <category term="ZAB协议" scheme="http://example.com/tags/ZAB%E5%8D%8F%E8%AE%AE/"/>
+    
+    <category term="数据一致性" scheme="http://example.com/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>关于Paxos算法</title>
+    <link href="http://example.com/2022/05/25/%E5%85%B3%E4%BA%8EPaxos%E7%AE%97%E6%B3%95/"/>
+    <id>http://example.com/2022/05/25/%E5%85%B3%E4%BA%8EPaxos%E7%AE%97%E6%B3%95/</id>
+    <published>2022-05-25T13:38:00.000Z</published>
+    <updated>2022-05-25T13:59:20.676Z</updated>
+    
+    <content type="html"><![CDATA[<p>Paxos算法是一种基于消息传递且具有高度容错特性的一致性算法。其通常用于快速正确的在一个分布式系统中对某个数据值达成一致，并且保证无论发送任何异常都不会破坏整个系统的一致性。</p><p> <img src="/images/pasted-226.png" alt="upload successful"></p><p> 在一个Paxos系统中，首先将所有节点划分为Proposer（提议者）、Acceptor（接受者）和Learner（学习者）</p><pre><code>     注意：每个节点可以身兼数职    </code></pre><p>一个完整的Paxos算法流程分为三个阶段</p><ol><li><p>Prepare准备阶段</p><ol><li>Proposer向多个Acceptor发出Propose请求Promise（承诺）</li><li>Acceptor针对收到的Propose请求进行Promise（承诺）</li></ol></li><li><p>Accept接受阶段</p><ol><li>Proposer收到多数Acceptor承诺的Promise后，向Acceptor发出Propose请求</li><li>Acceptor针对收到的Propose请求进行Accept处理</li></ol></li><li><p>Learn学习阶段</p><ol><li>Proposer将形成的决议发送给所有Learners</li></ol></li></ol><p> <img src="/images/pasted-227.png" alt="upload successful"></p><p> 1、 Prepare: Proposer生成全局唯一且递增的Proposal ID，向所有Acceptor发送Propose请求，这里无需携带提案内容，只携带Proposal ID即可。</p><p> 2、 Promise: Acceptor收到Propose请求后，做出“两个承诺，一个应答”。<br>    - 不再接受Proposal ID小于等于（注意：这里是&lt;= ）当前请求的Propose请求。<br>    - 不再接受Proposal ID小于（注意：这里是&lt; ）当前请求的Accept请求。<br>    - 不违背以前做出的承诺下，回复已经Accept过的提案中Proposal ID最大的那个提案的Value和Proposal ID，没有则返回空值。</p><p>3、 Propose: Proposer收到多数Acceptor的Promise应答后，从应答中选择Proposal ID最大的提案的Value，作为本次要发起的提案。如果所有应答的提案Value均为空值，则可以自己随意决定提案Value。然后携带当前Proposal ID，向所有Acceptor发送Propose请求。</p><p>4、 Accept: Acceptor收到Propose请求后，在不违背自己之前做出的承诺下，接受并持久化当前Proposal ID和提案Value。</p><p>5、 Learn: Proposer收到多数Acceptor的Accept后，决议形成，将形成的决议发送给所有Learner。</p><p>下面举例以说明：</p><ol><li>情况1：</li></ol><p> <img src="/images/pasted-228.png" alt="upload successful"></p><ul><li>有A1, A2, A3, A4, A5 5位议员，就税率问题进行决议。</li><li>A1发起1号Proposal的Propose，等待Promise承诺； </li><li>A2-A5回应Promise； </li><li>A1在收到两份回复时就会发起税率10%的Proposal； </li><li>A2-A5回应Accept； </li><li>通过Proposal，税率10%。</li></ul><ol start="2"><li>情况2：</li></ol><p> <img src="/images/pasted-229.png" alt="upload successful"><br>     - 现在我们假设在A1提出提案的同时, A5决定将税率定为20%<br>     - A2承诺A1，A4承诺A5，A3行为成为关键<br>     - 情况1：A3先收到A1消息，承诺A1。<br>     - A1发起Proposal（1，10%），A2，A3接受。<br>     - 之后A3又收到A5消息，回复A1：（1，10%），并承诺A5<br>     - A5发起Proposal（2，20%），A3，A4接受。之后A1，A5同时广播决议。</p><pre><code>    由此可见Paxos 算法缺陷：在网络复杂的情况下，一个应用 Paxos 算法的分布式系统，可能很久无法收敛，甚至陷入活锁的情况。</code></pre><ol start="3"><li>情况3：</li></ol><p> <img src="/images/pasted-230.png" alt="upload successful"></p><pre><code> - 现在我们假设在A1提出提案的同时, A5决定将税率定为20% - A1，A5同时发起Propose（序号分别为1，2） - A2承诺A1，A4承诺A5，A3行为成为关键 - 情况2：A3先收到A1消息，承诺A1。之后立刻收到A5消息，承诺A5。 - A1发起Proposal（1，10%），无足够响应，A1重新Propose （序号3），A3再次承诺A1。 - A5发起Proposal（2，20%），无足够相应。A5重新Propose （序号4），A3再次承诺A5。</code></pre><p> 造成这种情况的原因是系统中有一个以上的 Proposer，多个 Proposers 相互争夺 Acceptor，造成迟迟无法达成一致的情况。针对这种情况，一种改进的 Paxos 算法被提出：从系统中选出一个节点作为 Leader，只有 Leader 能够发起提案。这样，一次 Paxos 流程中只有一个Proposer，不会出现活锁的情况，此时只会出现例子中第一种情况。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Paxos算法是一种基于消息传递且具有高度容错特性的一致性算法。其通常用于快速正确的在一个分布式系统中对某个数据值达成一致，并且保证无论发送任何异常都不会破坏整个系统的一致性。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-226.png&quot; alt=&quot;u</summary>
+      
+    
+    
+    
+    <category term="分布式" scheme="http://example.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+    <category term="Paxos" scheme="http://example.com/tags/Paxos/"/>
+    
+    <category term="一致性算法" scheme="http://example.com/tags/%E4%B8%80%E8%87%B4%E6%80%A7%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
   
   <entry>
     <title>Zookeeper选举机制</title>
@@ -504,64 +557,6 @@
     <category term="读已提交" scheme="http://example.com/tags/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4/"/>
     
     <category term="binlog" scheme="http://example.com/tags/binlog/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL中的自增长锁需要注意的点</title>
-    <link href="http://example.com/2022/04/05/MySQL%E4%B8%AD%E7%9A%84%E8%87%AA%E5%A2%9E%E9%95%BF%E9%94%81%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/"/>
-    <id>http://example.com/2022/04/05/MySQL%E4%B8%AD%E7%9A%84%E8%87%AA%E5%A2%9E%E9%95%BF%E9%94%81%E9%9C%80%E8%A6%81%E6%B3%A8%E6%84%8F%E7%9A%84%E7%82%B9/</id>
-    <published>2022-04-05T02:13:00.000Z</published>
-    <updated>2022-04-05T02:24:26.726Z</updated>
-    
-    <content type="html"><![CDATA[<p>在表设计的时候，int类型自增长的主键一直是我们的最爱，但是如果你不了解自增长主键，那么在某些情况下可能会给你带来一些意想不到的错误。</p><p>在innoDB存储引擎中，对每个含有自增长值的表都有一个自增长计数器，当对该表插入记录时，这个计数器会+n，插入方式会根据这个计数器的值确定自增id。而这种插入，为了避免在多线程下的冲突问题，采用了表锁来处理。同时为了提高插入性能，该锁并不是在一个事务提交之后才释放，而是完成对自增长值插入SQL语句后立即释放。尽管如此，这种方式的插入性能还是很差。事务必须等前一个插入完成，其次对于大批量的数据插入影响性能。</p><p>因此从MySQL5.1.22开始，innoDB提供了一种轻量级互斥遍历的自增长实现机制，通过innoDB_autoinc_lock_mode来控制自增长的模式。如下图所示</p><p> <img src="/images/pasted-175.png" alt="upload successful"></p><p> <img src="/images/pasted-176.png" alt="upload successful"></p><p> 此外，还需要特别注意的是innoDB存储引擎的自增长和MyISAM不同，MyISAM是表级锁，自增长无需考虑并发插入。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在表设计的时候，int类型自增长的主键一直是我们的最爱，但是如果你不了解自增长主键，那么在某些情况下可能会给你带来一些意想不到的错误。&lt;/p&gt;
-&lt;p&gt;在innoDB存储引擎中，对每个含有自增长值的表都有一个自增长计数器，当对该表插入记录时，这个计数器会+n，插入方式会根据这</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="自增主键" scheme="http://example.com/tags/%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE/"/>
-    
-    <category term="锁" scheme="http://example.com/tags/%E9%94%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Redis的通信协议RESP</title>
-    <link href="http://example.com/2022/04/03/Redis%E7%9A%84%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AERESP/"/>
-    <id>http://example.com/2022/04/03/Redis%E7%9A%84%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AERESP/</id>
-    <published>2022-04-03T14:00:00.000Z</published>
-    <updated>2022-04-03T14:09:04.344Z</updated>
-    
-    <content type="html"><![CDATA[<p>我们知道，Redis 客户端与服务端是通过命令的方式来完成交互过程的，主要分为两个部分：网络模型和序列化协议。前者讨论的是数据交互的组织方式，后者讨论的是数据如何序列化。</p><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Redis 的通信协议是 Redis Serialization Protocol，翻译为 Redis 序列化协议，简称 RESP。它具有如下特征：</p><ul><li>在 TCP 层</li><li>是二进制安全的</li><li>基于请求 - 响应模式</li><li>简单、易懂（人都可以看懂）</li><li>RESP 所描述的是 Redis 客户端 - 服务端的交互方式。</li></ul><h2 id="RESP描述"><a href="#RESP描述" class="headerlink" title="RESP描述"></a>RESP描述</h2><p>Redis 协议将传输的结构数据分为 5 种类型，单元结束时统一加上回车换行符号 \r\n。</p><ul><li>单行字符串，第一个字节为 +</li><li>错误消息，第一个字节为 -</li><li>整型数字，第一个字节为 :，后跟整数的字符串</li><li>多行字符串，第一个字节为 $，后跟字符串的长度</li><li>数组，第一个字节为 *，后跟跟着数组的长度</li></ul><h2 id="请求命令"><a href="#请求命令" class="headerlink" title="请求命令"></a>请求命令</h2><p>Redis 对每一条请求命令都做了统一规范，格式如下：</p><pre><code>        *&lt;number of arguments&gt; CR LF        $&lt;number of bytes of argument 1&gt; CR LF        &lt;argument data&gt; CR LF        ...        $&lt;number of bytes of argument N&gt; CR LF        &lt;argument data&gt; CR LF</code></pre><p>翻译如下：</p><ul><li><p>number of arguments ： 参数的数量</p></li><li><p>CR LF：\r\n</p></li><li><p>number of bytes of argument 1：参数 1 的字节数</p></li><li><p>number of bytes of argument N：参数 N 的字节数<br>以命令 set userName chenssy 为例，如下：</p><pre><code>  *3  $3  SET  $8  userName  $7  chenssy</code></pre><p>解释：</p><pre><code>  *3 数组，表明有三个参数 SET、userName、chenssy  $3 多行字符串，第一个参数 SET ，有 3 个字符  $8 多行字符串，第二个参数 userName，有 8 个字符  $7 多行字符串，第三个参数 chenssy，有 7 个字符</code></pre><p>上面只是格式化显示的结果，真正传输的结果如下：</p><pre><code>  *3\r\n$3\r\nSET\r\n$8\r\nuserName\r\n$7\r\nchenssy\r\n</code></pre><h2 id="回复命令"><a href="#回复命令" class="headerlink" title="回复命令"></a>回复命令</h2><p>Redis 服务端响应要支持多种数据格式，所以回复命令一般都会显得复杂些，但是无论如何它都逃脱不了上面 5 中类型及其组合。</p></li></ul><p>从上面我们可以看出 RESP 协议是非常简单直观的一种协议，我们肉眼都可以看懂，而且数据结构类型也只有少少的 5 中，所以实现起来就变得很简单了。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;我们知道，Redis 客户端与服务端是通过命令的方式来完成交互过程的，主要分为两个部分：网络模型和序列化协议。前者讨论的是数据交互的组织方式，后者讨论的是数据如何序列化。&lt;/p&gt;
-&lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; ti</summary>
-      
-    
-    
-    
-    <category term="Redis" scheme="http://example.com/categories/Redis/"/>
-    
-    
-    <category term="RESP" scheme="http://example.com/tags/RESP/"/>
-    
-    <category term="通信协议" scheme="http://example.com/tags/%E9%80%9A%E4%BF%A1%E5%8D%8F%E8%AE%AE/"/>
-    
-    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
     
   </entry>
   
