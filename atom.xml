@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-05-25T14:19:02.540Z</updated>
+  <updated>2022-06-15T15:07:21.517Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>误删数据库后除了跑路，还能怎么办？</title>
+    <link href="http://example.com/2022/06/15/%E8%AF%AF%E5%88%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E9%99%A4%E4%BA%86%E8%B7%91%E8%B7%AF%EF%BC%8C%E8%BF%98%E8%83%BD%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/"/>
+    <id>http://example.com/2022/06/15/%E8%AF%AF%E5%88%A0%E6%95%B0%E6%8D%AE%E5%BA%93%E5%90%8E%E9%99%A4%E4%BA%86%E8%B7%91%E8%B7%AF%EF%BC%8C%E8%BF%98%E8%83%BD%E6%80%8E%E4%B9%88%E5%8A%9E%EF%BC%9F/</id>
+    <published>2022-06-15T14:23:00.000Z</published>
+    <updated>2022-06-15T15:07:21.517Z</updated>
+    
+    <content type="html"><![CDATA[<p>传统的高可用架构是不能预防误删除数据的，因为主库的一个drop table命令，会通过binlog传给所有从库和级联从库，进而导致整个集群的实例都会执行这个命令。</p><p>为了找到解决误删数据库的更高效的方法，我们需要先对和MySQL相关的误删数据，做下分类：</p><ol><li>使用delete语句误删数据行</li><li>使用drop table或者truncate table语句误删数据库</li><li>使用drop database语句误删数据库</li><li>使用rm命令误删整个MySQL实例</li></ol><h3 id="误删行"><a href="#误删行" class="headerlink" title="误删行"></a>误删行</h3><p>方案：使用delete语句误删了数据行，可以用Flashback工具通过闪回把数据恢复回来。</p><p>原理：修改binlog的内容，拿回原库重放。而能够使用这个方案的前提是，需要确保binlog_format=row和binlog_row_image=FULL。</p><p>具体：</p><ol><li>对于insert语句，对应的binlog event类型是Write_rows event，把它改成Delete_rows event即可。</li><li>同理，对于delete语句，也是将Delete_rows event改为Write_rows event。</li><li>而如果是Update_rows的话,binlog里面记录了数据行修改前和修改后的值,对调这两行的位置即可。</li></ol><p>而对于误删数据涉及到了多个事务的话，需要将事务的顺序调过来再执行。</p><p>当然恢复过程并不建议在主库上进行，而是恢复出一个备份，或者找一个从库作为临时库，在临时库上执行恢复操作，确认过数据无误后，在恢复回主库。（原因：一个在执行线上逻辑的主库，数据状态往往是有关联的。可能由于发现数据问题的实际晚了一点，就导致已经在之前误删的基础上，业务代码逻辑又继续修改了其他数据，如果这时进行数据恢复，未经确认，会导致出现对数据的二次破坏）</p><pre><code>    注意：不止要了解误删数据的事后处理方法，更重要的是做到事前预防。    建议：    1. 把sql_safe_updates参数设置成on，在delete或者update语句中写where，或者where条件不包含索引字段，这条语句就会报错。    2. 代码上线前，必须经过SQL审计</code></pre><h3 id="误删库-表"><a href="#误删库-表" class="headerlink" title="误删库/表"></a>误删库/表</h3><p>这种情况下，想要恢复数据就需要使用全量备份了，加增量日志的方式。这个方案要求线上定期的全量备份，并且实时备份binlog（因为对于drop/turncate table/database binlog记录的是statement格式，没法通过flasback进行恢复）</p><p>恢复数据的流程：</p><ol><li>取最近一次全量备份（假设是一天一备，上次备份是当天0点）</li><li>用备份恢复出一个临时库</li><li>从日志备份里面，取出凌晨0点之后的日志</li><li>把这些日志，除了误删除数据的语句外，全部应用到临时库</li></ol><p>说明：为了加速数据恢复，可以在mysqlbinlog加上-database，用来指定误删除表所在的库，但是这样还是不够快（1.误删表，不能指定解析一个表的日志；2.用mysqlbinlog解析出日志应用，应用日志的过程就只能是单线程）</p><p>误删库或表后，恢复数据的思路主要就是通过备份，再加上应用binlog的方式。最好把数据恢复功能做成自动化工具。</p><h3 id="延迟复制备库"><a href="#延迟复制备库" class="headerlink" title="延迟复制备库"></a>延迟复制备库</h3><p>延迟复制备库是一种特殊的备库，通过CHANGE MASTER TO_DELAY = N命令，可以指定这个备库持续保持主库有N秒的延迟。</p><h3 id="预防误删库表的方法"><a href="#预防误删库表的方法" class="headerlink" title="预防误删库表的方法"></a>预防误删库表的方法</h3><ul><li>账号分离，权限控制</li><li>制定操作规范</li><li>定期给开发进行培训</li><li>搭建延迟备库</li><li>做好sql审计</li><li>做好备份</li></ul>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;传统的高可用架构是不能预防误删除数据的，因为主库的一个drop table命令，会通过binlog传给所有从库和级联从库，进而导致整个集群的实例都会执行这个命令。&lt;/p&gt;
+&lt;p&gt;为了找到解决误删数据库的更高效的方法，我们需要先对和MySQL相关的误删数据，做下分类：&lt;/p&gt;</summary>
+      
+    
+    
+    
+    <category term="MYSQL" scheme="http://example.com/categories/MYSQL/"/>
+    
+    
+    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
+    
+  </entry>
   
   <entry>
     <title>关于ZAB协议</title>
@@ -529,34 +554,6 @@
     <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
     <category term="next-key lock" scheme="http://example.com/tags/next-key-lock/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>读已提交下，为什么建议binlog使用row格式</title>
-    <link href="http://example.com/2022/04/05/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4%E4%B8%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BB%BA%E8%AE%AEbinlog%E4%BD%BF%E7%94%A8row%E6%A0%BC%E5%BC%8F/"/>
-    <id>http://example.com/2022/04/05/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4%E4%B8%8B%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E5%BB%BA%E8%AE%AEbinlog%E4%BD%BF%E7%94%A8row%E6%A0%BC%E5%BC%8F/</id>
-    <published>2022-04-05T05:16:00.000Z</published>
-    <updated>2022-04-05T08:29:04.394Z</updated>
-    
-    <content type="html"><![CDATA[<p>next-key lock 实际上是由间隙锁加行锁实现的。而间隙锁是在可重复读隔离级别下才会生效的。因此在读已提交这个隔离级别下，为了解决数据和日志的不一致问题，需要将binlog的格式改为row，而不是statement。（statement记录的是逻辑上的SQL，而row记录的是对应行的变化情况）</p><p>解释：</p><p>CREATE TABLE <code>t</code> (<br>  <code>id</code> int(11) NOT NULL,<br>  <code>c</code> int(11) DEFAULT NULL,<br>  <code>d</code> int(11) DEFAULT NULL,<br>  PRIMARY KEY (<code>id</code>),<br>  KEY <code>c</code> (<code>c</code>)<br>) ENGINE=InnoDB;</p><p>insert into t values(0,0,0),(5,5,5),<br>(10,10,10),(15,15,15),(20,20,20),(25,25,25);</p><p> <img src="/images/pasted-177.png" alt="upload successful"><br>建表执行过程如上所述，首先针对于T3和T5时session A查询会出现幻读问题（语义上，我们是要把d=5的所有数据锁住，而后续SessionB和C都能够操作d=5的数据），其次会出现数据和日志不一致的问题（binlog写入是根据commit提交决定的，因此SessionB会先写入，随后Session C，最后才是Session A，这样导致的结果就是，我们数据库的数据是：</p><ol><li>经过 T1 时刻，id=5 这一行变成 (5,5,100)，当然这个结果最终是在 T6 时刻正式提交的 ;</li><li>经过 T2 时刻，id=0 这一行变成 (0,5,5);</li><li>经过 T4 时刻，表里面多了一行 (1,5,5);</li><li>其他行跟这个执行序列无关，保持不变。</li></ol><p>而binlog日志里面记录的数据却是这样的：<br>update t set d=5 where id=0; /<em>(0,0,5)</em>/</p><p>update t set c=5 where id=0; /<em>(0,5,5)</em>/</p><p>insert into t values(1,1,5); /<em>(1,1,5)</em>/</p><p>update t set c=5 where id=1; /<em>(1,5,5)</em>/</p><p>update t set d=100 where d=5;/* 所有 d=5 的行，d 改成 100*/</p><p>这个语句序列，不论是拿到备库去执行，还是以后用 binlog 来克隆一个库，这三行的结果，都变成了 (0,5,100)、(1,5,100) 和 (5,5,100)。<br>也就是说，id=0 和 id=1 这两行，发生了数据不一致。<br>）</p><p>因此在读已提交下，使用Statement格式的binlog日志是不可取的。而如果你改用row格式，那么对于上面这种情况，记录的是对应行的修改，而不是逻辑上的SQL语句，能够避免这种问题。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;next-key lock 实际上是由间隙锁加行锁实现的。而间隙锁是在可重复读隔离级别下才会生效的。因此在读已提交这个隔离级别下，为了解决数据和日志的不一致问题，需要将binlog的格式改为row，而不是statement。（statement记录的是逻辑上的SQL，而ro</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="读已提交" scheme="http://example.com/tags/%E8%AF%BB%E5%B7%B2%E6%8F%90%E4%BA%A4/"/>
-    
-    <category term="binlog" scheme="http://example.com/tags/binlog/"/>
     
   </entry>
   
