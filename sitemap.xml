@@ -1712,7 +1712,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/links/index.html</loc>
+    <loc>http://example.com/repository/index.html</loc>
     
     <lastmod>2022-01-05</lastmod>
     
@@ -1730,7 +1730,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/repository/index.html</loc>
+    <loc>http://example.com/links/index.html</loc>
     
     <lastmod>2022-01-05</lastmod>
     
@@ -3360,13 +3360,6 @@
   
   <url>
     <loc>http://example.com/categories/%E8%A7%A3%E9%87%8A%E5%99%A8/</loc>
-    <lastmod>2022-06-15</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/categories/MYSQL/</loc>
     <lastmod>2022-06-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
