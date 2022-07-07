@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-06-17T12:43:17.962Z</updated>
+  <updated>2022-07-05T12:29:39.462Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>打破双亲委派机制的一些场景</title>
+    <link href="http://example.com/2022/07/05/%E6%89%93%E7%A0%B4%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9C%BA%E6%99%AF/"/>
+    <id>http://example.com/2022/07/05/%E6%89%93%E7%A0%B4%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6%E7%9A%84%E4%B8%80%E4%BA%9B%E5%9C%BA%E6%99%AF/</id>
+    <published>2022-07-05T11:42:00.000Z</published>
+    <updated>2022-07-05T12:29:39.462Z</updated>
+    
+    <content type="html"><![CDATA[<p>前言：在说打破双亲委派机制的一些场景前，先聊一聊为什么需要双亲委派机制。</p><p>在双亲委派机制中，父子类通过组合的方式聚合在一起。由应用类加载器开始到系统类加器。主要是这几步：</p><ol><li>在自身的loadclass方法中先检查类是否已经被加载过</li><li>若没有加载则调用父类加载器的loadclass方法加载，若父类为空则默认用启动类加载器作为父加载器加载。</li><li>如果父类加载器失败，抛出异常classnotfoundexception后，调用自身的findclass方法进行加载类</li></ol><p>这样做的好处是一方面可以避免类的重复加载，当父类加载器已经加载过这个类时，子类不会再去加载。另一方面，通过这样的方式可以保证安全性。因为引导类加载在加载的时候只会加载JAVA_HOME的jar包，这个类及时被同名的类破坏也不会有影响，除非你本地jdk的jar被改写。即可以有效的防止核心java api被篡改。</p><p>而既然知道了双亲委派机制的实现，那么想要破坏双亲委派机制就简单了。只需要自定义一个类加载器，重写其中的loadclass方法，使其不进行双亲委派机制。而如果我们要自定义一个类加载器而又不想破坏双亲委派机制，只需集成classloader然后重写findclass方法。</p><p>而在某些场景下，我们却需要去打破双亲委派机制，比如我下面将要提到的几种</p><h3 id="JNDI、JDBC等"><a href="#JNDI、JDBC等" class="headerlink" title="JNDI、JDBC等"></a>JNDI、JDBC等</h3><p>在我们通过API调用一些java的基类时，存在一种SPI机制。比如JDBC。在类加载时，会先加载驱动DriverManger类，该类由类加载器加载。因为java.sql.DriverManger类位于rt.jar下面，会被根类加载器加载。而在其加载时，会执行静态方法，静态方法会尝试加载classpath下的所有实现driver接口的类。但这些实现类基本由各大数据库厂商实现，如果根据双亲委派机制来执行时行不通的。因为第三方的类不能被根加载器加载。因此，在jdbc中引入了线程上下文加载器的方式破坏双亲委派机制。</p><h3 id="Tomcat"><a href="#Tomcat" class="headerlink" title="Tomcat"></a>Tomcat</h3><p>在tomcat中为了应用程序访问不同存储库中的类和资源，达到应用类之间隔离的目的，打破了双亲委派机制。即为给个容器单独提供一个WebAppClassLoader加载器（优先加载web应用自身的类，即优先由WebAppClassLoader加载，加载不到在由CommonClassLoader加载，这和双亲委派刚好相反）。</p><p>Tomcat整体类加载器结构如下：<br> <img src="/images/pasted-235.png" alt="upload successful"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;前言：在说打破双亲委派机制的一些场景前，先聊一聊为什么需要双亲委派机制。&lt;/p&gt;
+&lt;p&gt;在双亲委派机制中，父子类通过组合的方式聚合在一起。由应用类加载器开始到系统类加器。主要是这几步：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;在自身的loadclass方法中先检查类是否已经被加载过&lt;/l</summary>
+      
+    
+    
+    
+    <category term="JVM" scheme="http://example.com/categories/JVM/"/>
+    
+    
+    <category term="类加载机制" scheme="http://example.com/tags/%E7%B1%BB%E5%8A%A0%E8%BD%BD%E6%9C%BA%E5%88%B6/"/>
+    
+    <category term="双亲委派机制" scheme="http://example.com/tags/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%B4%BE%E6%9C%BA%E5%88%B6/"/>
+    
+  </entry>
   
   <entry>
     <title>Spring编程式事务</title>
@@ -526,34 +555,6 @@
     <category term="Java" scheme="http://example.com/tags/Java/"/>
     
     <category term="流" scheme="http://example.com/tags/%E6%B5%81/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于Java泛型</title>
-    <link href="http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava%E6%B3%9B%E5%9E%8B/"/>
-    <id>http://example.com/2022/04/09/%E5%85%B3%E4%BA%8EJava%E6%B3%9B%E5%9E%8B/</id>
-    <published>2022-04-09T06:32:00.000Z</published>
-    <updated>2022-04-09T06:50:29.403Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="泛型的理解："><a href="#泛型的理解：" class="headerlink" title="泛型的理解："></a>泛型的理解：</h3><ol><li><p>泛型又称参数化类型，于jdk5.0提出的提特性，解决数据类型的安全性问题</p></li><li><p>在类声明或实例化时只要指定好需要的具体的类型即可</p></li><li><p>java的泛型可以保证如果程序在编译时没有发出警告，运行时就不会产生ClassCastException异常。同时，代码更加简介、健壮</p></li><li><p>泛型的作用是在类声明时通过一个标识表示类中某个属性类型，或者是某个方法返回值的类型，或者是参数类型</p></li></ol><h3 id="泛型的好处："><a href="#泛型的好处：" class="headerlink" title="泛型的好处："></a>泛型的好处：</h3><ol><li><p>编译时，检查添加元素的类型，提高了安全性</p></li><li><p>减少了类型转换的次数，提高了效率</p></li><li><p>不再提示编译警告</p></li></ol><h3 id="自定义泛型类："><a href="#自定义泛型类：" class="headerlink" title="自定义泛型类："></a>自定义泛型类：</h3><pre><code>public class Solution&lt;K,V&gt; &#123;    K k;    V v;    public K getK()&#123;        return null;    &#125;&#125;</code></pre><p>注意：</p><ol><li><p>普通成员可以使用泛型（属性、方法）</p></li><li><p>使用泛型的数组不能初始化</p></li><li><p>静态方法中不能使用类的泛型</p></li><li><p>泛型类的类型是在创建对象时确定的</p></li><li><p>如果在创建对象时没有指定类型，默认为object</p></li></ol><h3 id="自定义泛型接口"><a href="#自定义泛型接口" class="headerlink" title="自定义泛型接口"></a>自定义泛型接口</h3><pre><code>interface B&lt;T&gt;&#123;    T getInstance();&#125;</code></pre><p>注意：</p><ol><li><p>接口中，静态成员不能使用泛型</p></li><li><p>泛型接口的类型在继承接口或者实现接口时确定</p></li><li><p>没有指定类型，默认为Object</p></li></ol><h3 id="泛型的继承和通配符"><a href="#泛型的继承和通配符" class="headerlink" title="泛型的继承和通配符"></a>泛型的继承和通配符</h3><ol><li><p>泛型不具备继承性</p></li><li><?> :支持任意泛型类型</li><li><? extends A>: 支持A类以及A的子类，规定了泛型的上限</li><li><? super A>:支持A类以及A的父类，不限于直接父类，规避了泛型的下限</li></ol>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;泛型的理解：&quot;&gt;&lt;a href=&quot;#泛型的理解：&quot; class=&quot;headerlink&quot; title=&quot;泛型的理解：&quot;&gt;&lt;/a&gt;泛型的理解：&lt;/h3&gt;&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;泛型又称参数化类型，于jdk5.0提出的提特性，解决数据类型的安全性问题&lt;/p&gt;
-&lt;/li</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
-    <category term="泛型" scheme="http://example.com/tags/%E6%B3%9B%E5%9E%8B/"/>
     
   </entry>
   
