@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-07-09T12:13:44.655Z</updated>
+  <updated>2022-07-10T13:51:35.402Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,35 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>CPU Cache的数据结构和读取过程</title>
+    <link href="http://example.com/2022/07/10/CPU-Cache%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E8%AF%BB%E5%8F%96%E8%BF%87%E7%A8%8B/"/>
+    <id>http://example.com/2022/07/10/CPU-Cache%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E8%AF%BB%E5%8F%96%E8%BF%87%E7%A8%8B/</id>
+    <published>2022-07-10T13:43:00.000Z</published>
+    <updated>2022-07-10T13:51:35.402Z</updated>
+    
+    <content type="html"><![CDATA[<p>CPU Cache 的数据是从内存中读取过来的，它是以⼀⼩块⼀⼩块读取数据的，⽽不是按照单个数组元素来读取数据的，在 CPU Cache 中的，这样⼀⼩块⼀⼩块的数据，称为Cache Line（缓存块）。</p><p>事实上，CPU 读取数据的时候，⽆论数据是否存放到 Cache 中，CPU 都是先访问 Cache，只有当 Cache 中找不到数据时，才会去访问内存，并把内存中的数据读⼊到 Cache 中，CPU 再从 CPU Cache 读取数据。</p><p>那 CPU 怎么知道要访问的内存数据，是否在 Cache ⾥？如果在的话，如何找到 Cache 对应的数据呢？我们从最简单、基础的直接映射 Cache（Direct Mapped Cache）说起，来看看整个 CPU Cache 的数据结构和访问逻辑。</p><h3 id="直接映射"><a href="#直接映射" class="headerlink" title="直接映射"></a>直接映射</h3><p>对于直接映射 Cache 采⽤的策略，就是把内存块的地址始终「映射」在⼀个 CPU Line（缓存块）的地址，⾄于映射关系实现⽅式，则是使⽤「取模运算」，取模运算的结果就是内存块地址对应的 CPU Line</p><p>举个例⼦，内存共被划分为 32 个内存块，CPU Cache 共有 8 个 CPU Line，假设 CPU 想要访问第 15 号内存块，如果 15 号内存块中的数据已经缓存在 CPU Line 中的话，则是⼀定映射在 7 号 CPU Line 中，因15 % 8 = 7</p><p>机智的你肯定发现了，使⽤取模⽅式映射的话，就会出现多个内存块对应同⼀个 CPU Line，⽐如上⾯的例⼦，除了 15 号内存块是映射在 7 号 CPU Line 中，还有 7 号、23 号、31 号内存块都是映射到 7 号 CPU Line 中。</p><p> <img src="/images/pasted-243.png" alt="upload successful"></p><p> 因此，为了区别不同的内存块，在对应的 CPU Line 中我们还会存储⼀个组标记（Tag）。这个组标记会记录当前 CPU Line 中存储的数据对应的内存块，我们可以⽤这个组标记来区分不同的内存块。</p><p> 除了组标记信息外，CPU Line 还有两个信息：</p><ul><li>⼀个是，从内存加载过来的实际存放数据（Data）。</li><li>另⼀个是，有效位（Valid bit），它是⽤来标记对应的 CPU Line 中的数据是否是有效的，如果有效位是 0，⽆论 CPU Line 中是否有数据，CPU 都会直接访问内存，重新加载数据。</li></ul><p> CPU 在从 CPU Cache 读取数据的时候，并不是读取 CPU Line 中的整个数据块，⽽是读取 CPU 所需要的⼀个数据⽚段，这样的数据统称为⼀个字（Word）。那怎么在对应的 CPU Line 中数据块中找到所需的字呢？答案是，需要⼀个偏移量（Offset）。</p><p> 因此，⼀个内存的访问地址，包括组标记、CPU Line 索引、偏移量这三种信息，于是 CPU 就能通过这些信息，在 CPU Cache 中找到缓存的数据。⽽对于 CPU Cache ⾥的数据结构，则是由索引 + 有效位 + 组标记 + 数据块组成。</p><p> <img src="/images/pasted-244.png" alt="upload successful"></p><p> 如果内存中的数据已经在 CPU Cahe 中了，那 CPU 访问⼀个内存地址的时候，会经历这 4 个步骤：</p><ol><li>根据内存地址中索引信息，计算在 CPU Cahe 中的索引，也就是找出对应的 CPU Line 的地址；</li><li>找到对应 CPU Line 后，判断 CPU Line 中的有效位，确认 CPU Line 中数据是否是有效的，如果是⽆效的，CPU 就会直接访问内存，并重新加载数据，如果数据有效，则往下执⾏；</li><li>对⽐内存地址中组标记和 CPU Line 中的组标记，确认 CPU Line 中的数据是我们要访问的内存数据，如果不是的话，CPU 就会直接访问内存，并重新加载数据，如果是的话，则往下执⾏；</li><li>根据内存地址中偏移量信息，从 CPU Line 的数据块中，读取对应的字。<br>到这⾥，相信你对直接映射 Cache 有了⼀定认识，但其实除了直接映射 Cache 之外，还有其他通过内存地址找到 CPU Cache 中的数据的策略，⽐如全相连 Cache （Fully Associative Cache）、组相连 Cache（Set Associative Cache）等，这⼏种策策略的数据结构都⽐较相似，我们理解了直接映射 Cache 的⼯作⽅式，其他的策略如果你有兴趣去看，相信很快就能理解的了。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;CPU Cache 的数据是从内存中读取过来的，它是以⼀⼩块⼀⼩块读取数据的，⽽不是按照单个数组元素来读取数据的，在 CPU Cache 中的，这样⼀⼩块⼀⼩块的数据，称为Cache Line（缓存块）。&lt;/p&gt;
+&lt;p&gt;事实上，CPU 读取数据的时候，⽆论数据是否存放到 C</summary>
+      
+    
+    
+    
+    <category term="Cache" scheme="http://example.com/categories/Cache/"/>
+    
+    
+    <category term="计算机组成原理" scheme="http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/"/>
+    
+    <category term="Cache" scheme="http://example.com/tags/Cache/"/>
+    
+    <category term="CPU" scheme="http://example.com/tags/CPU/"/>
+    
+  </entry>
   
   <entry>
     <title>hashCode 的计算逻辑中，为什么是 31 作为乘数？</title>
@@ -535,30 +564,6 @@
     <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
     <category term="Explain" scheme="http://example.com/tags/Explain/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL日志和索引相关问题</title>
-    <link href="http://example.com/2022/04/10/MySQL%E6%97%A5%E5%BF%97%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/"/>
-    <id>http://example.com/2022/04/10/MySQL%E6%97%A5%E5%BF%97%E5%92%8C%E7%B4%A2%E5%BC%95%E7%9B%B8%E5%85%B3%E9%97%AE%E9%A2%98/</id>
-    <published>2022-04-10T06:50:00.000Z</published>
-    <updated>2022-04-10T07:15:47.220Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="MySQL怎么知道binlog是完整的"><a href="#MySQL怎么知道binlog是完整的" class="headerlink" title="MySQL怎么知道binlog是完整的?"></a>MySQL怎么知道binlog是完整的?</h3><p>一个事务的binlog是有完整格式的：</p><ul><li>statement格式的binlog，最后会有COMMIT； </li><li>row格式的binlog，最后会有一个XID event。<br>另外，在MySQL 5.6.2版本以后，还引入了binlog-checksum参数，用来验证binlog内容的正确性。对于binlog日志由于磁盘原因，可能会在日志中间出错的情况，MySQL可以通过校验checksum的结果来发现。所以，MySQL还是有办法验证事务binlog的完整性的。</li></ul><h3 id="redo-log-和binlog是怎么关联起来的"><a href="#redo-log-和binlog是怎么关联起来的" class="headerlink" title="redo log 和binlog是怎么关联起来的?"></a>redo log 和binlog是怎么关联起来的?</h3><p>它们有一个共同的数据字段，叫XID。崩溃恢复的时候，会按顺序扫描redo log：</p><ul><li>如果碰到既有prepare、又有commit的redo log，就直接提交； </li><li>如果碰到只有parepare、而没有commit的redo log，就拿着XID去binlog找对应的事务。</li></ul><h3 id="为什么需要两阶段提交？先写redo-log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？"><a href="#为什么需要两阶段提交？先写redo-log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？" class="headerlink" title="为什么需要两阶段提交？先写redo log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？"></a>为什么需要两阶段提交？先写redo log，崩溃恢复时，必须两个日志都完整才可以，不是一样的吗？</h3><p>回答：其实，两阶段提交是经典的分布式系统问题，并不是MySQL独有的。 如果必须要举一个场景，来说明这么做的必要性的话，那就是事务的持久性问题。 对于InnoDB引擎来说，如果redo log提交完成了，事务就不能回滚（如果这还允许回滚，就可能覆盖掉别的事务的更新）。而如果redo log直接提交，然后binlog写入的时候失败，InnoDB又回滚不了，数据和binlog日志又不一致了。 两阶段提交就是为了给所有人一个机会，当每个人都说“我ok”的时候，再一起提交。</p><h3 id="不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？"><a href="#不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？" class="headerlink" title="不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？"></a>不引入两个日志，也就没有两阶段提交。只需要用redolog支持崩溃恢复和归档不是也可以吗？</h3><p>回答：</p><p>如果只从崩溃恢复的角度来讲是可以的。你可以把binlog关掉，这样就没有两阶段提交了，但系统依然是crash-safe的。 </p><p>但是，如果你了解一下业界各个公司的使用场景的话，就会发现在正式的生产库上，binlog都是开着的。因为binlog有着redo log无法替代的功能。 </p><p>一个是归档。redo log是循环写，写到末尾是要回到开头继续写的。这样历史日志没法保留，redo log也就起不到归档的作用。 </p><p>一个就是MySQL系统依赖于binlog。binlog作为MySQL一开始就有的功能，被用在了很多地方。 </p><p>其中，MySQL系统高可用的基础，就是binlog复制。 还有很多公司有异构系统（比如一些数据分析系统），这些系统就靠消费MySQL的binlog来更新 自己的数据。关掉binlog的话，这些下游系统就没法输入了。 总之，由于现在包括MySQL高可用在内的很多系统机制都依赖于binlog，所以“鸠占鹊巢”redo log还做不到。你看，发展生态是多么重要。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;MySQL怎么知道binlog是完整的&quot;&gt;&lt;a href=&quot;#MySQL怎么知道binlog是完整的&quot; class=&quot;headerlink&quot; title=&quot;MySQL怎么知道binlog是完整的?&quot;&gt;&lt;/a&gt;MySQL怎么知道binlog是完整的?&lt;/h3&gt;&lt;p&gt;</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
     
   </entry>
   
