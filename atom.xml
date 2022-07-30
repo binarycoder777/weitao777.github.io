@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-07-28T02:20:36.908Z</updated>
+  <updated>2022-07-29T08:12:05.044Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,61 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>事件日志</title>
+    <link href="http://example.com/2022/07/29/%E4%BA%8B%E4%BB%B6%E6%97%A5%E5%BF%97/"/>
+    <id>http://example.com/2022/07/29/%E4%BA%8B%E4%BB%B6%E6%97%A5%E5%BF%97/</id>
+    <published>2022-07-29T07:52:00.000Z</published>
+    <updated>2022-07-29T08:12:05.044Z</updated>
+    
+    <content type="html"><![CDATA[<p>“日志用于记录系统运行期间发生过的离散事件。”</p><p> <img src="/images/pasted-248.png" alt="upload successful"></p><p> 从打印日志到分析查询之间，隔着收集、缓冲、聚合、加工、索引、存储等若干个步骤，这一整个链条中涉及大量值得注意的细节，复杂性并不亚于任何一项技术或业务功能的实现。</p><h3 id="日志输出"><a href="#日志输出" class="headerlink" title="日志输出"></a>日志输出</h3><p>从日志输出值得注意的事项开始，日志的输出应避免以下情况：</p><ul><li>避免打印敏感信息。</li><li>避免引用慢操作。</li><li>避免打印追踪诊断信息：日志中不要打印方法输入参数、输出结果、方法执行时长之类的调试信息。日志的职责是记录时间，追踪诊断应由链路系统去做。</li><li>避免误导他人：日志中给日后调试除错的人挖坑是十分恶劣却又常见的行为。</li><li>处理请求时的TraceID：服务收到请求时，如果该请求没有附带TraceID，就应该自动生成唯一的TraceID来对请求进行标记，并使用MDC自动输出到日志。“TraceID会贯穿整条调用链，目的是通过它把请求在分布式系统各个服务中的执行过程串联起来。TraceID通常也会随着请求的响应返回到客户端，如果响应内容出现了异常，用户便能通过此ID快速找到与问题相关的日志。”</li><li>系统运行过程中的关键事件</li><li>启动时输出配置信息。</li></ul><h3 id="收集与缓存"><a href="#收集与缓存" class="headerlink" title="收集与缓存"></a>收集与缓存</h3><p>“为了能看到跨节点的全部日志，就要有能覆盖整个链路的全局日志系统。这个需求决定了每个节点输出日志到文件后，必须将日志文件统一收集起来集中存储、索引，由此便催生了专门的日志收集器。”</p><p>“日志收集器不仅要保证能覆盖全部数据来源，还要尽力保证日志数据的连续性，这其实并不容易做到。譬如淘宝这类大型的互联网系统，每天的日志量超过了10 000TB（10PB）量级，日志收集器的部署实例数能到达百万量级[1]，此时归集到系统中的日志要与实际产生的日志保持绝对的一致性是非常困难的，也不应该为此付出过高成本。换言之，日志不追求绝对的完整精确，只追求在代价可承受的范围内尽可能地保证较高的数据质量。一种最常用的缓解压力的做法是将日志接收者从Logstash和Elasticsearch转移至抗压能力更强的队列缓存，譬如在Logstash之前架设一个Kafka或者Redis作为缓冲层，面对突发流量，Logstash或Elasticsearch处理能力出现瓶颈时自动削峰填谷，甚至当它们短时间停顿时，也不会丢失日志数据。”</p><h3 id="加工与聚合"><a href="#加工与聚合" class="headerlink" title="加工与聚合"></a>加工与聚合</h3><p>“在将日志集中收集之后，存入Elasticsearch之前，一般还要对它们进行加工转换和聚合处理。这是因为日志是非结构化数据，一行日志中通常会包含多项信息，如果不做处理，那在Elasticsearch中就只能以全文检索的原始方式去使用日志，既不利于统计对比，也不利于条件过滤。”</p><h3 id="存储与查询"><a href="#存储与查询" class="headerlink" title="存储与查询"></a>存储与查询</h3><p>“经过收集、缓冲、聚合、加工的日志数据，终于可以放入Elasticsearch中索引存储了。Elasticsearch是整个Elastic Stack技术栈的核心，其他步骤的工具，如Filebeat、Logstash、Kibana都有替代品，有自由选择的余地，唯独Elasticsearch在日志分析这方面完全没有什么值得一提的竞争者，几乎就是解决此问题的唯一答案。这样的结果与Elasticsearch本身是一款优秀产品有关，然而更关键的是Elasticsearch的优势正好与日志分析的需求完美契合。”</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;“日志用于记录系统运行期间发生过的离散事件。”&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-248.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;p&gt; 从打印日志到分析查询之间，隔着收集、缓冲、聚合、加工、索引、存储等若干个步骤</summary>
+      
+    
+    
+    
+    <category term="分布式" scheme="http://example.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+    <category term="日志" scheme="http://example.com/tags/%E6%97%A5%E5%BF%97/"/>
+    
+    <category term="分布式" scheme="http://example.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>可观测性</title>
+    <link href="http://example.com/2022/07/29/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/"/>
+    <id>http://example.com/2022/07/29/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/</id>
+    <published>2022-07-29T07:41:00.000Z</published>
+    <updated>2022-07-29T07:51:37.410Z</updated>
+    
+    <content type="html"><![CDATA[<p>可观测性即：可以由外部输出推断其内部状态。具体可以分解为：事件日志、链路追踪以及聚合度量三部分，这三个方向各有侧重，又有重合或者可以结合支出。</p><p> <img src="/images/pasted-247.png" alt="upload successful"></p><p> “日志（Logging）：日志的职责是记录离散事件，通过这些记录分析出程序的行为，譬如曾经调用过什么方法，曾经操作过哪些数据，等等。输出日志很容易，但收集和分析日志可能会很复杂，面对成千上万的集群节点，面对迅速滚动的事件信息，面对以TB计算的文本，传输与归集并不简单。对大多数程序员来说，分析日志也许就是最常遇见也最有实践可行性的“大数据系统”了。”</p><p>“·追踪（Tracing）：单体系统时代追踪的范畴基本只局限于栈追踪（Stack Tracing），例如调试程序时，在IDE打个断点，看到的调用栈视图上的内容便是追踪；编写代码时，处理异常调用了Exception::printStackTrace()方法，它输出的堆栈信息也是追踪。微服务时代，追踪就不只局限于调用栈了，一个外部请求需要内部若干服务的联动响应，这时候完整的调用轨迹将跨越多个服务，同时包括服务间的网络传输信息与各个服务内部的调用堆栈信息，因此，分布式系统中的追踪在国内常被称为“全链路追踪”（后文简称“链路追踪”），许多资料中也称它为“分布式追踪”（Distributed Tracing）。追踪的主要目的是排查故障，如分析调用链的哪一部分、哪个方法出现错误或阻塞，输入输出是否符合预期，等等。”</p><p>“度量（Metrics）：度量是指对系统中某一类信息的统计聚合。譬如，证券市场的每一只股票都会定期公布财务报表，通过财报上的营收、净利、毛利、资产、负载等一系列数据来体现过去一个财务周期中公司的经营状况，这便是一种信息聚合。Java天生自带一种基本的度量，即由虚拟机直接提供的JMX（Java Management eXtensions）度量，诸如内存大小、各分代的用量、峰值的线程数、垃圾收集的吞吐量、频率等都可以从JMX中获得。度量的主要目的是监控（Monitoring）和预警（Alert），如在某些度量指标达到风险阈值时触发事件，以便自动处理或者提醒管理员介入。”</p><p>“追踪方面的情况与日志、度量有所不同，追踪是与具体网络协议、程序语言密切相关的。收集日志不必关心这段日志是由Java程序输出的还是由Golang程序输出的，对程序来说它们就只是一段非结构化文本而已，同理，度量对程序来说也只是一个个聚合的数据指标而已。但链路追踪不一样，各个服务之间是使用HTTP还是gRPC来进行通信会直接影响追踪的实现，各个服务是使用Java、Golang还是Node.js来编写，也会直接影响进程内调用栈的追踪方式。这种特性决定了追踪工具本身有较强的侵入性，通常是以插件式的探针来实现；也决定了追踪领域很难出现一家独大的情况，通常要有多种产品来针对不同的语言和网络进行追踪。”</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;可观测性即：可以由外部输出推断其内部状态。具体可以分解为：事件日志、链路追踪以及聚合度量三部分，这三个方向各有侧重，又有重合或者可以结合支出。&lt;/p&gt;
+&lt;p&gt; &lt;img src=&quot;/images/pasted-247.png&quot; alt=&quot;upload successful&quot;</summary>
+      
+    
+    
+    
+    <category term="分布式" scheme="http://example.com/categories/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    
+    <category term="分布式" scheme="http://example.com/tags/%E5%88%86%E5%B8%83%E5%BC%8F/"/>
+    
+    <category term="可观测性" scheme="http://example.com/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B%E6%80%A7/"/>
+    
+  </entry>
   
   <entry>
     <title>事务处理（一）</title>
@@ -506,63 +561,6 @@
     <category term="并发编程" scheme="http://example.com/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
     
     <category term="重排序" scheme="http://example.com/tags/%E9%87%8D%E6%8E%92%E5%BA%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java内存模式的基础</title>
-    <link href="http://example.com/2022/04/17/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9F%BA%E7%A1%80/"/>
-    <id>http://example.com/2022/04/17/Java%E5%86%85%E5%AD%98%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%9F%BA%E7%A1%80/</id>
-    <published>2022-04-17T01:11:00.000Z</published>
-    <updated>2022-04-17T01:52:43.054Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="并发编程模型的两个关键问题"><a href="#并发编程模型的两个关键问题" class="headerlink" title="并发编程模型的两个关键问题"></a>并发编程模型的两个关键问题</h3><p>在并发编程中，需要处理两个关键问题：线程之间如何通信及线程之间如何同步（这里的线程是指并发执行的活动实体）。</p><p>通信是指线程之间以何种机制来交换信息。在命令式编程中，线程之间的通信机制有两种：共享内存和消息传递。</p><ul><li>在共享内存的并发模型里，线程之间共享程序的公共状态，通过写-读内存中的公共状态 进行隐式通信。</li><li>在消息传递的并发模型里，线程之间没有公共状态，线程之间必须通过发送消 息来显式进行通信。</li></ul><p>同步是指程序中用于控制不同线程间操作发生相对顺序的机制。</p><ul><li>在共享内存并发模型里，同步是显式进行的。程序员必须显式指定某个方法或某段代码需要在线程之间互斥执行。 </li><li>在消息传递的并发模型里，由于消息的发送必须在消息的接收之前，因此同步是隐式进行的。</li></ul><p>Java的并发采用的是共享内存模型，Java线程之间的通信总是隐式进行，整个通信过程对 程序员完全透明。如果编写多线程程序的Java程序员不理解隐式进行的线程之间通信的工作 机制，很可能会遇到各种奇怪的内存可见性问题。</p><h3 id="Java内存模型的抽象结构"><a href="#Java内存模型的抽象结构" class="headerlink" title="Java内存模型的抽象结构"></a>Java内存模型的抽象结构</h3><p>在Java中，所有实例域、静态域和数组元素都存储在堆内存中，堆内存在线程之间共享 （本章用“共享变量”这个术语代指实例域，静态域和数组元素）。局部变量（Local Variables），方 法定义参数（Java语言规范称之为Formal Method Parameters）和异常处理器参数（Exception Handler Parameters）不会在线程之间共享，它们不会有内存可见性问题，也不受内存模型的影 响。</p><p>Java线程之间的通信由Java内存模型（本文简称为JMM）控制，JMM决定一个线程对共享 变量的写入何时对另一个线程可见。从抽象的角度来看，JMM定义了线程和主内存之间的抽 象关系：线程之间的共享变量存储在主内存（Main Memory）中，每个线程都有一个私有的本地 内存（Local Memory），本地内存中存储了该线程以读/写共享变量的副本。本地内存是JMM的 一个抽象概念，并不真实存在。它涵盖了缓存、写缓冲区、寄存器以及其他的硬件和编译器优化。</p><h3 id="从源代码到指令序列的重排序"><a href="#从源代码到指令序列的重排序" class="headerlink" title="从源代码到指令序列的重排序"></a>从源代码到指令序列的重排序</h3><p>在执行程序时，为了提高性能，编译器和处理器常常会对指令做重排序。重排序分3种类型。</p><ol><li>编译器优化的重排序。编译器在不改变单线程程序语义的前提下，可以重新安排语句 的执行顺序。 </li><li>指令级并行的重排序。现代处理器采用了指令级并行技术（Instruction-Level Parallelism，ILP）来将多条指令重叠执行。如果不存在数据依赖性，处理器可以改变语句对应 机器指令的执行顺序。 </li><li>内存系统的重排序。由于处理器使用缓存和读/写缓冲区，这使得加载和存储操作看上 去可能是在乱序执行。</li></ol><p>这些重排序可能会导致多线程程序 出现内存可见性问题。对于编译器，JMM的编译器重排序规则会禁止特定类型的编译器重排 序（不是所有的编译器重排序都要禁止）。对于处理器重排序，JMM的处理器重排序规则会要 求Java编译器在生成指令序列时，插入特定类型的内存屏障（Memory Barriers，Intel称之为 Memory Fence）指令，通过内存屏障指令来禁止特定类型的处理器重排序。</p><p>JMM属于语言级的内存模型，它确保在不同的编译器和不同的处理器平台之上，通过禁止特定类型的编译器重排序和处理器重排序，为程序员提供一致的内存可见性保证。</p><h3 id="并发编程模型的分类"><a href="#并发编程模型的分类" class="headerlink" title="并发编程模型的分类"></a>并发编程模型的分类</h3><p>现代的处理器使用写缓冲区临时保存向内存写入的数据。写缓冲区可以保证指令流水线 持续运行，它可以避免由于处理器停顿下来等待向内存写入数据而产生的延迟。同时，通过以 批处理的方式刷新写缓冲区，以及合并写缓冲区中对同一内存地址的多次写，减少对内存总 线的占用。虽然写缓冲区有这么多好处，但每个处理器上的写缓冲区，仅仅对它所在的处理器 可见。这个特性会对内存操作的执行顺序产生重要的影响：处理器对内存的读/写操作的执行 顺序，不一定与内存实际发生的读/写操作顺序一致！</p><p> <img src="/images/pasted-200.png" alt="upload successful"><br> 这里处理器A和处理器B可以同时把共享变量写入自己的写缓冲区（A1，B1），然后从内存 中读取另一个共享变量（A2，B2），最后才把自己写缓存区中保存的脏数据刷新到内存中（A3， B3）。当以这种时序执行时，程序就可以得到x=y=0的结果。 从内存操作实际发生的顺序来看，直到处理器A执行A3来刷新自己的写缓存区，写操作 A1才算真正执行了。虽然处理器A执行内存操作的顺序为：A1→A2，但内存操作实际发生的顺 序却是A2→A1。此时，处理器A的内存操作顺序被重排序了（处理器B的情况和处理器A一样， 这里就不赘述了）。</p><p>这里的关键是，由于写缓冲区仅对自己的处理器可见，它会导致处理器执行内存操作的 顺序可能会与内存实际的操作执行顺序不一致。由于现代的处理器都会使用写缓冲区，因此现代的处理器都会允许对写-读操作进行重排序。</p><pre><code>常见的处理器都允许Store-Load重排序；常见的处理器都不允许对 存在数据依赖的操作做重排序。sparc-TSO和X86拥有相对较强的处理器内存模型，它们仅允 许对写-读操作做重排序（因为它们都使用了写缓冲区）。</code></pre><p>为了保证内存可见性，Java编译器在生成指令序列的适当位置会插入内存屏障指令来禁 止特定类型的处理器重排序。JMM把内存屏障指令分为4类</p><p> <img src="/images/pasted-201.png" alt="upload successful"><br> StoreLoad Barriers是一个“全能型”的屏障，它同时具有其他3个屏障的效果。现代的多处 理器大多支持该屏障（其他类型的屏障不一定被所有处理器支持）。执行该屏障开销会很昂 贵，因为当前处理器通常要把写缓冲区中的数据全部刷新到内存中（Buffer Fully Flush）。</p><h3 id="happens-before简介"><a href="#happens-before简介" class="headerlink" title="happens-before简介"></a>happens-before简介</h3><p> 从JDK 5开始，Java使用新的JSR-133内存模型（除非特别说明，本文针对的都是JSR-133内 存模型）。JSR-133使用happens-before的概念来阐述操作之间的内存可见性。在JMM中，如果一 个操作执行的结果需要对另一个操作可见，那么这两个操作之间必须要存在happens-before关 系。这里提到的两个操作既可以是在一个线程之内，也可以是在不同线程之间。</p><p>与程序员密切相关的happens-before规则如下。 </p><ul><li><p>程序顺序规则：一个线程中的每个操作，happens-before于该线程中的任意后续操作。  </p></li><li><p>监视器锁规则：对一个锁的解锁，happens-before于随后对这个锁的加锁。 </p></li><li><p>volatile变量规则：对一个volatile域的写，happens-before于任意后续对这个volatile域的读。 </p></li><li><p>传递性：如果A happens-before B，且B happens-before C，那么A happens-before C。</p><pre><code>  注意：两个操作之间具有happens-before关系，并不意味着前一个操作必须要在后一个 操作之前执行！happens-before仅仅要求前一个操作（执行的结果）对后一个操作可见，且前一 个操作按顺序排在第二个操作之前</code></pre></li></ul><p> <img src="/images/pasted-202.png" alt="upload successful"></p><p>一个happens-before规则对应于一个或多个编译器和处理器重排序规则。对 于Java程序员来说，happens-before规则简单易懂，它避免Java程序员为了理解JMM提供的内存 可见性保证而去学习复杂的重排序规则以及这些规则的具体实现方法。</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;并发编程模型的两个关键问题&quot;&gt;&lt;a href=&quot;#并发编程模型的两个关键问题&quot; class=&quot;headerlink&quot; title=&quot;并发编程模型的两个关键问题&quot;&gt;&lt;/a&gt;并发编程模型的两个关键问题&lt;/h3&gt;&lt;p&gt;在并发编程中，需要处理两个关键问题：线程之间如何通信</summary>
-      
-    
-    
-    
-    <category term="JMM" scheme="http://example.com/categories/JMM/"/>
-    
-    <category term="并发编程" scheme="http://example.com/categories/JMM/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-    
-    <category term="JMM" scheme="http://example.com/tags/JMM/"/>
-    
-    <category term="并发编程" scheme="http://example.com/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>First集和Follow集的构造</title>
-    <link href="http://example.com/2022/04/14/First%E9%9B%86%E5%92%8CFollow%E9%9B%86%E7%9A%84%E6%9E%84%E9%80%A0/"/>
-    <id>http://example.com/2022/04/14/First%E9%9B%86%E5%92%8CFollow%E9%9B%86%E7%9A%84%E6%9E%84%E9%80%A0/</id>
-    <published>2022-04-14T10:57:00.000Z</published>
-    <updated>2022-04-14T11:11:37.751Z</updated>
-    
-    <content type="html"><![CDATA[<p>在编译原理语法分析学习中，关于First集和Follow集的构造令我比较费解（课件上的白话太晦涩了，恕我看得一知半解），消化了好一会才明白，特此记录一下。</p><h3 id="关于First集"><a href="#关于First集" class="headerlink" title="关于First集"></a>关于First集</h3><p>对于 X -&gt; … 这条产生式而言：</p><ol><li><p>若右边第一个符号是终结符或 ε  ，则直接将其加入 First（X）</p></li><li><p>若右边第一个符号是非终结符，则将其 First 集的的非 ε  元素加入 First（X）</p></li><li><p>若右边第一个符号是非终结符而且紧随其后的是很多个非终结符，这个时候就要注意是否有 ε  。</p><p> 【3.1】若第 i 个非终结符的 First 集有 ε  ，则可将第 i+1 个非终结符去除 ε  的 First 集加入 First（X）。<br> 【3.2】若所有的非终结符都能够推导出 ε ，则将  ε  也加入到 First（X）</p><p>　　　<br> E.G. G[S]:</p></li></ol><p>　　　　　　S -&gt; ABCD</p><p>　　　　　　A -&gt; a |  ε  </p><p>　　　　　　B -&gt; b |  ε  </p><p>　　　　　　C -&gt; c</p><p>　　　　　　D -&gt; d</p><p>　　　　　　解：</p><p>　　　　　　　　First(S) = {a, b, c}，其中 c 是由上面所说的第二、三条规则所推得出来的，因为此时 A 和 B 都可以等于空串（ ε  ），所以非终结符 C 的 first 集合就被加入 G[S] 了。</p><p>　　　　　　　　如果这里 C，D 也能够产生 ε  的话，根据第三条规则中的第二小点，此时 First（S） = {a, b, c, d,  ε}</p><h3 id="关于Follow集"><a href="#关于Follow集" class="headerlink" title="关于Follow集"></a>关于Follow集</h3><ol><li><p>将所有产生式的候选式（即产生式右部）的非终结符都找到，定位到你想要求解 Follow 集的非终结符的位置，从当前位置往后挨个检查。设 A -&gt; aBC 是一个产生式，在这个产生式中， B 和 C 是非终结符，a 是终结符</p></li><li><p>先检验这个非终结符的右边还有没有别的符号（终结符或非终结符都可以），在例子中 B 是需要检查的第一个非终结符，它的右边是有非终结符 C 的。</p><ul><li><p>若右边有符号 -&gt; 将 First（右侧第一个符号）的非 ε 集合加入到 Follow（当前符号）中，如果 First（右侧第一个符号）含有 ε  ，即有 … -&gt; ε ，则将 Follow（产生式左部符号）加入 Follow（当前符号）中。</p></li><li><p>E.G.  用 A -&gt; aBC 来说就是，当前扫描到 B 了，而 B 的右侧有非终结符 C，则将去掉 ε  的 First（C）加入 Follow（B）中。若存在 C -&gt; ε  ，则将 Follow（A）也加入 Follow（B）中。</p></li><li><p>若右边没有符号了，例如这里的 C，那么可以将 Follow（A）中的元素全部加入到 Follow（C）中。</p></li></ul></li><li><p>判断当前符号是不是文法的开始符号，比如 G[A] 中的非终结符 A 就是 G[A] 文法的开始符号，如果是的话就将“#”也加入到 Follow（当前符号）中去</p></li></ol><h3 id="预测表的构造"><a href="#预测表的构造" class="headerlink" title="预测表的构造"></a>预测表的构造</h3><p>首先构造出预测分析表的第一行与第一列，第一行为文法出现的所有终结符以及‘#’（注意：没有 ε ，因为 Follow 集不含 ε），第一列为文法出现的所有终结符。</p><p>　　然后对文法 G 的每个产生式 A -&gt; ab 都执行如下操作：</p><p>　　　　【1】对于每个属于 First(ab) 的终结符 m ，都把 A -&gt; ab 添加到预测表中的 [A, m] 中去</p><p>　　　　【2】如果 ε 也属于 First(ab)，那么对于任何属于 Follow(A) 的字符 x，都把 A -&gt;  ε  加入到 [A, x] 中去</p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;在编译原理语法分析学习中，关于First集和Follow集的构造令我比较费解（课件上的白话太晦涩了，恕我看得一知半解），消化了好一会才明白，特此记录一下。&lt;/p&gt;
-&lt;h3 id=&quot;关于First集&quot;&gt;&lt;a href=&quot;#关于First集&quot; class=&quot;headerlink</summary>
-      
-    
-    
-    
-    <category term="编译原理" scheme="http://example.com/categories/%E7%BC%96%E8%AF%91%E5%8E%9F%E7%90%86/"/>
-    
-    
-    <category term="上下文无关文法" scheme="http://example.com/tags/%E4%B8%8A%E4%B8%8B%E6%96%87%E6%97%A0%E5%85%B3%E6%96%87%E6%B3%95/"/>
-    
-    <category term="First" scheme="http://example.com/tags/First/"/>
-    
-    <category term="Follow" scheme="http://example.com/tags/Follow/"/>
     
   </entry>
   
