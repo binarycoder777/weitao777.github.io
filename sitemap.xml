@@ -1802,7 +1802,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/links/index.html</loc>
+    <loc>http://example.com/repository/index.html</loc>
     
     <lastmod>2022-01-05</lastmod>
     
@@ -1811,7 +1811,7 @@
   </url>
   
   <url>
-    <loc>http://example.com/repository/index.html</loc>
+    <loc>http://example.com/links/index.html</loc>
     
     <lastmod>2022-01-05</lastmod>
     
@@ -1914,13 +1914,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/%E6%B3%A8%E8%A7%A3/</loc>
-    <lastmod>2022-08-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BB%84%E6%88%90%E5%8E%9F%E7%90%86/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -1936,6 +1929,13 @@
   
   <url>
     <loc>http://example.com/tags/CPU/</loc>
+    <lastmod>2022-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/%E6%B3%A8%E8%A7%A3/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2054,13 +2054,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
-    <lastmod>2022-08-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/Linux/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -2083,6 +2076,13 @@
   
   <url>
     <loc>http://example.com/tags/select-epoll-poll/</loc>
+    <lastmod>2022-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/IOC%E7%9A%84%E7%90%86%E8%A7%A3/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2131,6 +2131,13 @@
   </url>
   
   <url>
+    <loc>http://example.com/tags/SPI/</loc>
+    <lastmod>2022-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
     <loc>http://example.com/tags/Optional/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -2139,13 +2146,6 @@
   
   <url>
     <loc>http://example.com/tags/%E7%A9%BA%E6%8C%87%E9%92%88/</loc>
-    <lastmod>2022-08-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>http://example.com/tags/SPI/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
@@ -2201,13 +2201,6 @@
   </url>
   
   <url>
-    <loc>http://example.com/tags/%E6%95%B0%E6%8D%AE%E6%9C%89%E5%BA%8F/</loc>
-    <lastmod>2022-08-01</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>http://example.com/tags/%E6%95%B0%E6%8D%AE%E7%A7%AF%E5%8E%8B/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
@@ -2216,6 +2209,13 @@
   
   <url>
     <loc>http://example.com/tags/%E6%B6%88%E8%B4%B9%E8%80%85/</loc>
+    <lastmod>2022-08-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>http://example.com/tags/%E6%95%B0%E6%8D%AE%E6%9C%89%E5%BA%8F/</loc>
     <lastmod>2022-08-01</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>
