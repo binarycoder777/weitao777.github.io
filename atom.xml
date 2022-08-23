@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-08-01T12:47:18.805Z</updated>
+  <updated>2022-08-23T08:19:29.181Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,83 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis如何处理内存碎片？</title>
+    <link href="http://example.com/2022/08/23/Redis%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%86%85%E5%AD%98%E7%A2%8E%E7%89%87%EF%BC%9F/"/>
+    <id>http://example.com/2022/08/23/Redis%E5%A6%82%E4%BD%95%E5%A4%84%E7%90%86%E5%86%85%E5%AD%98%E7%A2%8E%E7%89%87%EF%BC%9F/</id>
+    <published>2022-08-23T08:09:00.000Z</published>
+    <updated>2022-08-23T08:19:29.181Z</updated>
+    
+    <content type="html"><![CDATA[<p>redis服务器的内存碎片过大</p><ul><li><p>在4.0版本以下只能重启恢复，因为重启之后redis重新从日志文件读取数据，在内存进行排序，为每个数据重新选择合适的内存单元，减小内存碎片</p></li><li><p>在4.0以后，redis提供了自动和手动的碎片整理功能：原理就是复制算法，把数据拷贝到新的内存空间，然后把佬的空间释放掉，这期间会阻塞主进程。</p></li></ul><p>手动：memory purge命令</p><p>自动：使用config set activedefrag指令或在redis.config中配置activedefrag为yes</p><p>自动清理时机：设置200m开始情况，或设置内存碎片占分配的内存多少占比开始，除此之外，可以设置清理期间清理线程所占cpu时间比，以保证有效清理以及不会影响当前任务</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;redis服务器的内存碎片过大&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在4.0版本以下只能重启恢复，因为重启之后redis重新从日志文件读取数据，在内存进行排序，为每个数据重新选择合适的内存单元，减小内存碎片&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;在4.0以后，redis提供了自动和</summary>
+      
+    
+    
+    
+    <category term="内存碎片" scheme="http://example.com/categories/%E5%86%85%E5%AD%98%E7%A2%8E%E7%89%87/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>redis共享对象失效的场景</title>
+    <link href="http://example.com/2022/08/23/redis%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E5%A4%B1%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF/"/>
+    <id>http://example.com/2022/08/23/redis%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1%E5%A4%B1%E6%95%88%E7%9A%84%E5%9C%BA%E6%99%AF/</id>
+    <published>2022-08-23T08:05:00.000Z</published>
+    <updated>2022-08-23T08:09:10.420Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li><p>redis中设置了maxmemory现在最大内存占用大小，且启用了LRU策略：LRU策略需要记录每个键值对的访问时间，如果共享同一个整数对象，会导致更新与LRU不匹配</p></li><li><p>集合类型的编码采用ziplist编码，并且集合内容是整数，也不能共享一个整数对象：因为使用了ziplist紧凑内存结构存储数据，可以不用去判断整数是否共享</p></li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;redis中设置了maxmemory现在最大内存占用大小，且启用了LRU策略：LRU策略需要记录每个键值对的访问时间，如果共享同一个整数对象，会导致更新与LRU不匹配&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;集合类型的编码采用ziplist编码，并且集合内容是整</summary>
+      
+    
+    
+    
+    <category term="共享对象" scheme="http://example.com/categories/%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1/"/>
+    
+    <category term="Redis" scheme="http://example.com/categories/%E5%85%B1%E4%BA%AB%E5%AF%B9%E8%B1%A1/Redis/"/>
+    
+    
+    <category term="Redis" scheme="http://example.com/tags/Redis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为什么要记录呢？</title>
+    <link href="http://example.com/2022/08/15/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AE%B0%E5%BD%95%E5%91%A2%EF%BC%9F/"/>
+    <id>http://example.com/2022/08/15/%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E8%AE%B0%E5%BD%95%E5%91%A2%EF%BC%9F/</id>
+    <published>2022-08-15T12:38:11.000Z</published>
+    <updated>2022-08-15T12:41:57.727Z</updated>
+    
+    <content type="html"><![CDATA[<p>我时常会有这样的感觉：自己心里觉得对一个技术点已经掌握了，但是当我试图给别<br>人讲述的时候，发现并不能轻松自如 、深入浅出地讲出来这就说明了一个问题：自认为掌握了，真实并没有真正掌握，大脑只是对这个技术点建立了一个整体的概念，在一些细节处做了想当然的假设 等到你用语言再来表达的时候就会发现，原来这个假设并不完全成立，是辛辛问题的。估计大家都有这样的经验：如果你能把一门技术通俗易懂地给别人讲明白，那就说明你已经掌握了 这种“转教别人（ Teach others ）” 的办法属于主动学习，效率是最高的。但是在平日生活当中，很少有机会去给别人讲授的。那怎么办？总不能拉着别人说：“哥们儿，来，我刚学了 Java CAS ，我给你讲讲吧。”别人很有礼貌，耐着性子昕你磕磕绊绊地讲完了 ，然后不知所云前几次还行，次数多了，就对你敬而远之了。既然没法给别人讲，那就退而求真；写吧，把自己的理解写出来。当然不是泛泛地记流水账，或者把几个孤立的点罗列在那里，而是要把思路厘清楚，尤真要写出为什么要有这门技术、这门技术解决了什么问题， 后才是这门技术是怎么使用当你逼着自己去回答这些问题的时候很快就会发现 ，自 己的理解还不够，还需要查找更多的资料。在你从网上查找资料的时候，你会发现，网上的这些文章怎么这么差劲，重复的内容这么多，大部分都是复制、粘贴的大部分都在讲述怎么使用 ，对为什么”从来都是只字不握，或者犹抱琵琶半遮面，羞羞答答地不说出来这个整理资料和思考的过程是很珍贵的，只离这样才能把信息变成仰自身的知识。如果实在搞不定，就带着问题去论坛提问，去QQ群发言，找大牛请教，总是可以解决的。举个例子，你接触到一个新的知识点： Java 动态代理，你也看了书或视频中的代码 知道了这个技术点是怎么使用的，接下来想要写一篇文章，首先要努力阎明的问题就是“为什么要用 Java 动态代理”。这玩意儿到底要干吗？我已经知<br>道了 能够对一个类进行增强，还是在运行时进行增强的，但是增强一个类有什么用处？我完全可以新写一个类对原有的类进行增强啊？为什么要在运行时进行增强呢？<br>如果你顺着这个思路挖掘下去，则会在通道的尽头找到一个宝贝： AOP具体到技术层面，还有一个问题，就是为什么 Java 动态代理只能对 interface 进行操作，而不能对 class 进行操作？这个问题如果也深挖下去，那么你会发现另一个宝贝：动态字节码的生成，继续深挖就能看到 ASM CGLib 这样的东西，看到它们怎么在内存中操作 .class 文件的字节码。至于字节码的格式是什么样子的，只好去看看 Java 虚拟机了。到了最后，你也许会体会到，原来 Java 是一门静态语言，在运行时不能对现有的方法逻辑进行修改，不能添加方法，所以必须用别的手段，如 ASM 、动态代理等创建一个新类来做一点“额外”的事情。赶紧写一篇文章吧，把挖掘的结果记录下来，别人只学会了什么是 Java 动态代理，这只是冰山一角，而你则看到了整座冰山。人可能要问了：我也可以按照这个思路去学习，为什么要写下来呢？原因很简不写出来，很容易肢弃深度思考 你会觉得，我已经知道是怎么回事儿了一一真实一些关键的细节被大脑给忽略了</p><p>我们已经进入了一个碎片化的时代，我们的大脑已经养成了碎片化的习惯，一天不看<br>碎片化的信息就觉得不舒服，这样下去会慢慢地丧失深度思考的能力写作会逼着你去思考，梳理知识体系，防止自己被碎片所填满真实很多人都知道写作是一件很好的事情，就是犯懒，执行不下去。还是行动起来吧！逼自己，对自己狠一点！有自制力的人、能够坚持的人才更高可能成功！</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;我时常会有这样的感觉：自己心里觉得对一个技术点已经掌握了，但是当我试图给别&lt;br&gt;人讲述的时候，发现并不能轻松自如 、深入浅出地讲出来这就说明了一个问题：自认为掌握了，真实并没有真正掌握，大脑只是对这个技术点建立了一个整体的概念，在一些细节处做了想当然的假设 等到你用语言再</summary>
+      
+    
+    
+    
+    
+  </entry>
   
   <entry>
     <title>分布式调度xxl-job</title>
@@ -476,88 +553,6 @@
     <category term="日志" scheme="http://example.com/tags/%E6%97%A5%E5%BF%97/"/>
     
     <category term="SL4J" scheme="http://example.com/tags/SL4J/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Java SPI机制</title>
-    <link href="http://example.com/2022/04/29/Java-SPI%E6%9C%BA%E5%88%B6/"/>
-    <id>http://example.com/2022/04/29/Java-SPI%E6%9C%BA%E5%88%B6/</id>
-    <published>2022-04-29T01:06:00.000Z</published>
-    <updated>2022-04-29T01:35:01.943Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>SPI（Serivce Provider Interface）：它是从java6开始引入的，一种基于classloader来发现并加载服务的机制。</p><p>一个标准的SPI有三个组件构成：<br>    - Service：是一个公开的接口或抽象类，定义了一个抽象的功能模块<br>    - Service Provider：service的一个实现类<br>    - ServiceLoader：核心组件，负责在运行时发现并加载service provider</p><h2 id="SPI运行流程"><a href="#SPI运行流程" class="headerlink" title="SPI运行流程"></a>SPI运行流程</h2><p> <img src="/images/pasted-211.png" alt="upload successful"></p><p> Application无需关注service的具体实现，只需面向接口编程</p><h2 id="Java-SPI在JDBC中的应用"><a href="#Java-SPI在JDBC中的应用" class="headerlink" title="Java SPI在JDBC中的应用"></a>Java SPI在JDBC中的应用</h2><p> <img src="/images/pasted-212.png" alt="upload successful"></p><ul><li>在Java SPI前，我们需要编码去注册驱动Class.forName(“com.mysql.jdbc.Driver”)</li><li>在引入Java SPI后，我们只需要日引入对应的依赖jar包即可</li></ul><h3 id="Java-SPI的三大规范要素"><a href="#Java-SPI的三大规范要素" class="headerlink" title="Java SPI的三大规范要素"></a>Java SPI的三大规范要素</h3><p> <img src="/images/pasted-214.png" alt="upload successful"></p><h3 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h3><ul><li>作用：提供了一种组件发现和注册的方式，可以用于实现各种插件，或者灵活替换所使用的组件</li><li>优点：面向接口编程，优雅的实现模块之间的解耦</li><li>设计思想：面向接口+配置文件+反射技术</li><li>应用场景：JDBC、SLF4J等</li></ul><h3 id="补充：Java-SPI和SPringBoot自动装配"><a href="#补充：Java-SPI和SPringBoot自动装配" class="headerlink" title="补充：Java SPI和SPringBoot自动装配"></a>补充：Java SPI和SPringBoot自动装配</h3><p> <img src="/images/pasted-215.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;基本概念&quot;&gt;&lt;a href=&quot;#基本概念&quot; class=&quot;headerlink&quot; title=&quot;基本概念&quot;&gt;&lt;/a&gt;基本概念&lt;/h2&gt;&lt;p&gt;SPI（Serivce Provider Interface）：它是从java6开始引入的，一种基于classloader来</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
-    <category term="SPI" scheme="http://example.com/tags/SPI/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>MySQL行转列，列转行</title>
-    <link href="http://example.com/2022/04/26/MySQL%E8%A1%8C%E8%BD%AC%E5%88%97%EF%BC%8C%E5%88%97%E8%BD%AC%E8%A1%8C/"/>
-    <id>http://example.com/2022/04/26/MySQL%E8%A1%8C%E8%BD%AC%E5%88%97%EF%BC%8C%E5%88%97%E8%BD%AC%E8%A1%8C/</id>
-    <published>2022-04-26T12:09:00.000Z</published>
-    <updated>2022-04-26T12:41:41.561Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="行转列"><a href="#行转列" class="headerlink" title="行转列"></a>行转列</h2><ul><li><p>建表</p><pre><code>CREATE TABLE tb_score(    id INT(11) NOT NULL auto_increment,    userid VARCHAR(20) NOT NULL COMMENT &#39;用户id&#39;,    subject VARCHAR(20) COMMENT &#39;科目&#39;,    score DOUBLE COMMENT &#39;成绩&#39;,    PRIMARY KEY(id))ENGINE = INNODB DEFAULT CHARSET = utf8;</code></pre></li><li><p>插入数据</p><pre><code>INSERT INTO tb_score(userid,subject,score) VALUES (&#39;001&#39;,&#39;语文&#39;,90);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;001&#39;,&#39;数学&#39;,92);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;001&#39;,&#39;英语&#39;,80);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;002&#39;,&#39;语文&#39;,88);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;002&#39;,&#39;数学&#39;,90);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;002&#39;,&#39;英语&#39;,75.5);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;003&#39;,&#39;语文&#39;,70);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;003&#39;,&#39;数学&#39;,85);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;003&#39;,&#39;英语&#39;,90);INSERT INTO tb_score(userid,subject,score) VALUES (&#39;003&#39;,&#39;政治&#39;,82);</code></pre></li></ul><p> 查询数据表中的内容（即转换前的结果）</p><pre><code>    select * from tb_score;</code></pre><p> <img src="/images/pasted-206.png" alt="upload successful"></p><ol><li>使用case…when….then 进行行转列<pre><code> SELECT userid,SUM(CASE `subject` WHEN &#39;语文&#39; THEN score ELSE 0 END) AS &#39;语文&#39;,SUM(CASE `subject` WHEN &#39;数学&#39; THEN score ELSE 0 END) AS &#39;数学&#39;,SUM(CASE `subject` WHEN &#39;英语&#39; THEN score ELSE 0 END) AS &#39;英语&#39;,SUM(CASE `subject` WHEN &#39;政治&#39; THEN score ELSE 0 END) AS &#39;政治&#39;FROM tb_scoreGROUP BY userid</code></pre></li></ol><p> <img src="/images/pasted-207.png" alt="upload successful"></p><ol start="2"><li>使用IF() 进行行转列：<pre><code>SELECT userid,SUM(IF(`subject`=&#39;语文&#39;,score,0)) AS &#39;语文&#39;,SUM(IF(`subject`=&#39;数学&#39;,score,0)) AS &#39;数学&#39;,SUM(IF(`subject`=&#39;英语&#39;,score,0)) AS &#39;英语&#39;,SUM(IF(`subject`=&#39;政治&#39;,score,0)) AS &#39;政治&#39;FROM tb_scoreGROUP BY userid</code></pre></li></ol><p> <img src="/images/pasted-208.png" alt="upload successful"></p><blockquote><p>注意点：</p></blockquote><blockquote><blockquote><p>（1）SUM() 是为了能够使用GROUP BY根据userid进行分组，因为每一个userid对应的subject=”语文”的记录只有一条，所以SUM() 的值就等于对应那一条记录的score的值。假如userid =’001’ and subject=’语文’ 的记录有两条，则此时SUM() 的值将会是这两条记录的和，同理，使用Max()的值将会是这两条记录里面值最大的一个。但是正常情况下，一个user对应一个subject只有一个分数，因此可以使用SUM()、MAX()、MIN()、AVG()等聚合函数都可以达到行转列的效果。</p></blockquote></blockquote><blockquote><blockquote><p>（2）IF(<code>subject</code>=’语文’,score,0) 作为条件，即对所有subject=’语文’的记录的score字段进行SUM()、MAX()、MIN()、AVG()操作，如果score没有值则默认为0。</p></blockquote></blockquote><ol start="3"><li>计算行列和<pre><code> SELECT IFNULL(userid,&#39;TOTAL&#39;) AS userid, SUM(IF(`subject`=&#39;语文&#39;,score,0)) AS 语文, SUM(IF(`subject`=&#39;数学&#39;,score,0)) AS 数学, SUM(IF(`subject`=&#39;英语&#39;,score,0)) AS 英语, SUM(IF(`subject`=&#39;政治&#39;,score,0)) AS 政治, SUM(score) AS TOTAL  FROM tb_score GROUP BY userid WITH ROLLUP;</code></pre></li></ol><p> <img src="/images/pasted-209.png" alt="upload successful"></p><ol start="4"><li><p>合并字段显示：利用group_concat()</p><pre><code>  SELECT userid,GROUP_CONCAT(`subject`,&quot;:&quot;,score)AS 成绩 FROM tb_score  GROUP BY userid</code></pre></li></ol><p> <img src="/images/pasted-210.png" alt="upload successful"></p><h3 id="列转行"><a href="#列转行" class="headerlink" title="列转行"></a>列转行</h3><p>将每个userid对应的多个科目的成绩查出来，通过UNION ALL将结果集加起来</p><pre><code>附：UNION与UNION ALL的区别（摘）：1.对重复结果的处理：UNION会去掉重复记录，UNION ALL不会；2.对排序的处理：UNION会排序，UNION ALL只是简单地将两个结果集合并；3.效率方面的区别：因为UNION 会做去重和排序处理，因此效率比UNION ALL慢很多；</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h2 id=&quot;行转列&quot;&gt;&lt;a href=&quot;#行转列&quot; class=&quot;headerlink&quot; title=&quot;行转列&quot;&gt;&lt;/a&gt;行转列&lt;/h2&gt;&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;建表&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;CREATE TABLE tb_score(
-    id INT(11) N</summary>
-      
-    
-    
-    
-    <category term="MySQL" scheme="http://example.com/categories/MySQL/"/>
-    
-    
-    <category term="MySQL" scheme="http://example.com/tags/MySQL/"/>
-    
-    <category term="查询" scheme="http://example.com/tags/%E6%9F%A5%E8%AF%A2/"/>
-    
-    <category term="行列转换" scheme="http://example.com/tags/%E8%A1%8C%E5%88%97%E8%BD%AC%E6%8D%A2/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>记一次安装Zookeeper启动失败的坑</title>
-    <link href="http://example.com/2022/04/21/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E8%A3%85Zookeeper%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%9D%91/"/>
-    <id>http://example.com/2022/04/21/%E8%AE%B0%E4%B8%80%E6%AC%A1%E5%AE%89%E8%A3%85Zookeeper%E5%90%AF%E5%8A%A8%E5%A4%B1%E8%B4%A5%E7%9A%84%E5%9D%91/</id>
-    <published>2022-04-21T13:36:00.000Z</published>
-    <updated>2022-04-21T13:43:12.434Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天在阿里云上安装ZooKeeper，然后启动时一直报: Starting zookeeper … FAILED TO START。折腾了一会，经查阅资料发现，原来和版本有莫大关系…</p><h3 id="1-下载的版本问题（-gt-3-5-5）"><a href="#1-下载的版本问题（-gt-3-5-5）" class="headerlink" title="1. 下载的版本问题（&gt;= 3.5.5）"></a>1. 下载的版本问题（&gt;= 3.5.5）</h3><p>实际上只要 &gt;= 3.5.5 版本都会出现这种问题。</p><p>问题原因：下载了错误的版本文件，Zookeeper 从3.5.5后开始拆分为两个版本，而且他们的结构还很类似。</p><ul><li>标准版本（Apache ZooKeeper x.y.z ），下载的文件名为：apache-zookeeper-x.y.z-bin.tar.gz</li><li>另一个是源码版本（Apache ZooKeeper x.y.z Source Release），下载的文件名为：apache-zookeeper-x.y.z.tar.gz</li></ul><p> <img src="/images/pasted-204.png" alt="upload successful"></p><p> <img src="/images/pasted-205.png" alt="upload successful"><br> 所以下载 Zookeeper 的时候要注意，应该下载第一个(本人头铁，下载了第二个)。</p><h3 id="2-端口冲突问题（-gt-3-5-0）"><a href="#2-端口冲突问题（-gt-3-5-0）" class="headerlink" title="2. 端口冲突问题（&gt;=3.5.0）"></a>2. 端口冲突问题（&gt;=3.5.0）</h3><p> 在3.5.5版本及以上，Zookeeper 提供了一个内嵌的Jetty容器来运行 AdminServer，默认占用的是 8080端口，AdminServer 主要是来查看 Zookeeper 的一些状态，如果机器上有其他程序（比如：Tomcat）占用了 8080 端口，也会导致 Starting zookeeper … FAILED TO START 的问题。</p><p>可以通过以下几种方式去解决：</p><ul><li><p>禁用 AdminServer 服务</p><pre><code>  admin.enableServer=false</code></pre></li><li><p>修改器端口号：</p><pre><code>  admin.serverPort=9000</code></pre></li></ul><p>转载自：<a href="https://blog.csdn.net/peng2hui1314/article/details/107255142">https://blog.csdn.net/peng2hui1314/article/details/107255142</a></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;p&gt;今天在阿里云上安装ZooKeeper，然后启动时一直报: Starting zookeeper … FAILED TO START。折腾了一会，经查阅资料发现，原来和版本有莫大关系…&lt;/p&gt;
-&lt;h3 id=&quot;1-下载的版本问题（-gt-3-5-5）&quot;&gt;&lt;a href=&quot;#1</summary>
-      
-    
-    
-    
-    <category term="Zookeeper" scheme="http://example.com/categories/Zookeeper/"/>
-    
-    
-    <category term="Zookeeper" scheme="http://example.com/tags/Zookeeper/"/>
     
   </entry>
   
