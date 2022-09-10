@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-08-23T08:19:29.181Z</updated>
+  <updated>2022-09-10T03:44:02.090Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,33 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>关于线上CPU飙升如何排查问题</title>
+    <link href="http://example.com/2022/09/10/%E5%85%B3%E4%BA%8E%E7%BA%BF%E4%B8%8ACPU%E9%A3%99%E5%8D%87%E5%A6%82%E4%BD%95%E6%8E%92%E6%9F%A5%E9%97%AE%E9%A2%98/"/>
+    <id>http://example.com/2022/09/10/%E5%85%B3%E4%BA%8E%E7%BA%BF%E4%B8%8ACPU%E9%A3%99%E5%8D%87%E5%A6%82%E4%BD%95%E6%8E%92%E6%9F%A5%E9%97%AE%E9%A2%98/</id>
+    <published>2022-09-10T02:42:00.000Z</published>
+    <updated>2022-09-10T03:44:02.090Z</updated>
+    
+    <content type="html"><![CDATA[<p>在学校的时候做的项目并没有遇到CPU飙升等相关的问题，以至于针对于线上CPU飙升等问题的排查得不到锻炼，特此记录一下，关于CPU飙升问题的排查。</p><h3 id="一、定位问题"><a href="#一、定位问题" class="headerlink" title="一、定位问题"></a>一、定位问题</h3><p>一般情况下，在线上遇到了CPU飙升等问题，可以开启弹性扩容或重启服务来暂时性的避免问题，但终究是治标不治本。只有找到问题发生的原因才能从根本上解决问题。而一般来说导致Java程序CPU与内存冲高的原因有如下：</p><ul><li>代码中某个位置读取数据量较大，导致系统内存耗尽，从而导致Full GC次数过多，系统缓慢。</li><li>代码中有比较耗CPU的操作，导致CPU过高，系统运行缓慢。</li><li>代码某个位置有阻塞性的操作，导致该功能调用整体比较耗时，但出现是比较随机的；</li><li>某个线程由于某种原因而进入WAITING状态，此时该功能整体不可用，但是无法复现；</li><li>由于锁使用不当，导致多个线程进入死锁状态，从而导致系统整体比较缓慢</li></ul><p>前两种情况出现的频率较高，可能会导致系统不可用，后三种会导致某个功能运行缓慢，但是不至于导致系统不可用。因此针对于这些情况，需要进行依依排查。</p><ol><li>通过top命令查看所有进程的资源占用情况，找到资源占用较高的进程</li><li>然后通过top -Hp 查看对应进程下的线程资源使用情况</li><li>将线程id转化为16进制，然后jstack pid | grep tip 查看进程下对应线程的栈信息</li><li>通过jstat -gcutil 进程号 统计间隔毫秒 统计次数（缺省代表一直统计）查看对应的full gc等情况</li><li>也可以通过jconsole，MAT等可视化工具查看</li></ol><h3 id="二、排查问题"><a href="#二、排查问题" class="headerlink" title="二、排查问题"></a>二、排查问题</h3><ol><li>Full GC次数过多：走上述1-4步，查看是因为生成量大对象导致，还是生成大对象导致等</li></ol><ul><li>线上多个线程的CPU都超过了100%，通过jstack命令可以看到这些线程主要是垃圾回收线程</li><li>通过jstat命令监控GC情况，可以看到Full GC次数非常多，并且次数在不断增加。</li></ul><ol start="2"><li><p>某个业务逻辑执行时间过长：走上述1-4步，查看具体的堆栈信息定位代码进一步排查</p></li><li><p>如果有死锁，会直接提示。关键字：deadlock。使用jstack打印线程信息会打印出业务死锁的位置。</p></li></ol><ol start="4"><li>随机出现大量线程访问接口缓慢：首先找到该接口，通过压测工具不断加大访问力度，如果说该接口中有某个位置是比较耗时的，由于我们的访问的频率非常高，那么大多数的线程最终都将阻塞于该阻塞点这样通过多个线程具有相同的堆栈日志，我们基本上就可以定位到该接口中比较耗时的代码的位置。</li></ol><p>因此对于线上CPU的排查步骤大致便是如此，到了具体场景需要具体场景具体分析。以上只是一个大致的排查思路记录。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;在学校的时候做的项目并没有遇到CPU飙升等相关的问题，以至于针对于线上CPU飙升等问题的排查得不到锻炼，特此记录一下，关于CPU飙升问题的排查。&lt;/p&gt;
+&lt;h3 id=&quot;一、定位问题&quot;&gt;&lt;a href=&quot;#一、定位问题&quot; class=&quot;headerlink&quot; title=&quot;</summary>
+      
+    
+    
+    
+    <category term="Java" scheme="http://example.com/categories/Java/"/>
+    
+    
+    <category term="Java" scheme="http://example.com/tags/Java/"/>
+    
+    <category term="CPU" scheme="http://example.com/tags/CPU/"/>
+    
+  </entry>
   
   <entry>
     <title>Redis如何处理内存碎片？</title>
@@ -525,34 +552,6 @@
     <category term="Java" scheme="http://example.com/tags/Java/"/>
     
     <category term="lambda表达式" scheme="http://example.com/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>SLF4J那些事</title>
-    <link href="http://example.com/2022/04/29/SLF4J%E9%82%A3%E4%BA%9B%E4%BA%8B/"/>
-    <id>http://example.com/2022/04/29/SLF4J%E9%82%A3%E4%BA%9B%E4%BA%8B/</id>
-    <published>2022-04-29T07:21:00.000Z</published>
-    <updated>2022-04-29T08:49:21.775Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="Java中的日志框架"><a href="#Java中的日志框架" class="headerlink" title="Java中的日志框架"></a>Java中的日志框架</h3><p> <img src="/images/pasted-216.png" alt="upload successful"></p><h3 id="门面日志框架"><a href="#门面日志框架" class="headerlink" title="门面日志框架"></a>门面日志框架</h3><p> <img src="/images/pasted-217.png" alt="upload successful"><br>不同的日志框架，有着不同的api和配置文件，为了统一应用中不同的日志框架所带来的统一管理问题，引入了门面日志框架，向上提供了统一的接口管理，向下对接不同的日志框架实现。<br> <img src="/images/pasted-218.png" alt="upload successful"></p><h3 id="具体流程"><a href="#具体流程" class="headerlink" title="具体流程"></a>具体流程</h3><p> <img src="/images/pasted-219.png" alt="upload successful"></p><h3 id="关于SL4J的适配"><a href="#关于SL4J的适配" class="headerlink" title="关于SL4J的适配"></a>关于SL4J的适配</h3><p> <img src="/images/pasted-220.png" alt="upload successful"></p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ol><li>引入jar包slf4-api.jar</li><li>引入适配层jar包（如果需要的话）</li><li>引入底层日志框架的jar包</li><li>确认是否版本安全<h3 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h3><img src="/images/pasted-221.png" alt="upload successful"></li></ol><p> <img src="/images/pasted-222.png" alt="upload successful"></p>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;Java中的日志框架&quot;&gt;&lt;a href=&quot;#Java中的日志框架&quot; class=&quot;headerlink&quot; title=&quot;Java中的日志框架&quot;&gt;&lt;/a&gt;Java中的日志框架&lt;/h3&gt;&lt;p&gt; &lt;img src=&quot;/images/pasted-216.png&quot; alt</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
-    <category term="日志" scheme="http://example.com/tags/%E6%97%A5%E5%BF%97/"/>
-    
-    <category term="SL4J" scheme="http://example.com/tags/SL4J/"/>
     
   </entry>
   
