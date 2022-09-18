@@ -6,7 +6,7 @@
   <link href="http://example.com/atom.xml" rel="self"/>
   
   <link href="http://example.com/"/>
-  <updated>2022-09-10T03:44:02.090Z</updated>
+  <updated>2022-09-18T12:27:13.615Z</updated>
   <id>http://example.com/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>重温Mybatis---Mybatis整体架构</title>
+    <link href="http://example.com/2022/09/18/%E9%87%8D%E6%B8%A9Mybatis-Mybatis%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/"/>
+    <id>http://example.com/2022/09/18/%E9%87%8D%E6%B8%A9Mybatis-Mybatis%E6%95%B4%E4%BD%93%E6%9E%B6%E6%9E%84/</id>
+    <published>2022-09-18T12:10:00.000Z</published>
+    <updated>2022-09-18T12:27:13.615Z</updated>
+    
+    <content type="html"><![CDATA[<p>Mybatis整体架构分为三层，分别是基础层、核心层和接口层<br><img src="/images/pasted-250.png" alt="upload successful"></p><ol><li>基础层：“包含整个MyBatis的基础模块，这些模块为核心处理层的功能提供了良好的支撑。”</li></ol><ul><li>反射模块：“对Java原生的反射进行了良好的封装，提供了更加简洁易用的API，方便上层使调用，并且对反射操作进行了一系列优化，例如缓存了类的元数据，提高了反射操作的性能。”</li><li>类型转换模块：“MyBatis为简化配置文件提供了别名机制，该机制是类型转换模块的主要功能之一。类型转换模块的另一个功能是实现JDBC类型与Java类型之间的转换，该功能在为SQL语句绑定实参以及映射查询结果集时都会涉及。在为SQL语句绑定实参时，会将数据由Java类型转换成JDBC类型；而在映射结果集时，会将数据由JDBC类型转换成Java类型。”</li><li>日志模块：”Mybatis集成了多种日志框架“</li><li>资源加载模块：”MyBatis为简化配置文件提供了别名机制，该机制是类型转换模块的主要功能之一。类型转换模块的另一个功能是实现JDBC类型与Java类型之间的转换，该功能在为SQL语句绑定实参以及映射查询结果集时都会涉及。在为SQL语句绑定实参时，会将数据由Java类型转换成JDBC类型；而在映射结果集时，会将数据由JDBC类型转换成Java类型。”</li><li>解析器模块：“解析器模块的主要提供了两个功能：一个功能是对XPath进行封装，为MyBatis初始化时解析mybatis-config.xml配置文件以及映射配置文件提供支持；另一个功能是为处理动态SQL语句中的占位符提供支持。”</li><li>数据源模块：”Mybatis提供的自身数据源实现和与第三方数据源集成的接口“</li><li>事务模块：“MyBatis对数据库中的事务进行了抽象，其自身提供了相应的事务接口和简单实现。在很多场景中，MyBatis会与Spring框架集成，并由Spring框架管理事务”</li><li>缓存模块：“MyBatis中提供了一级缓存和二级缓存，而这两级缓存都是依赖于基础支持层中的缓存模块实现的。”</li><li>Binging模块：“在调用SqlSession相应方法执行数据库操作时，需要指定映射文件中定义的SQL节点，如果出现拼写错误，我们只能在运行时才能发现相应的异常。为了尽早发现这种错误，MyBatis通过Binding模块将用户自定义的Mapper接口与映射配置文件关联起来，系统可以通过调用自定义Mapper接口中的方法执行相应的SQL语句完成数据库操作，从而避免上述问题。”</li></ul><ol start="2"><li>核心处理层：“在核心处理层中实现了MyBatis的核心处理流程，其中包括MyBatis的初始化以及完成一次数据库操作的涉及的全部流程。”</li></ol><ul><li>配置解析：“在MyBatis初始化过程中，会加载mybatis-config.xml配置文件、映射配置文件以及Mapper接口中的注解信息，解析后的配置信息会形成相应的对象并保存到Configuration对象中。之后利用configuration创建sqlsessionFactory对象，待MyBatis初始化之后，开发人员可以通过初始化得到SqlSessionFactory创建SqlSession对象并完成数据库操作。”</li><li>SQL解析与scripting模块：“MyBatis实现动态SQL语句的功能，提供了多种动态SQL语句对应的节点，例如，＜where＞节点、＜if＞节点、＜foreach＞节点等。通过这些节点的组合使用，开发人员可以写出几乎满足所有需求的动态SQL语句。”</li><li>SQL执行：“SQL语句的执行涉及多个组件，其中比较重要的是Executor、StatementHandler、ParameterHandler和ResultSetHandler。Executor主要负责维护一级缓存和二级缓存，并提供事务管理的相关操作，它会将数据库相关操作委托给StatementHandler完成。StatementHandler首先通过ParameterHandler完成SQL语句的实参绑定，然后通过java.sql.Statement对象执行SQL语句并得到结果集，最后通过ResultSetHandler完成结果集的映射，得到结果对象并返回。”</li></ul><p> <img src="/images/pasted-251.png" alt="upload successful"></p><ul><li>插件：“MyBatis提供了插件接口，我们可以通过添加用户自定义插件的方式对MyBatis进行扩展。用户自定义插件也可以改变Mybatis的默认行为”</li></ul><ol start="3"><li>接口层：“接口层相对简单，其核心是SqlSession接口，该接口中定义了MyBatis暴露给应用程序调用的API，也就是上层应用与MyBatis交互的桥梁。接口层在接收到调用请求时，会调用核心处理层的相应模块来完成具体的数据库操作。”</li></ol><p>摘录来自<br>MyBatis技术内幕<br>徐郡明</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Mybatis整体架构分为三层，分别是基础层、核心层和接口层&lt;br&gt;&lt;img src=&quot;/images/pasted-250.png&quot; alt=&quot;upload successful&quot;&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;基础层：“包含整个MyBatis的基础模块，这些模块为核心处理</summary>
+      
+    
+    
+    
+    <category term="Mybatis" scheme="http://example.com/categories/Mybatis/"/>
+    
+    
+    <category term="Mybatis" scheme="http://example.com/tags/Mybatis/"/>
+    
+  </entry>
   
   <entry>
     <title>关于线上CPU飙升如何排查问题</title>
@@ -525,33 +551,6 @@
     <category term="Java" scheme="http://example.com/tags/Java/"/>
     
     <category term="泛型" scheme="http://example.com/tags/%E6%B3%9B%E5%9E%8B/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>关于lambda表达式</title>
-    <link href="http://example.com/2022/05/02/%E5%85%B3%E4%BA%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
-    <id>http://example.com/2022/05/02/%E5%85%B3%E4%BA%8Elambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/</id>
-    <published>2022-05-02T14:46:00.000Z</published>
-    <updated>2022-05-02T15:19:37.907Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="简单介绍"><a href="#简单介绍" class="headerlink" title="简单介绍"></a>简单介绍</h3><p>lambda表达式是一个可传递的代码块，可以在以后执行一次或多次。</p><p>表达形式：(参数)-&gt;{表达式}</p><ul><li><p>如果可以推导出lambda表达式的参数类型，则可以忽略</p></li><li><p>如果只有一个参数，且参数类型可以推断，则（）可以省略</p></li><li><p>无需指定其返回类型，lambda表达式的返回类型可以根据上下文推断得出</p><pre><code>  注意：如果一个lambda表达式在某些分支返回值，而在另一些分支不返还，这是错误的</code></pre></li></ul><h3 id="函数式接口"><a href="#函数式接口" class="headerlink" title="函数式接口"></a>函数式接口</h3><p>对于只有一个抽象方法的接口，需要这种接口的对象时，就可以通过提供一个lambda表达式。这种接口称为函数式接口。</p><p>java.util.function包中定义了不少非常通用的函数式接口。例如其中一个接口BiFunction&lt;T,U,R&gt;描述了参数类型为T和U且返回类型为R的函数。（比如可以把比较的lambda表达式保存在这个类型的变量中。当然，没多少人喜欢在sort的时候接收一个BiFunction。）</p><h3 id="方法引用"><a href="#方法引用" class="headerlink" title="方法引用"></a>方法引用</h3><p>对象或类型::方法名</p><ul><li>object::instanceMethod</li><li>Class::staticMethod</li><li>Class::instanceMethod</li></ul><p>前两种方法引用等价于提供方法参数的lambda表达式，而对于第三种，第一个参数会成为方法的目标</p><p>例子：Arrays.sort(strings,String::compareToIgnoreCase)不考虑字母的大小写进行排序</p><h3 id="构造器引用"><a href="#构造器引用" class="headerlink" title="构造器引用"></a>构造器引用</h3><p>构造器引用同方法引用类似，不过方法名为new。如：String:new</p><h3 id="变量的作用域"><a href="#变量的作用域" class="headerlink" title="变量的作用域"></a>变量的作用域</h3><p>lambda表达式的三个部分：</p><ol><li>代码块</li><li>参数</li><li>自由变量的值（非参数，且不在代码块中定义的变量）<pre><code> 注意：即对于自由变量，lambda表达式需要数据结构对其进行存储，而为了明确其捕获到的自由变量的值，lambda表达式中只能引用值不会改变的变量（常量） 补充：关于代码块和自由变量值有一个术语：闭包</code></pre>在lambda表达式中使用this关键字，值创建这个lambda表达式的方法的this参数<h3 id="处理lambda表达式"><a href="#处理lambda表达式" class="headerlink" title="处理lambda表达式"></a>处理lambda表达式</h3>使用lambda表达式的重点是延迟执行。而希望一个代码延迟执行的原因有很多：</li><li>在一个单独的线程中运行的代码</li><li>多次运行代码</li><li>在算法的适当位置运行代码（如排序比较）</li><li>发生某种事件时执行代码（如点击一个按钮之类）<br>…</li></ol><h3 id="常用函数式接口"><a href="#常用函数式接口" class="headerlink" title="常用函数式接口"></a>常用函数式接口</h3><p> <img src="/images/pasted-223.png" alt="upload successful"></p><h3 id="基本类型函数式接口"><a href="#基本类型函数式接口" class="headerlink" title="基本类型函数式接口"></a>基本类型函数式接口</h3><p><img src="/images/pasted-224.png" alt="upload successful"><br>可以使用这些来减少装箱拆箱</p><pre><code>    补充：如果自己设计接口，其中只有一个抽象方法，可以使用@Functionallnterface注解来标记这个接口（好处：一方面无意增加了另一个抽象方法编译器会提示报错，另一方面javadoc页会指出这是一个函数式接口）</code></pre>]]></content>
-    
-    
-      
-      
-    <summary type="html">&lt;h3 id=&quot;简单介绍&quot;&gt;&lt;a href=&quot;#简单介绍&quot; class=&quot;headerlink&quot; title=&quot;简单介绍&quot;&gt;&lt;/a&gt;简单介绍&lt;/h3&gt;&lt;p&gt;lambda表达式是一个可传递的代码块，可以在以后执行一次或多次。&lt;/p&gt;
-&lt;p&gt;表达形式：(参数)-&amp;gt;{表达式}&lt;/</summary>
-      
-    
-    
-    
-    <category term="Java" scheme="http://example.com/categories/Java/"/>
-    
-    
-    <category term="Java" scheme="http://example.com/tags/Java/"/>
-    
-    <category term="lambda表达式" scheme="http://example.com/tags/lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F/"/>
     
   </entry>
   
